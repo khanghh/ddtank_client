@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="Flex" version="4">
+  <component name="FlexBuildConfigurationManager" active="4f">
+    <configurations>
+      <configuration name="4f" target-platform="Desktop" pure-as="true" output-type="Library" output-file="4f.swc" output-folder="$MODULE_DIR$/../out/4f">
+        <dependencies target-player="28.0">
+          <entries>
+            <entry library-id="77f7e514-5dfe-48e5-b49a-1d46dc72f75a">
+              <dependency linkage="Include" />
+            </entry>
+            <entry library-id="70400b44-663b-4090-a4db-27f384b6ff08">
+              <dependency linkage="Include" />
+            </entry>
+            <entry library-id="2dac141e-3357-45a5-ac81-058b6a864190">
+              <dependency linkage="Include" />
+            </entry>
+            <entry library-id="91eebf4e-121d-4b3f-a60f-49c8233d40cb">
+              <dependency linkage="Include" />
+            </entry>
+          </entries>
+          <sdk name="AIRSDK_Compiler" />
+        </dependencies>
+        <compiler-options />
+        <packaging-air-desktop />
+        <packaging-android />
+        <packaging-ios />
+      </configuration>
+    </configurations>
+    <compiler-options />
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+    </content>
+    <orderEntry type="jdk" jdkName="AIRSDK_Compiler" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="77f7e514-5dfe-48e5-b49a-1d46dc72f75a" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../swc/as3crypto.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="70400b44-663b-4090-a4db-27f384b6ff08" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../swc/EvalES4.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="2dac141e-3357-45a5-ac81-058b6a864190" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../swc/MonsterDebugger.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="91eebf4e-121d-4b3f-a60f-49c8233d40cb" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../swc/fzip-master/bin/fzip.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+  </component>
+</module>

@@ -1,0 +1,164 @@
+package happyLittleGame.bombshellGame.item
+{
+   import com.pickgliss.ui.ComponentFactory;
+   import com.pickgliss.ui.core.Disposeable;
+   import com.pickgliss.ui.image.Image;
+   import com.pickgliss.ui.image.ScaleFrameImage;
+   import com.pickgliss.ui.text.FilterFrameText;
+   import com.pickgliss.utils.ObjectUtils;
+   import ddt.utils.PositionUtils;
+   import flash.display.DisplayObject;
+   import flash.display.Sprite;
+   import flash.events.MouseEvent;
+   import uiModeManager.bombUI.model.bomb.BombRankInfo;
+   
+   public class BombRankItemII extends Sprite implements Disposeable
+   {
+       
+      
+      private var _icon:ScaleFrameImage;
+      
+      private var _rankTxt:FilterFrameText;
+      
+      private var _nameTxt:FilterFrameText;
+      
+      private var _scoreTxt:FilterFrameText;
+      
+      private var _info:BombRankInfo;
+      
+      private var _rank:int;
+      
+      private var _nameDis:String;
+      
+      private var _tipbackgound:Image;
+      
+      private var _tipDis:FilterFrameText;
+      
+      public function BombRankItemII()
+      {
+         super();
+         initView();
+         initEvent();
+      }
+      
+      private function initView() : void
+      {
+         _tipbackgound = ComponentFactory.Instance.creat("core.GoodsTipBg");
+         _tipbackgound.width = 250;
+         _tipbackgound.height = 30;
+         _tipbackgound.y = -30;
+         _tipbackgound.x = 50;
+         _tipbackgound.visible = false;
+         _tipDis = getComponentByStylename("bombgame.rank.name");
+         _tipDis.width = 250;
+         _tipDis.visible = false;
+         _tipDis.x = 0;
+         _tipbackgound.addChild(_tipDis);
+         _icon = getComponentByStylename("bombgame.Rank.Top3Icon");
+         _icon.visible = false;
+         _rankTxt = getComponentByStylename("bombgame.rank.ranking");
+         _nameTxt = getComponentByStylename("bombgame.rank.name");
+         _nameTxt.text = "";
+         _scoreTxt = getComponentByStylename("bombgame.rank.score");
+         _scoreTxt.text = "";
+         PositionUtils.setPos(_icon,"bombgame.daynewsview.totalIcon");
+         PositionUtils.setPos(_rankTxt,"bombgame.daynewsview.totalrank");
+         PositionUtils.setPos(_nameTxt,"bombgame.daynewsview.totalname");
+         PositionUtils.setPos(_scoreTxt,"bombgame.daynewsview.totalscore");
+         addChild(_icon);
+         addChild(_rankTxt);
+         addChild(_nameTxt);
+         addChild(_scoreTxt);
+         addChild(_tipbackgound);
+      }
+      
+      private function getComponentByStylename(param1:String) : *
+      {
+         return ComponentFactory.Instance.creatComponentByStylename(param1);
+      }
+      
+      public function clear() : void
+      {
+         _info = null;
+         _nameTxt.text = "";
+         _scoreTxt.text = "";
+         _icon.visible = false;
+         _rankTxt.text = "";
+      }
+      
+      private function initEvent() : void
+      {
+         addEventListener("mouseOver",__overHandler);
+         addEventListener("mouseOut",__outHandler);
+      }
+      
+      private function __overHandler(param1:MouseEvent) : void
+      {
+         if(_info)
+         {
+            _tipbackgound.visible = true;
+            _tipDis.visible = true;
+         }
+      }
+      
+      private function __outHandler(param1:MouseEvent) : void
+      {
+         if(_info)
+         {
+            _tipbackgound.visible = false;
+            _tipDis.visible = false;
+         }
+      }
+      
+      private function removeEvent() : void
+      {
+         removeEventListener("mouseOver",__overHandler);
+         removeEventListener("mouseOut",__outHandler);
+      }
+      
+      public function set Info(param1:BombRankInfo) : void
+      {
+         _info = param1;
+         setRank(_info.rank);
+         _nameDis = _info.nameDis;
+         _tipDis.text = _info.regDis + "-" + _info.nameDis;
+         if(_tipDis.length > 15)
+         {
+            _tipDis.text = _tipDis.text.substr(0,15) + "...";
+         }
+         if(_nameDis.length > 8)
+         {
+            _nameDis = _nameDis.substr(0,8).toString() + "..";
+         }
+         _nameTxt.text = _nameDis;
+         _scoreTxt.text = _info.score + "";
+      }
+      
+      public function setRank(param1:int) : void
+      {
+         _rank = param1;
+         if(_rank <= 3)
+         {
+            _icon.setFrame(_rank);
+            _icon.visible = true;
+         }
+         else
+         {
+            _icon.visible = false;
+            _rankTxt.text = param1 + "";
+         }
+      }
+      
+      public function dispose() : void
+      {
+         var _loc1_:* = null;
+         removeEvent();
+         while(this.numChildren > 0)
+         {
+            _loc1_ = removeChildAt(0);
+            ObjectUtils.disposeObject(_loc1_);
+            _loc1_ = null;
+         }
+      }
+   }
+}
