@@ -2,19 +2,19 @@
 <module type="Flex" version="4">
   <component name="FlexBuildConfigurationManager" active="4f">
     <configurations>
-      <configuration name="4f" target-platform="Desktop" pure-as="true" output-type="Library" output-file="4f.swc" output-folder="$MODULE_DIR$/../out/4f">
+      <configuration name="4f" target-platform="Desktop" pure-as="true" output-type="Library" output-file="4f.swc" output-folder="$MODULE_DIR$/../out/production/4f">
         <dependencies target-player="28.0">
           <entries>
-            <entry library-id="77f7e514-5dfe-48e5-b49a-1d46dc72f75a">
+            <entry library-id="c282cec3-a27f-4a05-b449-ddc9aa4d818a">
               <dependency linkage="Include" />
             </entry>
-            <entry library-id="70400b44-663b-4090-a4db-27f384b6ff08">
+            <entry library-id="6401d9a9-0120-4ce2-99b7-605be4c0c998">
               <dependency linkage="Include" />
             </entry>
-            <entry library-id="2dac141e-3357-45a5-ac81-058b6a864190">
+            <entry library-id="ba44830b-34f1-4120-a57c-e7aefcb57301">
               <dependency linkage="Include" />
             </entry>
-            <entry library-id="91eebf4e-121d-4b3f-a60f-49c8233d40cb">
+            <entry library-id="040c3060-5778-4600-944c-ef7bfaf53b29">
               <dependency linkage="Include" />
             </entry>
           </entries>
@@ -37,7 +37,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library" exported="">
       <library type="flex">
-        <properties id="77f7e514-5dfe-48e5-b49a-1d46dc72f75a" />
+        <properties id="c282cec3-a27f-4a05-b449-ddc9aa4d818a" />
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../swc/as3crypto.swc!/" />
         </CLASSES>
@@ -47,7 +47,7 @@
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library type="flex">
-        <properties id="70400b44-663b-4090-a4db-27f384b6ff08" />
+        <properties id="6401d9a9-0120-4ce2-99b7-605be4c0c998" />
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../swc/EvalES4.swc!/" />
         </CLASSES>
@@ -57,7 +57,7 @@
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library type="flex">
-        <properties id="2dac141e-3357-45a5-ac81-058b6a864190" />
+        <properties id="ba44830b-34f1-4120-a57c-e7aefcb57301" />
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../swc/MonsterDebugger.swc!/" />
         </CLASSES>
@@ -67,7 +67,7 @@
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library type="flex">
-        <properties id="91eebf4e-121d-4b3f-a60f-49c8233d40cb" />
+        <properties id="040c3060-5778-4600-944c-ef7bfaf53b29" />
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../swc/fzip-master/bin/fzip.swc!/" />
         </CLASSES>

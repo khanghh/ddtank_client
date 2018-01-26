@@ -2,7 +2,7 @@
 <module type="Flex" version="4">
   <component name="FlexBuildConfigurationManager" active="2">
     <configurations>
-      <configuration name="2" target-platform="Desktop" pure-as="true" output-type="Library" output-file="2_mod.swc" output-folder="$MODULE_DIR$/../../flash">
+      <configuration name="2" target-platform="Desktop" pure-as="true" output-type="Library" output-file="2_mod.swc" output-folder="$MODULE_DIR$/../out/2">
         <dependencies target-player="24.0">
           <entries>
             <entry library-id="d7571500-7fcb-4a5c-be0e-66bfd8adf269">
@@ -14,7 +14,11 @@
           </entries>
           <sdk name="AIRSDK_Compiler" />
         </dependencies>
-        <compiler-options />
+        <compiler-options>
+          <map>
+            <entry key="compiler.debug.swc" value="false" />
+          </map>
+        </compiler-options>
         <packaging-air-desktop />
         <packaging-android />
         <packaging-ios />
