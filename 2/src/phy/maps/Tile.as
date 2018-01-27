@@ -9,7 +9,6 @@ package phy.maps
     public class Tile extends Bitmap
     {
 
-
         private var _digable:Boolean;
 
         public function Tile(param1:BitmapData, param2:Boolean){super(null);}
@@ -22,9 +21,11 @@ package phy.maps
 
         public function dispose() : void{}
 
+// =====================================================================================================================
         public function get digable() : Boolean
         {
             return _digable;
         }
+// =====================================================================================================================
     }
 }
