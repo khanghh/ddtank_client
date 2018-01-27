@@ -1,6 +1,9 @@
 package game.view
 {
-import com.demonsters.debugger.MonsterDebugger;
+import bagAndInfo.BagAndInfoManager;
+import bagAndInfo.bag.ring.data.RingSystemData;
+import bagAndInfo.info.PlayerInfoViewControl;
+import bombKing.BombKingManager;
 import com.pickgliss.manager.NoviceDataManager;
 import com.pickgliss.toplevel.StageReferance;
 import com.pickgliss.ui.ComponentFactory;
@@ -8,37 +11,11 @@ import com.pickgliss.ui.LayerManager;
 import com.pickgliss.ui.controls.BaseButton;
 import com.pickgliss.ui.controls.container.HBox;
 import com.pickgliss.ui.image.Image;
+import com.pickgliss.ui.text.FilterFrameText;
 import com.pickgliss.utils.ClassUtils;
 import com.pickgliss.utils.ObjectUtils;
-
-import ddt.manager.AutoSocketManager;
-
-import ddt.manager.DDTManager;
-
-import ddt.manager.view.DDTConsole;
-
-import flash.display.Bitmap;
-import flash.display.Graphics;
-import flash.display.Sprite;
-import flash.events.Event;
-import flash.events.KeyboardEvent;
-import flash.events.MouseEvent;
-import flash.external.ExternalInterface;
-import flash.geom.Point;
-import flash.geom.Rectangle;
-import flash.media.SoundTransform;
-import flash.utils.Dictionary;
-import flash.utils.setTimeout;
-
-import bagAndInfo.BagAndInfoManager;
-import bagAndInfo.bag.ring.data.RingSystemData;
-import bagAndInfo.info.PlayerInfoViewControl;
-
-import bombKing.BombKingManager;
-
 import consortion.ConsortionModelManager;
 import consortion.data.ConsortionSkillInfo;
-
 import ddt.data.map.MissionInfo;
 import ddt.events.CEvent;
 import ddt.events.CrazyTankSocketEvent;
@@ -72,7 +49,17 @@ import ddt.view.chat.ChatBugleView;
 import ddt.view.chat.chatBall.ChatBallBoss;
 import ddt.view.rescue.RescueRoomItemView;
 import ddt.view.rescue.RescueScoreAlertView;
-
+import flash.display.Bitmap;
+import flash.display.Graphics;
+import flash.display.Sprite;
+import flash.events.Event;
+import flash.events.KeyboardEvent;
+import flash.events.MouseEvent;
+import flash.geom.Point;
+import flash.geom.Rectangle;
+import flash.media.SoundTransform;
+import flash.utils.Dictionary;
+import flash.utils.setTimeout;
 import game.GameDecorateManager;
 import game.actions.ViewEachPlayerAction;
 import game.objects.GameLiving;
@@ -80,10 +67,6 @@ import game.objects.GameLocalPlayer;
 import game.objects.GamePlayer;
 import game.view.heroAuto.HeroAutoView;
 import game.view.map.MapView;
-import game.view.matchGameAuto.MatchGameAutoView;
-
-import gameAuto.AutoGameManager;
-
 import gameCommon.BloodNumberCreater;
 import gameCommon.BuffManager;
 import gameCommon.GameControl;
@@ -110,29 +93,21 @@ import gameCommon.view.control.FightControlBar;
 import gameCommon.view.control.LiveState;
 import gameCommon.view.playerThumbnail.PlayerThumbnailController;
 import gameCommon.view.propContainer.PlayerStateContainer;
-
 import kingBless.KingBlessManager;
-
 import org.aswing.KeyStroke;
 import org.aswing.KeyboardManager;
-
 import phy.math.EulerVector;
-
+import pvePowerBuff.PvePowerBuffManager;
 import rescue.data.RescueRoomInfo;
-
 import road7th.comm.PackageIn;
-import road7th.comm.PackageOut;
 import road7th.data.DictionaryData;
 import road7th.data.DictionaryEvent;
 import road7th.data.StringObject;
 import road7th.utils.MovieClipWrapper;
-
 import room.RoomManager;
 import room.model.RoomPlayer;
-
 import trainer.controller.NewHandGuideManager;
 import trainer.controller.WeakGuildManager;
-
 import worldboss.WorldBossManager;
 
 public class GameViewBase extends BaseStateView
@@ -209,6 +184,10 @@ public class GameViewBase extends BaseStateView
 
     public var explorersLiving:Living;
 
+    private var buffIcon:Image;
+
+    private var buffTxt:FilterFrameText;
+
     protected var _weatherView:GameWeatherView;
 
     protected var _barrier:DungeonInfoView;
@@ -265,15 +244,11 @@ public class GameViewBase extends BaseStateView
 
     private var _drawRoute:Sprite;
 
-    private var _tempSprite:Sprite;
-
     public function GameViewBase()
     {
         _ef = new Point(0,0);
         _collideRect = new Rectangle(-45,-30,100,80);
-        DDTManager.Instance.ddtConsole.setTarget(this);
         super();
-
     }
 
     override public function prepare() : void
@@ -292,6 +267,8 @@ public class GameViewBase extends BaseStateView
 
     override public function enter(param1:BaseStateView, param2:Object = null) : void
     {
+        var _loc6_:* = null;
+        var _loc3_:* = null;
         super.enter(param1,param2);
         BloodNumberCreater.setup();
         _bitmapMgr = BitmapManager.getBitmapMgr("GameView");
@@ -302,25 +279,25 @@ public class GameViewBase extends BaseStateView
         ChatBugleView.instance.hide();
         PlayerManager.Instance.Self.TempBag.clearnAll();
         GameControl.Instance.Current.selfGamePlayer.petSkillEnabled = true;
-        var _loc8_:int = 0;
-        var _loc7_:* = _gameInfo.livings;
-        for each(var _loc4_ in _gameInfo.livings)
+        var _loc10_:int = 0;
+        var _loc9_:* = _gameInfo.livings;
+        for each(var _loc5_ in _gameInfo.livings)
         {
-            if(_loc4_ is Player)
+            if(_loc5_ is Player)
             {
-                Player(_loc4_).isUpGrade = false;
-                Player(_loc4_).LockState = false;
+                Player(_loc5_).isUpGrade = false;
+                Player(_loc5_).LockState = false;
             }
         }
         _map = newMap();
         _map.gameView = this;
-        _loc8_ = 0;
-        _map.y = _loc8_;
-        _map.x = _loc8_;
+        _loc10_ = 0;
+        _map.y = _loc10_;
+        _map.x = _loc10_;
         addChild(_map);
         _map.smallMap.x = StageReferance.stageWidth - _map.smallMap.width - 1;
-        var _loc6_:Boolean = GameControl.EXIT_ROOM_TYPE_ARRAY.indexOf(_gameInfo.roomType) == -1 && GameControl.EXTI_GAME_MODE_ARRAY.indexOf(_gameInfo.gameMode) == -1;
-        _map.smallMap.enableExit = !!BombKingManager.instance.Recording?false:Boolean(_loc6_);
+        var _loc8_:Boolean = GameControl.EXIT_ROOM_TYPE_ARRAY.indexOf(_gameInfo.roomType) == -1 && GameControl.EXTI_GAME_MODE_ARRAY.indexOf(_gameInfo.gameMode) == -1;
+        _map.smallMap.enableExit = !!BombKingManager.instance.Recording?false:Boolean(_loc8_);
         creatWeatherView();
         _smallMapBorderBg = addSmallMapBg();
         if(_smallMapBorderBg)
@@ -373,17 +350,17 @@ public class GameViewBase extends BaseStateView
         _players = new Dictionary();
         SharedManager.Instance.addEventListener("change",__soundChange);
         __soundChange(null);
-        var _loc5_:LocalPlayer = _gameInfo.selfGamePlayer;
-        if(!BombKingManager.instance.Recording && !RoomManager.Instance.current.selfRoomPlayer.isViewer && _loc5_.isLiving)
+        var _loc7_:LocalPlayer = _gameInfo.selfGamePlayer;
+        if(!BombKingManager.instance.Recording && !RoomManager.Instance.current.selfRoomPlayer.isViewer && _loc7_.isLiving)
         {
             _cs = _fightControlBar.setState(0);
             GameDecorateManager.Instance.createBitmapUI(_cs,"asset.gameDecorate.pow");
         }
         setupGameData();
         _playerThumbnailLController = new PlayerThumbnailController(_gameInfo);
-        var _loc3_:Point = ComponentFactory.Instance.creatCustomObject("asset.game.ThumbnailLPos");
-        _playerThumbnailLController.x = _loc3_.x;
-        _playerThumbnailLController.y = _loc3_.y;
+        var _loc4_:Point = ComponentFactory.Instance.creatCustomObject("asset.game.ThumbnailLPos");
+        _playerThumbnailLController.x = _loc4_.x;
+        _playerThumbnailLController.y = _loc4_.y;
         addChildAt(_playerThumbnailLController,getChildIndex(_map.smallMap));
         if(RoomManager.Instance.current.type == 121)
         {
@@ -413,6 +390,21 @@ public class GameViewBase extends BaseStateView
             GameDecorateManager.Instance.createBitmapUI(_gameTrusteeshipView,"asset.gameDecorate.trusteeship");
         }
         initDiePlayer();
+        if(RoomManager.Instance.current.type == 4 || RoomManager.Instance.current.type == 0)
+        {
+            buffIcon = ComponentFactory.Instance.creatComponentByStylename("game.buffTips.icon");
+            addChild(buffIcon);
+            _loc6_ = "00:00";
+            if(PvePowerBuffManager.instance.getBuffCount > 0 && PvePowerBuffManager.instance.getBuffDate != null)
+            {
+                _loc3_ = new Date(PvePowerBuffManager.instance.getBuffDate.getTime() + 60000 * 30);
+                _loc6_ = _loc3_.getMonth() + 1 + " - " + _loc3_.getDate() + " " + _loc3_.getHours() + " : " + _loc3_.getMinutes();
+            }
+            buffIcon.tipData = LanguageMgr.GetTranslation("ddt.game.signBuff.tips",PlayerManager.Instance.Self.experience_Rate,PlayerManager.Instance.Self.offer_Rate) + "\n" + LanguageMgr.GetTranslation("ddt.pvePowerBuff.buff.timelimit.text",_loc6_);
+            buffTxt = ComponentFactory.Instance.creatComponentByStylename("game.buffTips.levelTxt");
+            addChild(buffTxt);
+            buffTxt.text = String(Math.ceil(PlayerManager.Instance.Self.experience_Rate));
+        }
         if(RoomManager.Instance.current.type == 21)
         {
             _damageView = new DamageView();
@@ -432,19 +424,6 @@ public class GameViewBase extends BaseStateView
             PositionUtils.setPos(_rescueRoomItemView,"rescue.roomInfo.viewPos");
             SocketManager.Instance.addEventListener("RescueItemInfo",__updateRescueItemInfo);
             SocketManager.Instance.addEventListener("addScore",__addRescueScore);
-        }
-        else if (RoomManager.Instance.current.type == 0 || RoomManager.Instance.current.type == 1)
-        {
-            try {
-                ChatManager.Instance.sysChatYellow("enter auto:" + AutoGameManager.Instance.IsAutoMatchGame);
-                _matchGameAutoView = ComponentFactory.Instance.creatCustomObject("game.view.matchGameAuto.matchGameAutoView");
-                _matchGameAutoView.setAutoState(AutoGameManager.Instance.IsAutoMatchGame);
-                addChild(_matchGameAutoView);
-            }
-            catch (error:Error)
-            {
-                ExternalInterface.call("alert", error.getStackTrace());
-            }
         }
     }
 
@@ -558,7 +537,7 @@ public class GameViewBase extends BaseStateView
     {
         var _loc2_:int = GameControl.Instance.Current.roomType;
         var _loc1_:int = GameControl.Instance.Current.gameMode;
-        if(_loc2_ == 4 || _loc2_ == 12 || _loc2_ == 13 || _loc2_ == 12 || _loc2_ == 25 || _loc2_ == 0 || _loc2_ == 1 || _loc2_ == 11 || _loc2_ == 123)
+        if(_loc2_ == 4 || _loc2_ == 12 || _loc2_ == 13 || _loc2_ == 12 || _loc2_ == 25 || _loc2_ == 0 || _loc2_ == 1 || _loc2_ == 11 || _loc2_ == 123 || _loc2_ == 58)
         {
             if(_loc1_ == 56 || _loc1_ == 57)
             {
@@ -724,7 +703,7 @@ public class GameViewBase extends BaseStateView
 
     protected function drawMissionInfo() : void
     {
-        if(_gameInfo.roomType >= 2 && _gameInfo.roomType != 5 && _gameInfo.roomType != 16 && _gameInfo.roomType != 18 && _gameInfo.roomType != 19 && _gameInfo.roomType != 24 && _gameInfo.roomType != 25 && _gameInfo.roomType != 27 && _gameInfo.roomType != 121 && _gameInfo.roomType != 120 && _gameInfo.gameMode != 56 && _gameInfo.gameMode != 57 && _gameInfo.gameMode != 23)
+        if(_gameInfo.roomType >= 2 && _gameInfo.roomType != 5 && _gameInfo.roomType != 16 && _gameInfo.roomType != 18 && _gameInfo.roomType != 19 && _gameInfo.roomType != 24 && _gameInfo.roomType != 25 && _gameInfo.roomType != 27 && _gameInfo.roomType != 121 && _gameInfo.roomType != 120 && _gameInfo.roomType != 58 && _gameInfo.gameMode != 56 && _gameInfo.gameMode != 57 && _gameInfo.gameMode != 23)
         {
             _map.smallMap.titleBar.addEventListener("DungeonHelpChanged",__dungeonVisibleChanged);
             if(!_barrier)
@@ -841,7 +820,7 @@ public class GameViewBase extends BaseStateView
         var _loc4_:* = null;
         var _loc2_:* = null;
         var _loc5_:* = param1.data;
-        if(_loc5_ is Player)
+        if(_loc5_ is Player && (_loc5_ as Player).typeLiving != 18)
         {
             if(!_loc5_.movie)
             {
@@ -1058,8 +1037,6 @@ public class GameViewBase extends BaseStateView
         }
         ObjectUtils.disposeObject(_drawRoute);
         _drawRoute = null;
-        ObjectUtils.disposeObject(_tempSprite);
-        _tempSprite = null;
         _self = null;
         _selfGameLiving = null;
         _allLivings = null;
@@ -1229,11 +1206,10 @@ public class GameViewBase extends BaseStateView
                                 }
                                 else
                                 {
-                                    _loc4_ = 2;
+                                    _loc4_ = 4;
                                     _loc5_ = _loc7_.getBoolean();
                                     _loc6_ = param1.info;
                                     _loc6_.LockType = _loc4_;
-                                    _loc6_.LockState = _loc5_;
                                     if(param1.info.isSelf)
                                     {
                                         GameControl.Instance.Current.selfGamePlayer.lockFly = _loc5_;
@@ -1604,6 +1580,15 @@ public class GameViewBase extends BaseStateView
         return _map;
     }
 
+    protected function set mapWind(param1:Number) : void
+    {
+        _mapWind = param1;
+        if(_useAble)
+        {
+            showShoot();
+        }
+    }
+
     public function get currentLivID() : int
     {
         return _currentLivID;
@@ -1628,8 +1613,45 @@ public class GameViewBase extends BaseStateView
             _loc1_ = _allLivings[_currentLivID] as Living;
             _selfGameLiving.setFightPower(_loc1_.fightPower);
             _self.fightPower = _loc1_.fightPower;
-            _self.force = _loc1_.fightPower * 2000 / 100;
         }
+    }
+
+    private function wishInit() : void
+    {
+        _self = GameControl.Instance.Current.selfGamePlayer;
+        _selfGameLiving = _map.getPhysical(_self.LivingID) as GamePlayer;
+        _allLivings = GameControl.Instance.Current.livings;
+        _drawRoute = new Sprite();
+        _map.addChild(_drawRoute);
+        currentLivID = -1;
+        _gameInfo.livings.addEventListener("add",addPlayerHander);
+        _self.addEventListener("gunangleChanged",__changeAngle);
+        _self.addEventListener("posChanged",__changeAngle);
+        _self.addEventListener("dirChanged",__changeAngle);
+        SocketManager.Instance.addEventListener("wishofdd",__wishofdd);
+        SocketManager.Instance.addEventListener("playerChange",__playerChange);
+        RoomManager.Instance.addEventListener("PlayerRoomExit",__playerExit);
+        KeyboardManager.getInstance().addEventListener("keyDown",__KeyDown);
+        SocketManager.Instance.addEventListener("RescueKingBless",__useRescueKingBless);
+    }
+
+    private function wishRemoveEvent() : void
+    {
+        if(_self != null)
+        {
+            _self.removeEventListener("gunangleChanged",__changeAngle);
+            _self.removeEventListener("posChanged",__changeAngle);
+            _self.removeEventListener("dirChanged",__changeAngle);
+        }
+        if(_gameInfo != null)
+        {
+            _gameInfo.livings.removeEventListener("add",addPlayerHander);
+        }
+        SocketManager.Instance.removeEventListener("wishofdd",__wishofdd);
+        SocketManager.Instance.removeEventListener("playerChange",__playerChange);
+        RoomManager.Instance.removeEventListener("PlayerRoomExit",__playerExit);
+        KeyboardManager.getInstance().removeEventListener("keyDown",__KeyDown);
+        SocketManager.Instance.removeEventListener("RescueKingBless",__useRescueKingBless);
     }
 
     private function __useRescueKingBless(param1:CrazyTankSocketEvent) : void
@@ -1647,6 +1669,136 @@ public class GameViewBase extends BaseStateView
             _mapWind = _loc6_ * _loc4_ / 10 * _windFactor;
             _useAble = true;
             showShoot();
+        }
+    }
+
+    protected function __KeyDown(param1:KeyboardEvent) : void
+    {
+        var _loc4_:int = 0;
+        var _loc2_:Array = [];
+        if(param1.keyCode == KeyStroke.VK_V.getCode())
+        {
+            var _loc6_:int = 0;
+            var _loc5_:* = _allLivings;
+            for each(var _loc3_ in _allLivings)
+            {
+                if(!(_loc3_.isHidden || _loc3_.team == GameControl.Instance.Current.selfGamePlayer.team || !_loc3_.isLiving || _loc3_.LivingID == _self.LivingID))
+                {
+                    _loc2_.push(_loc3_);
+                }
+            }
+            _loc4_ = 0;
+            while(_loc4_ <= _loc2_.length - 1)
+            {
+                if((_loc2_[_loc4_] as Living).LivingID == currentLivID)
+                {
+                    if(_loc4_ >= _loc2_.length - 1)
+                    {
+                        _loc4_ = 0;
+                    }
+                    else
+                    {
+                        _loc4_++;
+                    }
+                    break;
+                }
+                _loc4_++;
+            }
+            if(_loc4_ <= _loc2_.length - 1)
+            {
+                currentLivID = _loc2_[_loc4_].LivingID;
+            }
+        }
+    }
+
+    protected function showShoot() : void
+    {
+        var _loc7_:* = null;
+        var _loc1_:* = null;
+        var _loc2_:Number = NaN;
+        var _loc4_:Boolean = false;
+        var _loc5_:Boolean = false;
+        var _loc3_:Point = _selfGameLiving.body.localToGlobal(new Point(30,-20));
+        _loc3_ = _map.globalToLocal(_loc3_);
+        _shootAngle = _self.calcBombAngle();
+        _arf = _map.airResistance;
+        _gf = _map.gravity * _mass * _gravityFactor;
+        _ga = _gf / _mass;
+        _wa = _mapWind / _mass;
+        var _loc9_:int = 0;
+        var _loc8_:* = _allLivings;
+        for each(var _loc6_ in _allLivings)
+        {
+            _loc6_.route = null;
+            if(!(_loc6_.isHidden || _loc6_.team == GameControl.Instance.Current.selfGamePlayer.team || !_loc6_.isLiving || _loc6_.LivingID == _self.LivingID))
+            {
+                _loc7_ = _loc6_.pos;
+                if(_self.isLiving && _self.isAttacking)
+                {
+                    _loc6_.route = null;
+                    _loc4_ = true;
+                    _loc5_ = true;
+                    if(_loc3_.x > _loc7_.x)
+                    {
+                        _loc4_ = false;
+                    }
+                    if(_loc3_.y > _loc7_.y)
+                    {
+                        _loc5_ = false;
+                    }
+                    if(judgeMaxPower(_loc3_,_loc7_,_shootAngle,_loc4_,_loc5_))
+                    {
+                        _loc2_ = getPower(0,2000,_loc3_,_loc7_,_shootAngle,_loc4_,_loc5_);
+                    }
+                    else
+                    {
+                        _loc2_ = 2100;
+                    }
+                    _stateFlag = 0;
+                    if(_loc2_ > 2000)
+                    {
+                        if(_loc6_.state)
+                        {
+                            _stateFlag = 1;
+                        }
+                        else
+                        {
+                            _stateFlag = 2;
+                        }
+                        _loc6_.state = false;
+                    }
+                    else
+                    {
+                        if(_loc6_.state)
+                        {
+                            _stateFlag = 3;
+                        }
+                        else
+                        {
+                            _stateFlag = 4;
+                        }
+                        _loc6_.state = true;
+                    }
+                    _gameLiving = _map.getPhysical(_loc6_.LivingID) as GameLiving;
+                    if(_stateFlag == 1 || _stateFlag == 2)
+                    {
+                        _loc6_.route = null;
+                    }
+                    else
+                    {
+                        _loc6_.route = getRouteData(_loc2_,_shootAngle,_loc3_,_loc7_);
+                    }
+                    _loc6_.fightPower = Number((_loc2_ * 100 / 2000).toFixed(1));
+                }
+            }
+        }
+        if(currentLivID == -1 || !_allLivings[currentLivID].route)
+        {
+            currentLivID = calculateRecent();
+        }
+        else
+        {
+            currentLivID = currentLivID;
         }
     }
 
@@ -1939,13 +2091,48 @@ public class GameViewBase extends BaseStateView
         return false;
     }
 
+    private function drawRouteLine(param1:int) : void
+    {
+        var _loc6_:int = 0;
+        _drawRoute.graphics.clear();
+        var _loc8_:int = 0;
+        var _loc7_:* = _allLivings;
+        for each(var _loc5_ in _allLivings)
+        {
+            _loc5_.currentSelectId = param1;
+        }
+        if(param1 < 0)
+        {
+            return;
+        }
+        var _loc4_:Living = _allLivings[param1];
+        if(!_loc4_)
+        {
+            return;
+        }
+        var _loc3_:Vector.<Point> = _loc4_.route;
+        if(!_loc3_ || _loc3_.length == 0)
+        {
+            return;
+        }
+        _collideRect.x = _loc4_.pos.x - 50;
+        _collideRect.y = _loc4_.pos.y - 50;
+        _drawRoute.graphics.lineStyle(2,16711680,0.5);
+        var _loc2_:int = _loc3_.length;
+        _loc6_ = 0;
+        while(_loc6_ < _loc2_ - 1)
+        {
+            drawDashed(_drawRoute.graphics,_loc3_[_loc6_],_loc3_[_loc6_ + 1],8,5);
+            _loc6_++;
+        }
+    }
+
     private function getRouteData(param1:Number, param2:Number, param3:Point, param4:Point) : Vector.<Point>
     {
         var _loc9_:* = null;
         var _loc7_:* = null;
         var _loc6_:int = 0;
         var _loc5_:int = 0;
-        var _isFirst:Boolean = true;
         if(param1 > 2000)
         {
             return null;
@@ -1967,55 +2154,6 @@ public class GameViewBase extends BaseStateView
             _loc8_.push(new Point(_loc9_.x0,_loc7_.x0));
         }
         return _loc8_;
-    }
-
-    public function drawPoint(x:int, y:int) : void
-    {
-        _tempSprite.graphics.beginFill(0xFF0000,1);
-        _tempSprite.graphics.drawCircle(x, y, 5);
-        _tempSprite.graphics.endFill();
-    }
-
-    public function test() : void
-    {
-        var pkg:PackageOut = new PackageOut(50);
-        pkg.writeUTFBytes("dfbfdbdfb");
-        AutoSocketManager.Instance.out.sendPackage(pkg);
-    }
-
-    public function clearPoints() : void
-    {
-        _tempSprite.graphics.clear();
-    }
-
-    public function isMapLineEmpty(x1:Number, y1:Number, x2:Number, y2:Number) : Boolean
-    {
-        var num1:Number = Math.atan2(y2 - y1,x2 - x1);
-        var deltaX:int = x2 - x1;
-        var deltaY:int = y2 - y1;
-        var _x:Number = NaN;
-        var _y:Number = NaN;
-        var distance:Number = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-        var tmp:Number = 0;
-        while (tmp < distance)
-        {
-            _x = x1 + Math.cos(num1) * tmp;
-            _y = y1 + Math.sin(num1) * tmp;
-            if (((map.ground != null && !map.ground.IsEmpty(_x, _y)) || (map.stone != null && !map.stone.IsEmpty(_x, _y))))
-                return false;
-            tmp += 1;
-        }
-        return true;
-    }
-
-    public function doMoveLeft() : void
-    {
-        _matchGameAutoView._autoControl.doMoveLeft();
-    }
-
-    public function clearRoute() : void
-    {
-        _matchGameAutoView._autoControl._drawRoute.graphics.clear();
     }
 
     public function drawDashed(param1:Graphics, param2:Point, param3:Point, param4:Number, param5:Number) : void
@@ -2094,6 +2232,14 @@ public class GameViewBase extends BaseStateView
         }
     }
 
+    protected function __changeAngle(param1:LivingEvent) : void
+    {
+        if(_useAble)
+        {
+            showShoot();
+        }
+    }
+
     protected function __wishofdd(param1:CrazyTankSocketEvent) : void
     {
         var _loc6_:Number = NaN;
@@ -2122,6 +2268,38 @@ public class GameViewBase extends BaseStateView
         currentLivID = param1.data as int;
     }
 
+    private function calculateRecent() : int
+    {
+        var _loc3_:* = undefined;
+        var _loc5_:int = 0;
+        var _loc4_:int = 0;
+        var _loc2_:* = 2147483647;
+        var _loc1_:int = -1;
+        var _loc8_:int = 0;
+        var _loc7_:* = _allLivings;
+        for each(var _loc6_ in _allLivings)
+        {
+            if(_loc6_.route)
+            {
+                if(RoomManager.Instance.current.type == 29 || !(_loc6_ is SmallEnemy))
+                {
+                    _loc3_ = _loc6_.route;
+                    _loc5_ = _loc3_.length;
+                    if(_loc5_ >= 2)
+                    {
+                        _loc4_ = getDistance(_loc3_[0],_loc3_[_loc5_ - 1]);
+                        if(_loc4_ < _loc2_)
+                        {
+                            _loc2_ = _loc4_;
+                            _loc1_ = _loc6_.LivingID;
+                        }
+                    }
+                }
+            }
+        }
+        return _loc1_;
+    }
+
     private function getDistance(param1:Point, param2:Point) : int
     {
         return (param2.x - param1.x) * (param2.x - param1.x) + (param2.y - param1.y) * (param2.y - param1.y);
@@ -2136,449 +2314,5 @@ public class GameViewBase extends BaseStateView
     {
         return _messageBtn;
     }
-
-//========================================================================================================================
-
-    private var _isLockedForce:Boolean = false;
-    private var _currentLivIndex:int = 0;
-    private var _isAutoPass:Boolean = false;
-    private var _isShowThreeKill : Boolean = false;
-    public var _matchGameAutoView : MatchGameAutoView = null;
-
-    protected function set mapWind(param1:Number) : void
-    {
-        _mapWind = param1;
-        //if(_useAble)
-        //{
-        showShoot();
-        //}
-    }
-
-    private function wishInit() : void
-    {
-        _self = GameControl.Instance.Current.selfGamePlayer;
-        _selfGameLiving = _map.getPhysical(_self.LivingID) as GamePlayer;
-        _allLivings = GameControl.Instance.Current.livings;
-        _drawRoute = new Sprite();
-        _tempSprite = new Sprite();
-        _map.addChild(_drawRoute);
-        _map.addChild(_tempSprite);
-        currentLivID = -1;
-        _gameInfo.livings.addEventListener("add",addPlayerHander);
-        _self.addEventListener("gunangleChanged",__changeAngle);
-        _self.addEventListener("posChanged",__changeAngle);
-        _self.addEventListener("dirChanged",__changeAngle);
-        _self.addEventListener("forceChanged", __forceChanged);
-        _self.addEventListener("attackingChanged", __beginSelfTurn);
-        SocketManager.Instance.addEventListener("wishofdd",__wishofdd);
-        SocketManager.Instance.addEventListener("playerChange",__playerChange);
-        RoomManager.Instance.addEventListener("PlayerRoomExit",__playerExit);
-        KeyboardManager.getInstance().addEventListener("keyDown",__KeyDown);
-        SocketManager.Instance.addEventListener("RescueKingBless",__useRescueKingBless);
-    }
-
-    private function drawRouteLine(param1:int) : void
-    {
-        _drawRoute.graphics.clear();
-        var _loc8_:int = 0;
-        var _loc7_:* = _allLivings;
-        for each(var _loc5_ in _allLivings)
-        {
-            _loc5_.currentSelectId = param1;
-        }
-        if(param1 < 0)
-        {
-            return;
-        }
-        var _loc4_:Living = _allLivings[param1];
-        if(!_loc4_)
-        {
-            return;
-        }
-        var route:Vector.<Point> = _loc4_.route;
-        var route1:Vector.<Point> = _loc4_.route1;
-        var route2:Vector.<Point> = _loc4_.route2;
-        if(!route || route.length == 0)
-        {
-            return;
-        }
-        _collideRect.x = _loc4_.pos.x - 50;
-        _collideRect.y = _loc4_.pos.y - 50;
-        _drawRoute.graphics.lineStyle(2,16711680,0.5);
-        var length:int = route.length - 1;
-        var i:int = 0;
-        while(i < length)
-        {
-            drawDashed(_drawRoute.graphics,route[i],route[i + 1],8,5);
-            i++;
-        }
-
-        if (_isShowThreeKill)
-        {
-            if (route1 && route1.length > 0)
-            {
-                _drawRoute.graphics.lineStyle(2,65280,0.5);
-                var length:int = route1.length - 1;
-                var i:int = 0;
-                while(i < length)
-                {
-                    drawDashed(_drawRoute.graphics,route1[i],route1[i + 1],8,5);
-                    i++;
-                }
-            }
-            if (route2 && route2.length > 0)
-            {
-                _drawRoute.graphics.lineStyle(2,255,0.5);
-                var length:int = route2.length - 1;
-                var i:int = 0;
-                while(i < length)
-                {
-                    drawDashed(_drawRoute.graphics,route2[i],route2[i + 1],8,5);
-                    i++;
-                }
-            }
-
-
-        }
-    }
-
-    protected function __beginSelfTurn(event:LivingEvent) : void
-    {
-        ChatManager.Instance.sysChatYellow("_map.wind:" + _map.wind.toString());
-        if (_self.isAttacking && _isAutoPass)
-        {
-            ChatManager.Instance.sysChatYellow("skip");
-            _self.skip();
-        }
-        else
-        {
-            showShoot();
-        }
-    }
-
-    protected function __forceChanged(event:Event):void
-    {
-        try
-        {
-            _shootAngle = _self.calcBombAngle();
-            _arf = _map.airResistance;
-            _gf = _map.gravity * _mass * _gravityFactor;
-            _ga = _gf / _mass;
-            _wa = _mapWind / _mass;
-            var shootPos:Point = _selfGameLiving.body.localToGlobal(new Point(30,-20));
-            shootPos = _map.globalToLocal(shootPos);
-            var power:Number = _self.force;
-            var enemyPos:Point = new Point(0,0);
-            var route:Vector.<Point> = getRouteData(power, _shootAngle,shootPos,enemyPos);
-            var route1:Vector.<Point> = getRouteData(power * 0.9, _shootAngle - 5,shootPos,enemyPos);
-            var route2:Vector.<Point> = getRouteData(power * 1.1, _shootAngle + 5,shootPos,enemyPos);
-            var length:int = route.length;
-            var i:int = 0;
-            _drawRoute.graphics.clear();
-
-            if (route && route.length > 0)
-            {
-                _drawRoute.graphics.lineStyle(2,16711680,0.5);
-                length = route.length - 1;
-                i = 0;
-                while(i < length)
-                {
-                    drawDashed(_drawRoute.graphics,route[i],route[i + 1],8,5);
-                    i++;
-                }
-            }
-
-            if (_isShowThreeKill) {
-                if (route1 && route1.length > 0) {
-                    _drawRoute.graphics.lineStyle(2, 65280, 0.5);
-                    length = route1.length - 1;
-                    i = 0;
-                    while (i < length) {
-                        drawDashed(_drawRoute.graphics, route1[i], route1[i + 1], 8, 5);
-                        i++;
-                    }
-                }
-                if (route2 && route2.length > 0) {
-                    _drawRoute.graphics.lineStyle(2, 255, 0.5);
-                    length = route2.length - 1;
-                    i = 0;
-                    while (i < length) {
-                        drawDashed(_drawRoute.graphics, route2[i], route2[i + 1], 8, 5);
-                        i++;
-                    }
-                }
-            }
-
-            _map.smallMap.drawRouteLine2(route, route1, route2);
-            _isLockedForce = true;
-        }
-        catch (e:Error)
-        {
-            ChatManager.Instance.sysChatYellow("Error: " + e.message + " at: " + e.getStackTrace());
-        }
-    }
-
-    private function calculateRecent() : int
-    {
-        var _loc3_:* = undefined;
-        var _loc5_:int = 0;
-        var _loc4_:int = 0;
-        var _loc2_:* = 2147483647;
-        var _loc1_:int = -1;
-        var _loc8_:int = _allLivings.length;
-        var _loc7_:* = _allLivings;
-        var _loc6_:Living = null;
-        var list:Array = _allLivings.list;
-        var i:int = 0;
-        _isLockedForce = false;
-        try
-        {
-            for (i = _currentLivIndex; i < list.length; ++i)
-            {
-                _loc6_ = list[i];
-                if(_loc6_.route && _loc6_.blood > 0)
-                {
-                    _loc3_ = _loc6_.route;
-                    _loc5_ = _loc3_.length;
-                    if(_loc5_ >= 2)
-                    {
-                        if (i > _currentLivIndex)
-                        {
-                            _currentLivIndex = i;
-                            ChatManager.Instance.sysChatYellow("currentLivIndex: " + _currentLivIndex.toString());
-                            return _loc6_.LivingID;
-                        }
-                    }
-                }
-            }
-            for (i = 0; i < list.length; ++i)
-            {
-                _loc6_ = list[i];
-                if(_loc6_.route && _loc6_.blood > 0)
-                {
-                    _loc3_ = _loc6_.route;
-                    _loc5_ = _loc3_.length;
-                    if(_loc5_ >= 2)
-                    {
-                        _currentLivIndex = i;
-                        ChatManager.Instance.sysChatYellow("currentLivIndex: " + _currentLivIndex.toString());
-                        return _loc6_.LivingID;
-                    }
-                }
-            }
-        }
-        catch (e:Error)
-        {
-            ChatManager.Instance.sysChatYellow(e.message + " at " + e.getStackTrace());
-        }
-        return -1;
-    }
-
-    protected function __changeAngle(param1:LivingEvent) : void
-    {
-        _isLockedForce = false;
-        _mapWind = GameControl.Instance.Current.wind * _windFactor;
-        showShoot();
-    }
-
-    protected function __KeyDown(param1:KeyboardEvent) : void
-    {
-        var _loc4_:int = 0;
-        var _loc2_:Array = [];
-        if(param1.keyCode == KeyStroke.VK_V.getCode())
-        {
-            var _loc6_:int = 0;
-            var _loc5_:* = _allLivings;
-            for each(var _loc3_:Living in _allLivings)
-            {
-                if(!(_loc3_.isHidden || _loc3_.team == GameControl.Instance.Current.selfGamePlayer.team || !_loc3_.isLiving || _loc3_.LivingID == _self.LivingID))
-                {
-                    _loc2_.push(_loc3_);
-                }
-            }
-            _loc4_ = 0;
-            while(_loc4_ <= _loc2_.length - 1)
-            {
-                if((_loc2_[_loc4_] as Living).LivingID == currentLivID)
-                {
-                    if(_loc4_ >= _loc2_.length - 1)
-                    {
-                        _loc4_ = 0;
-                    }
-                    else
-                    {
-                        _loc4_++;
-                    }
-                    break;
-                }
-                _loc4_++;
-            }
-            if(_loc4_ <= _loc2_.length - 1)
-            {
-                currentLivID = _loc2_[_loc4_].LivingID;
-            }
-        }
-        if(param1.keyCode == KeyStroke.VK_TAB.getCode())
-        {
-            currentLivID = calculateRecent();
-            ChatManager.Instance.sysChatYellow("changed to: " + currentLivID.toString());
-        }
-        else if (param1.keyCode == KeyStroke.VK_N.getCode())
-        {
-            SoundManager.instance.play("008");
-            if (currentLivID != -1 && !_isLockedForce)
-            {
-                var living:Living = _allLivings[currentLivID];
-                var power:Number = (living.fightPower * 2000) / 100;
-                _self.sendShootAction(power);
-            }
-            else
-            {
-                _self.sendShootAction(_self.force);
-            }
-        }
-        else if (param1.keyCode == KeyStroke.VK_O.getCode())
-        {
-            SoundManager.instance.play("008");
-            _isAutoPass = !_isAutoPass;
-            ChatManager.Instance.sysChatYellow("_isAutoPass: " + _isAutoPass.toString());
-            if (_self.isAttacking && _isAutoPass)
-            {
-                ChatManager.Instance.sysChatYellow("skip");
-                _self.skip();
-            }
-        }
-        else if (param1.keyCode == KeyStroke.VK_K.getCode())
-        {
-            SoundManager.instance.play("008");
-            _matchGameAutoView.setAutoState(AutoGameManager.Instance.toggleAutoMatchGame());
-        }
-        else if (param1.keyCode == KeyStroke.VK_L.getCode())
-        {
-            SoundManager.instance.play("008");
-            _isShowThreeKill = !_isShowThreeKill;
-            _map.smallMap.toggleShowThreeKill(_isShowThreeKill);
-            ChatManager.Instance.sysChatYellow("_isShowThreeKill: " + _isShowThreeKill.toString());
-            __forceChanged(null);
-        }
-    }
-
-    private function wishRemoveEvent() : void
-    {
-        if(_self != null)
-        {
-            _self.removeEventListener("gunangleChanged",__changeAngle);
-            _self.removeEventListener("posChanged",__changeAngle);
-            _self.removeEventListener("dirChanged",__changeAngle);
-            _self.removeEventListener("forceChanged", __forceChanged);
-            _self.removeEventListener("attackingChanged", __beginSelfTurn);
-        }
-        if(_gameInfo != null)
-        {
-            _gameInfo.livings.removeEventListener("add",addPlayerHander);
-        }
-        SocketManager.Instance.removeEventListener("wishofdd",__wishofdd);
-        SocketManager.Instance.removeEventListener("playerChange",__playerChange);
-        RoomManager.Instance.removeEventListener("PlayerRoomExit",__playerExit);
-        KeyboardManager.getInstance().removeEventListener("keyDown",__KeyDown);
-        SocketManager.Instance.removeEventListener("RescueKingBless",__useRescueKingBless);
-    }
-
-    protected function showShoot() : void
-    {
-        var _loc7_:* = null;
-        var _loc1_:* = null;
-        var _loc2_:Number = NaN;
-        var _loc4_:Boolean = false;
-        var _loc5_:Boolean = false;
-        var _loc3_:Point = _selfGameLiving.body.localToGlobal(new Point(30,-20));
-        _loc3_ = _map.globalToLocal(_loc3_);
-        _shootAngle = _self.calcBombAngle();
-        _arf = _map.airResistance;
-        _gf = _map.gravity * _mass * _gravityFactor;
-        _ga = _gf / _mass;
-        _wa = _mapWind / _mass;
-        var _loc9_:int = 0;
-        var _loc8_:* = _allLivings;
-        for each(var _loc6_ in _allLivings)
-        {
-            _loc6_.route = null;
-            if(_loc6_.LivingID != _self.LivingID)
-            {
-                _loc7_ = _loc6_.pos;
-                if(_self.isLiving && _self.isAttacking)
-                {
-                    _loc6_.route = null;
-                    _loc4_ = true;
-                    _loc5_ = true;
-                    if(_loc3_.x > _loc7_.x)
-                    {
-                        _loc4_ = false;
-                    }
-                    if(_loc3_.y > _loc7_.y)
-                    {
-                        _loc5_ = false;
-                    }
-                    if(judgeMaxPower(_loc3_,_loc7_,_shootAngle,_loc4_,_loc5_))
-                    {
-                        _loc2_ = getPower(0,2000,_loc3_,_loc7_,_shootAngle,_loc4_,_loc5_);
-                    }
-                    else
-                    {
-                        _loc2_ = 2100;
-                    }
-                    _stateFlag = 0;
-                    if(_loc2_ > 2000)
-                    {
-                        if(_loc6_.state)
-                        {
-                            _stateFlag = 1;
-                        }
-                        else
-                        {
-                            _stateFlag = 2;
-                        }
-                        _loc6_.state = false;
-                    }
-                    else
-                    {
-                        if(_loc6_.state)
-                        {
-                            _stateFlag = 3;
-                        }
-                        else
-                        {
-                            _stateFlag = 4;
-                        }
-                        _loc6_.state = true;
-                    }
-                    _gameLiving = _map.getPhysical(_loc6_.LivingID) as GameLiving;
-                    if(_stateFlag == 1 || _stateFlag == 2)
-                    {
-                        _loc6_.route = null;
-                    }
-                    else
-                    {
-                        _loc6_.route = getRouteData(_loc2_,_shootAngle,_loc3_,_loc7_);
-                        _loc6_.route1 = getRouteData(_loc2_ * 0.9,_shootAngle - 5,_loc3_,_loc7_);
-                        _loc6_.route2 = getRouteData(_loc2_ * 1.1,_shootAngle + 5,_loc3_,_loc7_);
-                    }
-                    _loc6_.fightPower = Number((_loc2_ * 100 / 2000).toFixed(1));
-                }
-            }
-        }
-        if(currentLivID == -1 || !_allLivings[currentLivID].route)
-        {
-            currentLivID = calculateRecent();
-        }
-        else
-        {
-            currentLivID = currentLivID;
-        }
-    }
-
-
-
-//========================================================================================================================
 }
 }

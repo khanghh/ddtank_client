@@ -19,7 +19,6 @@ import ddt.manager.ddtcmd.ICommandHandler;
 import ddt.manager.ddtcmd.SettingsHandler;
 import ddt.manager.ddtcmd.WasteRecycleStartTurnHandler;
 
-import game.view.GameViewBase;
 import game.view.heroAuto.HeroAutoView;
 import game.view.map.MapView;
 import game.view.matchGameAuto.MatchGameAutoView;

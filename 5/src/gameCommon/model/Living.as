@@ -236,12 +236,6 @@ public class Living extends EventDispatcher implements ICommandedAble
 
     public var autoOnHook:Boolean = false;
 
-//==============================================================================================================================
-    public var route1:Vector.<Point>;
-    public var route2:Vector.<Point>;
-    public var shotPriority:int = 0;
-//==============================================================================================================================
-
     public function Living(param1:int, param2:int, param3:int, param4:int = 0)
     {
         _localBuffs = new Vector.<FightBuffInfo>();
@@ -471,13 +465,24 @@ public class Living extends EventDispatcher implements ICommandedAble
         {
             if(BuffManager.buffTemplateData.hasKey(param1.id))
             {
-                if(hasBuff(param1,_barBuffs))
+                if(param1.showType == 1)
                 {
-                    updateBuff(param1,_barBuffs);
+                    if(hasBuff(param1,_barBuffs))
+                    {
+                        updateBuff(param1,_barBuffs);
+                    }
+                    else
+                    {
+                        _barBuffs.push(param1);
+                    }
                 }
                 else
                 {
-                    _barBuffs.push(param1);
+                    if(hasBuff(param1,_turnBuffs))
+                    {
+                        return;
+                    }
+                    _turnBuffs.push(param1);
                 }
             }
         }
@@ -1716,5 +1721,11 @@ public class Living extends EventDispatcher implements ICommandedAble
     {
         return _noUseCritical;
     }
+
+//==============================================================================================================================
+    public var route1:Vector.<Point>;
+    public var route2:Vector.<Point>;
+    public var shotPriority:int = 0;
+//==============================================================================================================================
 }
 }

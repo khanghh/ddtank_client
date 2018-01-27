@@ -8,6 +8,9 @@
             <entry library-id="c768ede4-127c-4c6e-b39a-202bc8f2defa">
               <dependency linkage="Merged" />
             </entry>
+            <entry library-id="498cafe1-cd60-4509-a024-a90f561089e5">
+              <dependency linkage="External" />
+            </entry>
           </entries>
           <sdk name="AIRSDK_Compiler" />
         </dependencies>
@@ -36,6 +39,16 @@
         <properties id="c768ede4-127c-4c6e-b39a-202bc8f2defa" />
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../swc/4f.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="498cafe1-cd60-4509-a024-a90f561089e5" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../swc/2f.swc!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

@@ -1,13 +1,8 @@
 package ddt.manager
 {
-	import flash.utils.ByteArray;
-
-import game.view.GameViewBase;
-
-import gameStarling.view.GameViewBase3D;
+import flash.utils.ByteArray;
 
 import road7th.comm.AutoByteSocket;
-import road7th.comm.PackageOut;
 import road7th.comm.PackageOut;
 
 	public class AutoSocketOut

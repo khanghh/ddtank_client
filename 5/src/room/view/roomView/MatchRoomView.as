@@ -1,8 +1,6 @@
 package room.view.roomView
 {
 import LimitAward.LimitAwardButton;
-
-import com.demonsters.debugger.MonsterDebugger;
 import com.pickgliss.events.FrameEvent;
 import com.pickgliss.ui.AlertManager;
 import com.pickgliss.ui.ComponentFactory;
@@ -17,13 +15,13 @@ import ddt.events.PkgEvent;
 import ddt.events.RoomEvent;
 import ddt.manager.BossBoxManager;
 import ddt.manager.ChatManager;
-import ddt.manager.DDTSettings;
 import ddt.manager.GameInSocketOut;
 import ddt.manager.LanguageMgr;
 import ddt.manager.MessageTipManager;
 import ddt.manager.PlayerManager;
 import ddt.manager.SocketManager;
 import ddt.manager.SoundManager;
+import ddt.manager.StateManager;
 import ddt.utils.PositionUtils;
 import ddt.view.bossbox.SmallBoxButton;
 import ddt.view.chat.ChatData;
@@ -36,8 +34,6 @@ import flash.geom.Point;
 import flash.utils.Timer;
 
 import gameAuto.AutoGameManager;
-
-import gameCommon.PVPAutoControl;
 
 import league.LeagueManager;
 
@@ -54,9 +50,6 @@ import room.view.smallMapInfoPanel.MatchRoomSmallMapInfoPanel;
 import trainer.controller.WeakGuildManager;
 import trainer.view.NewHandContainer;
 import trainer.view.VaneTipView;
-import gameAuto.autoControl.MatchGameAutoControl;
-
-import yzhkof.debug.DebugSystem;
 
 public class MatchRoomView extends BaseRoomView
 {
@@ -80,7 +73,7 @@ public class MatchRoomView extends BaseRoomView
 
     private var _playerItemContainer:SimpleTileList;
 
-    private var _crossZoneBtn:SelectedButton;
+    protected var _crossZoneBtn:SelectedButton;
 
     private var _boxButton:SmallBoxButton;
 
@@ -88,7 +81,7 @@ public class MatchRoomView extends BaseRoomView
 
     private var _timerII:Timer;
 
-    private var _leagueTxt:FilterFrameText;
+    protected var _leagueTxt:FilterFrameText;
 
     private var _roomIdTxt:FilterFrameText;
 
@@ -203,7 +196,10 @@ public class MatchRoomView extends BaseRoomView
             _loc2_ = new ChatData();
             _loc2_.channel = 7;
             _loc2_.msg = LanguageMgr.GetTranslation("tank.room.UpdateGameStyle");
-            ChatManager.Instance.chat(_loc2_);
+            if(!StateManager.currentStateType != "teamRoom")
+            {
+                ChatManager.Instance.chat(_loc2_);
+            }
         }
         _alert1.removeEventListener("response",__onResponse);
         _alert1.dispose();
@@ -227,7 +223,10 @@ public class MatchRoomView extends BaseRoomView
             _loc2_ = new ChatData();
             _loc2_.channel = 7;
             _loc2_.msg = LanguageMgr.GetTranslation("tank.room.UpdateGameStyle");
-            ChatManager.Instance.chat(_loc2_);
+            if(!StateManager.currentStateType != "teamRoom")
+            {
+                ChatManager.Instance.chat(_loc2_);
+            }
         }
     }
 
@@ -304,7 +303,7 @@ public class MatchRoomView extends BaseRoomView
             _boxButton = new SmallBoxButton(2);
             addChild(_boxButton);
         }
-        if(LeagueManager.instance.maxCount != -1 && PlayerManager.Instance.Self.Grade >= 24 && _info.gameMode != 41 && _info.gameMode != 42 && _info.gameMode != 68)
+        if(LeagueManager.instance.maxCount != -1 && PlayerManager.Instance.Self.Grade >= 24 && _info.gameMode != 41 && _info.gameMode != 42 && _info.gameMode != 68 && StateManager.currentStateType != "teamRoom")
         {
             _leagueTxt = ComponentFactory.Instance.creatComponentByStylename("league.restCount.tipTxt");
             _leagueTxt.text = LanguageMgr.GetTranslation("ddt.league.restCountTipTxt",LeagueManager.instance.restCount.toString(),LeagueManager.instance.maxCount.toString());
@@ -436,7 +435,7 @@ public class MatchRoomView extends BaseRoomView
         _leagueTxt = null;
     }
 
-//======================================================================================================================
+    //======================================================================================================================
 
     private var _startGameTimer:Timer = null;
 
