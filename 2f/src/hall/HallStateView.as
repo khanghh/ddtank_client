@@ -7,6 +7,7 @@ package hall
    import LimitAward.LimitAwardButton;
    import academy.AcademyManager;
    import accumulativeLogin.AccumulativeManager;
+   import angelInvestment.AngelInvestmentManager;
    import anotherDimension.controller.AnotherDimensionManager;
    import bagAndInfo.BagAndInfoManager;
    import baglocked.BaglockedManager;

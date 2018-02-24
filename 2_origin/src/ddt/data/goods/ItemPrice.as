@@ -359,6 +359,34 @@ package ddt.data.goods
          return !IsMixed && badgeValue > 0;
       }
       
+      public function get goodsPrice() : int
+      {
+         var _loc3_:int = 0;
+         var _loc2_:* = _prices;
+         for(var _loc1_ in _prices)
+         {
+            if(_prices[_loc1_] > 0)
+            {
+               return _prices[_loc1_];
+            }
+         }
+         return 0;
+      }
+      
+      public function get goodsPriceToString() : String
+      {
+         var _loc3_:int = 0;
+         var _loc2_:* = _prices;
+         for(var _loc1_ in _prices)
+         {
+            if(_prices[_loc1_] > 0)
+            {
+               return _loc1_;
+            }
+         }
+         return "";
+      }
+      
       public function toString(param1:Boolean = false) : String
       {
          var _loc2_:String = "";

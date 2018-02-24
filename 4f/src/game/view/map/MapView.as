@@ -9,6 +9,7 @@ package game.view.map
    import com.pickgliss.ui.LayerManager;
    import com.pickgliss.ui.controls.alert.BaseAlerFrame;
    import com.pickgliss.utils.ClassUtils;
+   import com.pickgliss.utils.ObjectUtils;
    import ddt.data.BallInfo;
    import ddt.data.PathInfo;
    import ddt.data.map.MapInfo;
@@ -132,11 +133,13 @@ package game.view.map
       
       private var _objects:Dictionary;
       
-      private var _gamePlayerList:Vector.<GamePlayer>;
+      public var gamePlayerList:Vector.<GamePlayer>;
       
       private var expName:Vector.<String>;
       
       private var expDic:Dictionary;
+      
+      private var _backEffectView:BackEffectView;
       
       private var _currentTopLiving:GameLiving;
       
@@ -267,6 +270,22 @@ package game.view.map
       override public function addMapThing(param1:Physics) : void{}
       
       override public function removeMapThing(param1:Physics) : void{}
+      
+      public function createBackEffectView(param1:Number = 400) : void{}
+      
+      public function removeBackEffectView() : void{}
+      
+      public function hideBackEffectView() : void{}
+      
+      public function showBackEffectView() : void{}
+      
+      private function addToBackEffectView(param1:PhysicalObj) : void{}
+      
+      private function updatePosBackEffectView(param1:PhysicalObj, param2:Point) : void{}
+      
+      private function removeToBackEffectView(param1:PhysicalObj) : void{}
+      
+      public function updateObjectPos(param1:PhysicalObj, param2:Point) : void{}
       
       public function get actionCount() : int{return 0;}
       

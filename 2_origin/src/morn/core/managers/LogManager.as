@@ -81,8 +81,7 @@ package morn.core.managers
       
       private function createLinkButton(param1:String) : TextField
       {
-         var _loc2_:TextField = null;
-         _loc2_ = new TextField();
+         var _loc2_:TextField = new TextField();
          _loc2_.selectable = false;
          _loc2_.autoSize = "left";
          _loc2_.textColor = 32960;

@@ -8,6 +8,7 @@ package auctionHouse.view
    import com.pickgliss.ui.ComponentFactory;
    import com.pickgliss.utils.ObjectUtils;
    import ddt.data.goods.InventoryItemInfo;
+   import ddt.data.goods.ItemTemplateInfo;
    import ddt.manager.DragManager;
    import ddt.manager.LanguageMgr;
    import ddt.manager.MessageTipManager;

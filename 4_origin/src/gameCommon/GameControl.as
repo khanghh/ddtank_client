@@ -1491,162 +1491,171 @@ package gameCommon
       
       private function __gameStart(param1:CrazyTankSocketEvent) : void
       {
-         var _loc19_:* = null;
-         var _loc24_:int = 0;
-         var _loc28_:int = 0;
-         var _loc14_:int = 0;
-         var _loc8_:* = null;
-         var _loc23_:int = 0;
-         var _loc29_:int = 0;
-         var _loc2_:int = 0;
-         var _loc32_:int = 0;
-         var _loc3_:int = 0;
-         var _loc31_:* = null;
-         var _loc25_:int = 0;
-         var _loc5_:int = 0;
-         var _loc20_:int = 0;
-         var _loc10_:* = undefined;
-         var _loc21_:int = 0;
-         var _loc13_:Boolean = false;
-         var _loc34_:Boolean = false;
-         var _loc11_:Boolean = false;
-         var _loc35_:Boolean = false;
-         var _loc22_:int = 0;
-         var _loc15_:* = null;
-         var _loc7_:int = 0;
+         var _loc21_:* = null;
+         var _loc26_:int = 0;
+         var _loc30_:int = 0;
+         var _loc16_:int = 0;
          var _loc9_:* = null;
-         var _loc17_:* = null;
-         var _loc12_:int = 0;
+         var _loc25_:int = 0;
+         var _loc31_:int = 0;
+         var _loc2_:int = 0;
+         var _loc34_:int = 0;
+         var _loc3_:int = 0;
          var _loc33_:* = null;
          var _loc27_:int = 0;
-         var _loc26_:int = 0;
-         var _loc30_:* = null;
-         var _loc4_:int = 0;
-         var _loc18_:* = 0;
-         var _loc16_:* = null;
+         var _loc5_:int = 0;
+         var _loc22_:int = 0;
+         var _loc11_:* = undefined;
+         var _loc23_:int = 0;
+         var _loc15_:Boolean = false;
+         var _loc36_:Boolean = false;
+         var _loc12_:Boolean = false;
+         var _loc37_:Boolean = false;
+         var _loc24_:int = 0;
+         var _loc17_:* = null;
+         var _loc8_:int = 0;
+         var _loc10_:* = null;
+         var _loc19_:* = null;
+         var _loc14_:int = 0;
+         var _loc35_:* = null;
          var _loc6_:int = 0;
+         var _loc13_:int = 0;
+         var _loc29_:int = 0;
+         var _loc28_:int = 0;
+         var _loc32_:* = null;
+         var _loc4_:int = 0;
+         var _loc20_:* = 0;
+         var _loc18_:* = null;
+         var _loc7_:int = 0;
          setGameSmallData();
          TryAgain = -1;
          ExpTweenManager.Instance.deleteTweens();
          if(Current)
          {
             param1.executed = false;
-            _loc19_ = param1.pkg;
-            _loc24_ = _loc19_.readInt();
-            _loc28_ = 1;
-            while(_loc28_ <= _loc24_)
+            _loc21_ = param1.pkg;
+            _loc26_ = _loc21_.readInt();
+            _loc30_ = 1;
+            while(_loc30_ <= _loc26_)
             {
-               _loc14_ = _loc19_.readInt();
-               _loc8_ = Current.findPlayer(_loc14_);
-               if(_loc8_ != null)
+               _loc16_ = _loc21_.readInt();
+               _loc9_ = Current.findPlayer(_loc16_);
+               if(_loc9_ != null)
                {
-                  _loc8_.reset();
-                  _loc8_.pos = new Point(_loc19_.readInt(),_loc19_.readInt());
-                  _loc8_.energy = 1;
-                  _loc8_.direction = _loc19_.readInt();
-                  _loc23_ = _loc19_.readInt();
-                  _loc29_ = _loc19_.readInt();
-                  _loc8_.team = _loc19_.readInt();
-                  _loc2_ = _loc19_.readInt();
-                  if(_loc8_ is LocalPlayer)
+                  _loc9_.reset();
+                  _loc9_.pos = new Point(_loc21_.readInt(),_loc21_.readInt());
+                  _loc9_.energy = 1;
+                  _loc9_.direction = _loc21_.readInt();
+                  _loc25_ = _loc21_.readInt();
+                  _loc31_ = _loc21_.readInt();
+                  _loc9_.team = _loc21_.readInt();
+                  _loc2_ = _loc21_.readInt();
+                  if(_loc9_ is LocalPlayer)
                   {
-                     (_loc8_ as LocalPlayer).deputyWeaponCount = _loc19_.readInt();
+                     (_loc9_ as LocalPlayer).deputyWeaponCount = _loc21_.readInt();
                   }
                   else
                   {
-                     _loc32_ = _loc19_.readInt();
+                     _loc34_ = _loc21_.readInt();
                   }
-                  _loc8_.powerRatio = _loc19_.readInt();
-                  _loc8_.dander = _loc19_.readInt();
-                  _loc8_.maxBlood = _loc29_;
-                  _loc8_.updateBlood(_loc23_,0,0);
-                  _loc8_.wishKingCount = _loc19_.readInt();
-                  _loc8_.wishKingEnergy = _loc19_.readInt();
-                  _loc8_.currentWeapInfo.refineryLevel = _loc2_;
-                  _loc3_ = _loc19_.readInt();
-                  _loc25_ = 0;
-                  while(_loc25_ < _loc3_)
+                  _loc9_.powerRatio = _loc21_.readInt();
+                  _loc9_.dander = _loc21_.readInt();
+                  _loc9_.maxBlood = _loc31_;
+                  _loc9_.updateBlood(_loc25_,0,0);
+                  _loc9_.wishKingCount = _loc21_.readInt();
+                  _loc9_.wishKingEnergy = _loc21_.readInt();
+                  _loc9_.currentWeapInfo.refineryLevel = _loc2_;
+                  _loc3_ = _loc21_.readInt();
+                  _loc27_ = 0;
+                  while(_loc27_ < _loc3_)
                   {
-                     _loc31_ = BuffManager.creatBuff(_loc19_.readInt());
-                     _loc5_ = _loc19_.readInt();
-                     if(_loc31_)
+                     _loc33_ = BuffManager.creatBuff(_loc21_.readInt());
+                     _loc5_ = _loc21_.readInt();
+                     if(_loc33_)
                      {
-                        _loc31_.data = _loc5_;
-                        _loc8_.addBuff(_loc31_);
+                        _loc33_.data = _loc5_;
+                        _loc9_.addBuff(_loc33_);
                      }
-                     _loc25_++;
+                     _loc27_++;
                   }
-                  _loc20_ = _loc19_.readInt();
-                  _loc10_ = new Vector.<FightBuffInfo>();
-                  _loc21_ = 0;
-                  while(_loc21_ < _loc20_)
+                  _loc22_ = _loc21_.readInt();
+                  _loc11_ = new Vector.<FightBuffInfo>();
+                  _loc23_ = 0;
+                  while(_loc23_ < _loc22_)
                   {
-                     _loc31_ = BuffManager.creatBuff(_loc19_.readInt());
-                     _loc8_.addBuff(_loc31_);
-                     _loc21_++;
+                     _loc33_ = BuffManager.creatBuff(_loc21_.readInt());
+                     _loc9_.addBuff(_loc33_);
+                     _loc23_++;
                   }
-                  _loc13_ = _loc19_.readBoolean();
-                  _loc34_ = _loc19_.readBoolean();
-                  _loc11_ = _loc19_.readBoolean();
-                  _loc35_ = _loc19_.readBoolean();
-                  _loc22_ = _loc19_.readInt();
-                  _loc15_ = new Dictionary();
-                  _loc7_ = 0;
-                  while(_loc7_ < _loc22_)
+                  _loc15_ = _loc21_.readBoolean();
+                  _loc36_ = _loc21_.readBoolean();
+                  _loc12_ = _loc21_.readBoolean();
+                  _loc37_ = _loc21_.readBoolean();
+                  _loc24_ = _loc21_.readInt();
+                  _loc17_ = new Dictionary();
+                  _loc8_ = 0;
+                  while(_loc8_ < _loc24_)
                   {
-                     _loc9_ = _loc19_.readUTF();
-                     _loc17_ = _loc19_.readUTF();
-                     _loc15_[_loc9_] = _loc17_;
-                     _loc7_++;
+                     _loc10_ = _loc21_.readUTF();
+                     _loc19_ = _loc21_.readUTF();
+                     _loc17_[_loc10_] = _loc19_;
+                     _loc8_++;
                   }
-                  _loc8_.isFrozen = _loc13_;
-                  _loc8_.isHidden = _loc34_;
-                  _loc8_.isNoNole = _loc11_;
-                  _loc8_.outProperty = _loc15_;
-                  if(RoomManager.Instance.current.type != 5 && _loc8_.playerInfo.currentPet)
+                  _loc9_.isFrozen = _loc15_;
+                  _loc9_.isHidden = _loc36_;
+                  _loc9_.isNoNole = _loc12_;
+                  _loc9_.outProperty = _loc17_;
+                  if(RoomManager.Instance.current.type != 5 && _loc9_.playerInfo.currentPet)
                   {
-                     _loc8_.currentPet = new Pet(_loc8_.playerInfo.currentPet);
+                     _loc9_.currentPet = new Pet(_loc9_.playerInfo.currentPet);
                   }
-                  _loc12_ = _loc19_.readInt();
-                  _loc33_ = Current.findPlayerByPlayerID(_loc12_);
-                  if(_loc33_)
+                  _loc14_ = _loc21_.readInt();
+                  _loc35_ = Current.findPlayerByPlayerID(_loc14_);
+                  if(_loc35_)
                   {
-                     _loc8_.markMeHide = true;
-                     if(Current.selfGamePlayer == _loc33_)
+                     _loc9_.markMeHide = true;
+                     if(Current.selfGamePlayer == _loc35_)
                      {
-                        _loc8_.markMeHideDest = true;
+                        _loc9_.markMeHideDest = true;
                      }
+                  }
+                  _loc6_ = _loc21_.readInt();
+                  _loc13_ = _loc21_.readInt();
+                  if(_loc9_.isSelf)
+                  {
+                     Current.exitTimes = _loc6_;
+                     Current.exitTimeLimit = _loc13_ * 60000;
                   }
                }
+               _loc30_++;
+            }
+            _loc29_ = _loc21_.readInt();
+            _loc28_ = 0;
+            while(_loc28_ < _loc29_)
+            {
+               _loc32_ = new Bomb();
+               _loc32_.Id = _loc21_.readInt();
+               _loc32_.X = _loc21_.readInt();
+               _loc32_.Y = _loc21_.readInt();
+               Current.outBombs.add(_loc28_,_loc32_);
                _loc28_++;
             }
-            _loc27_ = _loc19_.readInt();
-            _loc26_ = 0;
-            while(_loc26_ < _loc27_)
+            _loc4_ = _loc21_.readInt();
+            _loc20_ = uint(0);
+            while(_loc20_ < _loc4_)
             {
-               _loc30_ = new Bomb();
-               _loc30_.Id = _loc19_.readInt();
-               _loc30_.X = _loc19_.readInt();
-               _loc30_.Y = _loc19_.readInt();
-               Current.outBombs.add(_loc26_,_loc30_);
-               _loc26_++;
+               _loc18_ = new SimpleBoxInfo();
+               _loc18_.bid = _loc21_.readInt();
+               _loc18_.bx = _loc21_.readInt();
+               _loc18_.by = _loc21_.readInt();
+               _loc18_.subType = _loc21_.readInt();
+               Current.outBoxs.add(_loc18_.bid,_loc18_);
+               _loc20_++;
             }
-            _loc4_ = _loc19_.readInt();
-            _loc18_ = uint(0);
-            while(_loc18_ < _loc4_)
-            {
-               _loc16_ = new SimpleBoxInfo();
-               _loc16_.bid = _loc19_.readInt();
-               _loc16_.bx = _loc19_.readInt();
-               _loc16_.by = _loc19_.readInt();
-               _loc16_.subType = _loc19_.readInt();
-               Current.outBoxs.add(_loc16_.bid,_loc16_);
-               _loc18_++;
-            }
-            Current.startTime = _loc19_.readDate();
-            MapManager.Instance.curMapCardLabelType = _loc19_.readInt();
-            _loc6_ = RoomManager.Instance.current.type;
-            if(_loc6_ == 5)
+            Current.startTime = _loc21_.readDate();
+            MapManager.Instance.curMapCardLabelType = _loc21_.readInt();
+            _loc7_ = RoomManager.Instance.current.type;
+            if(_loc7_ == 5)
             {
                StateManager.setState("fightLabGameView",Current);
                if(PathManager.isStatistics)
@@ -1654,7 +1663,7 @@ package gameCommon
                   WeakGuildManager.Instance.statistics(4,TimeManager.Instance.enterFightTime);
                }
             }
-            else if(_loc6_ == 10)
+            else if(_loc7_ == 10)
             {
                if(StartupResourceLoader.firstEnterHall)
                {
@@ -1669,7 +1678,7 @@ package gameCommon
                   WeakGuildManager.Instance.statistics(4,TimeManager.Instance.enterFightTime);
                }
             }
-            else if(_loc24_ == 0)
+            else if(_loc26_ == 0)
             {
                if(RoomManager.Instance.current.type == 4)
                {
@@ -1690,7 +1699,7 @@ package gameCommon
                {
                   StateManager.setState("fighting",Current);
                }
-               Current.IsOneOnOne = _loc24_ == 2;
+               Current.IsOneOnOne = _loc26_ == 2;
                if(PathManager.isStatistics)
                {
                   WeakGuildManager.Instance.statistics(4,TimeManager.Instance.enterFightTime);

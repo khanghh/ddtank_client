@@ -46,7 +46,7 @@ package dragonBones
       
       override protected function setArmature(param1:Armature) : void{}
 
-       protected  function update() : void{}
+       protected function update() : void{}
       
       override protected function calculateRelativeParentTransform() : void{}
       
@@ -86,7 +86,7 @@ package dragonBones
 
        protected function removeDisplayFromContainer() : void{}
 
-       protected  function updateTransform() : void{}
+       protected function updateTransform() : void{}
 
        protected function updateDisplayVisible(param1:Boolean) : void{}
 

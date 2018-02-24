@@ -1,11 +1,11 @@
 package bagAndInfo.bag
 {
+   import auctionHouse.view.AuctionBagView;
    import com.pickgliss.events.FrameEvent;
    import com.pickgliss.ui.ComponentFactory;
    import com.pickgliss.ui.LayerManager;
    import com.pickgliss.ui.controls.Frame;
    import ddt.manager.PlayerManager;
-   import email.view.EmailBagView;
    
    public class BagFrames extends Frame
    {
@@ -13,7 +13,7 @@ package bagAndInfo.bag
       
       protected var _bagView:BagView;
       
-      protected var _emailBagView:EmailBagView;
+      protected var _emailBagView:AuctionBagView;
       
       protected var _isShow:Boolean;
       
@@ -58,7 +58,7 @@ package bagAndInfo.bag
          return _bagView;
       }
       
-      public function get emailBagView() : EmailBagView
+      public function get emailBagView() : AuctionBagView
       {
          return _emailBagView;
       }

@@ -225,5 +225,27 @@ package road7th.utils
          }
          return "";
       }
+      
+      public static function shorTimeRemainArr(param1:int) : Array
+      {
+         var _loc5_:Array = [];
+         var _loc4_:* = param1;
+         var _loc2_:int = 0;
+         var _loc3_:int = 0;
+         if(_loc4_ >= 60)
+         {
+            _loc2_ = _loc4_ / 60;
+            _loc4_ = int(_loc4_ % 60);
+            if(_loc2_ > 60)
+            {
+               _loc3_ = _loc2_ / 60;
+               _loc2_ = _loc2_ % 60;
+            }
+         }
+         _loc5_.push(_loc3_.toString());
+         _loc5_.push(_loc2_ < 10?"0" + _loc2_:_loc2_.toString());
+         _loc5_.push(_loc4_ < 10?"0" + _loc4_:_loc4_.toString());
+         return _loc5_;
+      }
    }
 }

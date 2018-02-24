@@ -450,10 +450,6 @@ package invite
             }
             if(_loc2_.gameMode == 49)
             {
-               DisplayUtils.setFrame(_mode,5);
-            }
-            else if(_loc2_.gameMode == 49)
-            {
                _mode.y = _mode.y + 3;
                DisplayUtils.setFrame(_mode,8);
             }

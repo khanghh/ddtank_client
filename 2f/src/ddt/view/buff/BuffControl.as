@@ -1,14 +1,18 @@
 package ddt.view.buff
 {
+   import bagAndInfo.BagAndInfoManager;
    import com.pickgliss.ui.ComponentFactory;
+   import com.pickgliss.ui.LayerManager;
    import com.pickgliss.ui.controls.BaseButton;
    import com.pickgliss.ui.controls.container.HBox;
    import com.pickgliss.ui.core.Disposeable;
    import com.pickgliss.ui.image.ScaleFrameImage;
    import com.pickgliss.utils.ObjectUtils;
    import ddt.data.BuffInfo;
+   import ddt.data.GourdExpBottleInfo;
    import ddt.events.CEvent;
    import ddt.events.PkgEvent;
+   import ddt.events.PlayerPropertyEvent;
    import ddt.manager.LanguageMgr;
    import ddt.manager.PathManager;
    import ddt.manager.PlayerManager;
@@ -16,16 +20,19 @@ package ddt.view.buff
    import ddt.manager.SoundManager;
    import ddt.utils.HelpFrameUtils;
    import ddt.view.buff.buffButton.BuffButton;
+   import ddt.view.buff.buffButton.GourdExpBottleButton;
    import ddt.view.buff.buffButton.GrowHelpBuffButton;
    import ddt.view.buff.buffButton.LabyrinthBuffButton;
    import ddt.view.buff.buffButton.PayBuffButton;
    import flash.display.MovieClip;
    import flash.display.Sprite;
    import flash.events.MouseEvent;
+   import flash.geom.Point;
    import oldplayergetticket.GetTicketManager;
    import road7th.comm.PackageIn;
    import road7th.data.DictionaryData;
    import road7th.data.DictionaryEvent;
+   import trainer.view.NewHandContainer;
    
    public class BuffControl extends Sprite implements Disposeable
    {
@@ -53,6 +60,8 @@ package ddt.view.buff
       
       private var _attestBtn:ScaleFrameImage;
       
+      private var _gourdExpBottle:GourdExpBottleButton;
+      
       public function BuffControl(param1:String = "", param2:int = 0){super();}
       
       public static function isPayBuff(param1:BuffInfo) : Boolean{return false;}
@@ -63,9 +72,15 @@ package ddt.view.buff
       
       private function initEvents() : void{}
       
+      protected function addGourdExpBottleBuffEvent(param1:PlayerPropertyEvent) : void{}
+      
       private function removeEvents() : void{}
       
       private function initBuffButtons() : void{}
+      
+      private function addGourdExpBottleBuff() : void{}
+      
+      private function __addGourdExpBottleButton(param1:PkgEvent) : void{}
       
       private function addAttestBuff() : void{}
       
@@ -104,6 +119,8 @@ package ddt.view.buff
       private function deleteGetTicketBtn() : void{}
       
       private function deleteExpBlessedBtn() : void{}
+      
+      private function deleteGourdExpBottleBtn() : void{}
       
       public function dispose() : void{}
       

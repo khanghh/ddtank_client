@@ -60,6 +60,10 @@ package gameCommon.model
       
       public var startTime:Date;
       
+      public var exitTimes:int;
+      
+      public var exitTimeLimit:int;
+      
       private var _weatherType:int;
       
       public var viewers:DictionaryData;

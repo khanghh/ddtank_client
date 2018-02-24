@@ -1,9 +1,8 @@
 package rewardTask
 {
-   import flash.events.Event;
-   import flash.events.EventDispatcher;
+   import ddt.CoreManager;
    
-   public class RewardTaskManager extends EventDispatcher
+   public class RewardTaskManager extends CoreManager
    {
       
       private static var _instance:RewardTaskManager;
@@ -12,8 +11,6 @@ package rewardTask
       public function RewardTaskManager(param1:inner){super(null);}
       
       public static function get instance() : RewardTaskManager{return null;}
-      
-      public function show() : void{}
    }
 }
 

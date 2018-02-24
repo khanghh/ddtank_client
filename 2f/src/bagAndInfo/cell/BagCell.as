@@ -77,6 +77,8 @@ package bagAndInfo.cell
       
       private var _sellFrame:SellGoodsFrame;
       
+      private var _markId:int = 0;
+      
       public function BagCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:DisplayObject = null, param5:Boolean = true){super(null);}
       
       public function setBgVisible(param1:Boolean) : void{}
@@ -170,6 +172,10 @@ package bagAndInfo.cell
       private function __cancelBtn(param1:SetPassEvent) : void{}
       
       override public function dispose() : void{}
+      
+      public function get markId() : int{return 0;}
+      
+      public function set markId(param1:int) : void{}
       
       public function get tbxCount() : FilterFrameText{return null;}
    }

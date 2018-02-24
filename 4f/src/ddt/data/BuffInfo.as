@@ -25,6 +25,8 @@ package ddt.data
       
       public static const DOUBLE_PRESTIGE:int = 26;
       
+      public static const GOURD_EXP:int = 27;
+      
       public static const Caddy_Good:int = 70;
       
       public static const Save_Life:int = 51;

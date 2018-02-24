@@ -34,6 +34,7 @@ package game.objects
    import org.aswing.KeyStroke;
    import org.aswing.KeyboardManager;
    import pet.data.PetSkillTemplateInfo;
+   import phy.maps.Map;
    import room.RoomManager;
    
    public class GameLocalPlayer extends GamePlayer
@@ -83,6 +84,12 @@ package game.objects
       override protected function initView() : void{}
       
       override protected function initListener() : void{}
+      
+      override protected function removeListener() : void{}
+      
+      private function __backEffChanged(param1:LivingEvent) : void{}
+      
+      override public function setMap(param1:Map) : void{}
       
       private function __setCenter(param1:LivingEvent) : void{}
       

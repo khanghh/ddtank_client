@@ -41,5 +41,7 @@ package road7th.utils
       public static function dateTimeRemainArr(param1:Number) : Array{return null;}
       
       public static function weekFormatString(param1:int) : String{return null;}
+      
+      public static function shorTimeRemainArr(param1:int) : Array{return null;}
    }
 }

@@ -445,6 +445,8 @@ package ddt.data
       
       public static const AresShield:int = 17013;
       
+      public static const DevilEye:int = 17015;
+      
       public static const WishKingBlessing:int = 17200;
       
       public static const CardMaxLv:int = 30;
@@ -570,6 +572,10 @@ package ddt.data
       public static const ROOMBORDENBOX:int = 43;
       
       public static const ROOMBORDENTYPE:int = 73;
+      
+      public static const GOURD_EXP_BOTTLE:Array = [11196,11197,11198,11199,12211];
+      
+      public static const DEVIL_TURN_BEADLIST:Array = [12623,12624,12625,12626,12627];
        
       
       public function EquipType(){super();}

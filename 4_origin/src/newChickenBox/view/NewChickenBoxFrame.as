@@ -83,9 +83,7 @@ package newChickenBox.view
       
       private var _refreshTimerTxt:FilterFrameText;
       
-      private var _panel:ScrollPanel;
-      
-      public var frame:BaseAlerFrame;
+      private var _helpFrame:BaseAlerFrame;
       
       private var _freeOpenCountTxt:FilterFrameText;
       
@@ -138,8 +136,8 @@ package newChickenBox.view
          _newBoxBG = ComponentFactory.Instance.creatComponentByStylename("newChickenBox.newChickenBoxFrame.BG");
          addToContent(_newBoxBG);
          countNum = ComponentFactory.Instance.creatComponentByStylename("newChickenBox.countNum");
-         var _loc2_:int = _model.canOpenCounts + 1 - _model.countTime;
-         countNum.setFrame(_loc2_);
+         var _loc3_:int = _model.canOpenCounts + 1 - _model.countTime;
+         countNum.setFrame(_loc3_);
          addToContent(countNum);
          openCardTimes = ComponentFactory.Instance.creatComponentByStylename("newChickenBox.openCardTimes");
          addToContent(openCardTimes);
@@ -168,12 +166,12 @@ package newChickenBox.view
          _freeEyeCountTxt = ComponentFactory.Instance.creatComponentByStylename("newChickenBox.eyeFreeTxt");
          addToContent(_freeEyeCountTxt);
          refreshEagleEyeBtnTxt();
-         var _loc1_:Sprite = new Sprite();
-         _panel = ComponentFactory.Instance.creatComponentByStylename("newChickenBox.ReaderScrollpanel");
-         _panel.setView(ComponentFactory.Instance.creat("asset.newChickenBox.helpPageWord"));
-         _panel.invalidateViewport(false);
-         _loc1_.addChild(_panel);
-         _help_btn = HelpFrameUtils.Instance.simpleHelpButton(this,"newChickenBox.helpPageBtn",null,LanguageMgr.GetTranslation("tank.view.emailII.ReadingView.useHelp"),_loc1_,412,485,true,true,{"submitLabel":LanguageMgr.GetTranslation("close")});
+         var _loc2_:Sprite = new Sprite();
+         var _loc1_:ScrollPanel = ComponentFactory.Instance.creatComponentByStylename("newChickenBox.ReaderScrollpanel");
+         _loc1_.setView(ComponentFactory.Instance.creat("asset.newChickenBox.helpPageWord"));
+         _loc1_.invalidateViewport(false);
+         _loc2_.addChild(_loc1_);
+         _help_btn = HelpFrameUtils.Instance.simpleHelpButton(this,"newChickenBox.helpPageBtn",null,LanguageMgr.GetTranslation("tank.view.emailII.ReadingView.useHelp"),_loc2_,412,485,true,true,{"submitLabel":LanguageMgr.GetTranslation("close")},3);
          startBnt = ComponentFactory.Instance.creatComponentByStylename("newChickenBox.startBtn");
          if(_model.isShowAll)
          {
@@ -495,7 +493,7 @@ package newChickenBox.view
             LeavePageManager.showFillFrame();
             return;
          }
-         if(_model.AlertFlush && !_loc4_)
+         if(_model.AlertFlush && !_loc4_ && _helpFrame == null)
          {
             openAlertFrame();
          }
@@ -525,21 +523,22 @@ package newChickenBox.view
          }
       }
       
-      private function openAlertFrame() : BaseAlerFrame
+      private function openAlertFrame() : void
       {
          var _loc3_:String = LanguageMgr.GetTranslation("newChickenBox.useMoneyAlert",_model.flushPrice);
          var _loc2_:TextField = new TextField();
          var _loc1_:SelectedCheckButton = ComponentFactory.Instance.creatComponentByStylename("newChickenBox.selectBnt");
          _loc1_.text = LanguageMgr.GetTranslation("newChickenBox.noAlert");
          _loc1_.addEventListener("click",noAlertEable);
-         if(frame)
+         if(_helpFrame)
          {
-            ObjectUtils.disposeObject(frame);
+            _helpFrame.removeEventListener("response",__onResponse);
+            ObjectUtils.disposeObject(_helpFrame);
+            _helpFrame = null;
          }
-         frame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("newChickenBox.newChickenTitle"),_loc3_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,false,2);
-         frame.addChild(_loc1_);
-         frame.addEventListener("response",__onResponse);
-         return frame;
+         _helpFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("newChickenBox.newChickenTitle"),_loc3_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,false,2);
+         _helpFrame.addChild(_loc1_);
+         _helpFrame.addEventListener("response",__onResponse);
       }
       
       private function noAlertEable(param1:MouseEvent) : void
@@ -559,9 +558,9 @@ package newChickenBox.view
       {
          var _loc2_:int = 0;
          SoundManager.instance.play("008");
-         var _loc3_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc3_.removeEventListener("response",__onResponse);
-         _loc3_.dispose();
+         _helpFrame.removeEventListener("response",__onResponse);
+         ObjectUtils.disposeObject(_helpFrame);
+         _helpFrame = null;
          if(param1.responseCode == 2 || param1.responseCode == 3)
          {
             startBnt.enable = true;
@@ -725,11 +724,6 @@ package newChickenBox.view
             ObjectUtils.disposeObject(_help_btn);
          }
          _help_btn = null;
-         if(_panel)
-         {
-            ObjectUtils.disposeObject(_panel);
-         }
-         _panel = null;
          if(openCardTimes)
          {
             ObjectUtils.disposeObject(openCardTimes);
@@ -755,10 +749,11 @@ package newChickenBox.view
             newBoxView.dispose();
          }
          newBoxView = null;
-         if(frame)
+         if(_helpFrame)
          {
-            frame.removeEventListener("response",__onResponse);
-            frame.dispose();
+            _helpFrame.removeEventListener("response",__onResponse);
+            ObjectUtils.disposeObject(_helpFrame);
+            _helpFrame = null;
          }
          if(eyepic)
          {

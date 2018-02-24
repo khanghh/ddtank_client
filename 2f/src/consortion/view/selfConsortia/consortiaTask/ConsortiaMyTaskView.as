@@ -78,6 +78,8 @@ package consortion.view.selfConsortia.consortiaTask
       
       private var _delayTimeBtn:TextButton;
       
+      private var _reSetTaskMoney:int;
+      
       public function ConsortiaMyTaskView(){super();}
       
       private function initView() : void{}
@@ -89,6 +91,8 @@ package consortion.view.selfConsortia.consortiaTask
       private function __delayTimeClick(param1:MouseEvent) : void{}
       
       private function _responseII(param1:FrameEvent) : void{}
+      
+      private function getLockIdArr() : Array{return null;}
       
       private function __resetClick(param1:MouseEvent) : void{}
       

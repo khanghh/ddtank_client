@@ -4,7 +4,6 @@ package playerDress.views
    import bagAndInfo.cell.BagCell;
    import com.pickgliss.events.FrameEvent;
    import com.pickgliss.events.ListItemEvent;
-   import com.pickgliss.ui.AlertManager;
    import com.pickgliss.ui.ComponentFactory;
    import com.pickgliss.ui.controls.ComboBox;
    import com.pickgliss.ui.controls.SelectedButton;
@@ -24,6 +23,8 @@ package playerDress.views
    import ddt.manager.MessageTipManager;
    import ddt.manager.PlayerManager;
    import ddt.manager.SoundManager;
+   import ddt.utils.ConfirmAlertData;
+   import ddt.utils.HelperBuyAlert;
    import ddt.utils.PositionUtils;
    import flash.display.Bitmap;
    import flash.display.Sprite;
@@ -35,6 +36,8 @@ package playerDress.views
    {
       
       public static const CELLS_NUM:int = 49;
+      
+      private static var _sortdreesBagData:ConfirmAlertData = new ConfirmAlertData();
        
       
       private var _assortBox:ComboBox;
@@ -172,13 +175,23 @@ package playerDress.views
       
       protected function __sortBtnClick(param1:MouseEvent) : void
       {
+         event = param1;
+         onClickSortEquipBag = function():void
+         {
+            _baglist.foldItems();
+         };
          SoundManager.instance.play("008");
          if(new CmdCheckBagLockedPSWNeeds().excute(1))
          {
             return;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("playerDress.sortTips"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
-         _loc2_.addEventListener("response",__onResponse);
+         if(_sortdreesBagData.notShowAlertAgain)
+         {
+            _baglist.foldItems();
+            return;
+         }
+         var msg:String = LanguageMgr.GetTranslation("playerDress.sortTips");
+         HelperBuyAlert.getInstance().alert(msg,_sortdreesBagData,"SimpleAlertWithNotShowAgain",null,onClickSortEquipBag,null,0);
       }
       
       protected function __onResponse(param1:FrameEvent) : void

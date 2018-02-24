@@ -7,13 +7,11 @@ package email.view
    import bagAndInfo.cell.LinkedBagCell;
    import baglocked.BaglockedManager;
    import com.pickgliss.ui.ComponentFactory;
-   import com.pickgliss.ui.ShowTipManager;
    import ddt.data.goods.InventoryItemInfo;
    import ddt.manager.DragManager;
    import ddt.manager.LanguageMgr;
    import ddt.manager.MessageTipManager;
    import ddt.manager.PlayerManager;
-   import email.MailManager;
    import flash.events.MouseEvent;
    import mark.data.MarkChipData;
    

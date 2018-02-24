@@ -34,6 +34,7 @@ package game.objects
    import org.aswing.KeyStroke;
    import org.aswing.KeyboardManager;
    import pet.data.PetSkillTemplateInfo;
+   import phy.maps.Map;
    import room.RoomManager;
    
    public class GameLocalPlayer extends GamePlayer
@@ -140,6 +141,7 @@ package game.objects
          localPlayer.addEventListener("skip",__skip);
          localPlayer.addEventListener("setCenter",__setCenter);
          _shootTimer.addEventListener("timer",__shootTimer);
+         localPlayer.addEventListener("backEffectChange",__backEffChanged);
          if(!_info.autoOnHook)
          {
             KeyboardManager.getInstance().registerKeyAction(KeyStroke.VK_LEFT,__turnLeft);
@@ -148,6 +150,39 @@ package game.objects
             KeyboardManager.getInstance().registerKeyAction(KeyStroke.VK_D,__turnRight);
          }
          KeyboardManager.getInstance().addEventListener("keyUp",__keyUp);
+      }
+      
+      override protected function removeListener() : void
+      {
+         super.removeListener();
+         localPlayer.addEventListener("backEffectChange",__backEffChanged);
+      }
+      
+      private function __backEffChanged(param1:LivingEvent) : void
+      {
+         var _loc2_:Number = NaN;
+         if(map == null)
+         {
+            return;
+         }
+         if(localPlayer.backEffFog)
+         {
+            _loc2_ = param1.value;
+            map.createBackEffectView(_loc2_);
+         }
+         else
+         {
+            map.removeBackEffectView();
+         }
+      }
+      
+      override public function setMap(param1:Map) : void
+      {
+         super.setMap(param1);
+         if(localPlayer.backEffFog)
+         {
+            (param1 as MapView).createBackEffectView(localPlayer.backEffRadius);
+         }
       }
       
       private function __setCenter(param1:LivingEvent) : void

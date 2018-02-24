@@ -1,10 +1,12 @@
 package ddt.states
 {
    import com.pickgliss.events.UIModuleEvent;
+   import com.pickgliss.loader.QueueLoader;
    import com.pickgliss.loader.UIModuleLoader;
    import com.pickgliss.utils.StringUtils;
    import ddt.loader.LoaderCreate;
    import ddt.manager.PlayerManager;
+   import ddt.manager.SoundManager;
    import ddt.manager.StateManager;
    import ddt.utils.AssetModuleLoader;
    import ddt.view.UIModuleSmallLoading;
@@ -36,6 +38,8 @@ package ddt.states
       public function create(param1:String, param2:int = 0) : BaseStateView{return null;}
       
       public function createAsync(param1:String, param2:Function) : void{}
+      
+      private function __onAudioLoadComplete(param1:Event) : void{}
       
       private function loadComplete() : void{}
       

@@ -670,8 +670,15 @@ package email.view
             if(_diamonds.annex)
             {
                _loc2_ = _diamonds.annex as InventoryItemInfo;
-               _loc3_.push(_loc2_);
-               _loc4_["Annex0"] = _loc2_.BagType.toString() + "," + _loc2_.Place.toString();
+               if(_loc2_.CategoryID != 74)
+               {
+                  _loc3_.push(_loc2_);
+                  _loc4_["Annex0"] = _loc2_.BagType.toString() + "," + _loc2_.Place.toString();
+               }
+               else
+               {
+                  _loc4_["Annex0"] = 100.toString() + "," + _loc2_.ItemID.toString();
+               }
             }
             _loc4_.Count = _diamonds._cell.goodsCount;
             MailControl.Instance.sendEmail(_loc4_);

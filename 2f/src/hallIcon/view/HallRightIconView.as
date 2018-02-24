@@ -39,6 +39,7 @@ package hallIcon.view
    import ddt.manager.PolarRegionManager;
    import ddt.manager.PyramidManager;
    import ddt.manager.RouletteManager;
+   import ddt.manager.ServerConfigManager;
    import ddt.manager.SharedManager;
    import ddt.manager.SocketManager;
    import ddt.manager.SoundManager;
@@ -48,6 +49,7 @@ package hallIcon.view
    import ddt.view.bossbox.SmallBoxButton;
    import ddtKingWay.DDTKingWayManager;
    import ddtmatch.manager.DDTMatchManager;
+   import devilTurn.DevilTurnManager;
    import entertainmentMode.EntertainmentModeManager;
    import escort.EscortManager;
    import exchangeAct.ExchangeActManager;

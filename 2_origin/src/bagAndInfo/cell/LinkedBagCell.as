@@ -66,6 +66,11 @@ package bagAndInfo.cell
          {
             _bagCell.addEventListener("change",__changed);
             this.info = _bagCell.info;
+            if(_info && _info.CategoryID == 74)
+            {
+               tipData = _bagCell.tipData;
+               updateCellStar();
+            }
          }
       }
       

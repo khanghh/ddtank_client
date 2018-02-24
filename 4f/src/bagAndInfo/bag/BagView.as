@@ -70,6 +70,8 @@ package bagAndInfo.bag
    import ddt.manager.SocketManager;
    import ddt.manager.SoundManager;
    import ddt.manager.TimeManager;
+   import ddt.utils.ConfirmAlertData;
+   import ddt.utils.HelperBuyAlert;
    import ddt.utils.PositionUtils;
    import ddt.view.chat.ChatBugleInputFrame;
    import ddt.view.goods.AddPricePanel;
@@ -135,6 +137,10 @@ package bagAndInfo.bag
       public static const MARK:int = 100;
       
       public static var isShowCardBag:Boolean = false;
+      
+      private static var _sortEquipBagData:ConfirmAlertData = new ConfirmAlertData();
+      
+      private static var _sortPetEquipBagData:ConfirmAlertData = new ConfirmAlertData();
       
       private static const UseColorShellLevel:int = 10;
        
@@ -456,8 +462,6 @@ package bagAndInfo.bag
       protected function __bagArrangeOver(param1:MouseEvent) : void{}
       
       protected function __sortBagClick(param1:MouseEvent) : void{}
-      
-      protected function __onSortBagResponse(param1:FrameEvent) : void{}
       
       private function __frameEvent(param1:FrameEvent) : void{}
       

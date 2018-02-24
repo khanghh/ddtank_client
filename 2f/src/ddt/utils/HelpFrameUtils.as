@@ -26,7 +26,7 @@ package ddt.utils
       
       public static function get Instance() : HelpFrameUtils{return null;}
       
-      public function simpleHelpButton(param1:Sprite, param2:String, param3:Object = null, param4:String = "", param5:Object = null, param6:Number = 0, param7:Number = 0, param8:Boolean = true, param9:Boolean = true, param10:Object = null, param11:int = 3) : *{return null;}
+      public function simpleHelpButton(param1:Sprite, param2:String, param3:Object = null, param4:String = "", param5:Object = null, param6:Number = 0, param7:Number = 0, param8:Boolean = true, param9:Boolean = true, param10:Object = null, param11:int = 2) : *{return null;}
       
       private function __helpButtonClick(param1:MouseEvent) : void{}
       

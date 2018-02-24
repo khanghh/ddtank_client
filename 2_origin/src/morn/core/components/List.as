@@ -372,11 +372,14 @@ package morn.core.components
       
       protected function changeCellState(param1:Component, param2:Boolean, param3:int) : void
       {
-         var _loc4_:Clip = param1.getChildByName("selectBox") as Clip;
+         var _loc4_:Component = param1.getChildByName("selectBox") as Component;
          if(_loc4_)
          {
             _loc4_.visible = param2;
-            _loc4_.frame = param3;
+            if(_loc4_ is Clip)
+            {
+               (_loc4_ as Clip).frame = param3;
+            }
          }
       }
       

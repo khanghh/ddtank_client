@@ -240,7 +240,6 @@ package mark.views
          var _loc11_:int = MarkMgr.inst.model.cfgChip[_loc2_.templateId].Character;
          var _loc8_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_loc2_.templateId);
          _itemLeft.info = _loc8_;
-         _itemLeft.tipStyle = "mark.MarkChipTip";
          _itemLeft.tipData = _loc2_;
          _qualityTxtLeft.text = LanguageMgr.GetTranslation("mark.qualityName",_loc2_.hLv,_loc8_.Name,QualityType.QUALITY_STRING[_loc11_]);
          _qualityTxtLeft.textColor = QualityType.QUALITY_COLOR[_loc11_];

@@ -27,6 +27,8 @@ package bagAndInfo.cell
    import flash.events.MouseEvent;
    import flash.geom.Point;
    import magicStone.MagicStoneManager;
+   import mark.data.MarkChipData;
+   import mark.data.MarkModel;
    
    [Event(name="change",type="flash.events.Event")]
    public class BaseCell extends Sprite implements ICell, ITipedDisplay, Disposeable
@@ -74,6 +76,8 @@ package bagAndInfo.cell
       private var _grayFlag:Boolean;
       
       protected var _markStarContainer:HBox;
+      
+      protected var _markChip:MarkChipData;
       
       public var showStarContainer:Boolean = true;
       
@@ -241,8 +245,19 @@ package bagAndInfo.cell
             clearLoading();
             _tipData = null;
             locked = false;
+            if(_markStarContainer)
+            {
+               _markStarContainer.clearAllChild();
+               ObjectUtils.disposeObject(_markStarContainer);
+            }
+            _markStarContainer = null;
          }
          _info = param1;
+         if(_info && _info.CategoryID == 74)
+         {
+            tipStyle = "mark.MarkChipTip";
+            tipDirctions = "7,6,2,1,5,4,0,3,6";
+         }
          if(_info)
          {
             if(_showLoading)
@@ -262,7 +277,6 @@ package bagAndInfo.cell
             }
             setDefaultTipData();
          }
-         updateCellStar();
          dispatchEvent(new Event("change"));
       }
       
@@ -283,7 +297,7 @@ package bagAndInfo.cell
             tipStyle = "core.CardBoxTipPanel";
             tipData = _info;
          }
-         else if(_info.CategoryID != 26)
+         else if(_info.CategoryID != 26 && _info.CategoryID != 74)
          {
             tipStyle = "core.GoodsTip";
             _tipData = new GoodTipInfo();
@@ -317,6 +331,12 @@ package bagAndInfo.cell
                GoodTipInfo(_tipData).upExp = MagicStoneManager.instance.getNeedExpPerLevel(info.TemplateID,info.Level + 1);
                GoodTipInfo(_tipData).beadName = info.Name + "Lv" + info.Level;
             }
+         }
+         else if(_info.CategoryID == 74 && _info is InventoryItemInfo)
+         {
+            _tipData = new MarkChipData();
+            _tipData = MarkModel.exchangeMark(_info);
+            updateCellStar();
          }
       }
       
@@ -591,7 +611,7 @@ package bagAndInfo.cell
          _loadingasset = null;
       }
       
-      private function updateCellStar() : void
+      public function updateCellStar() : void
       {
          var _loc1_:int = 0;
          if(_info && _info.CategoryID == 74)
@@ -601,13 +621,14 @@ package bagAndInfo.cell
                _markStarContainer = ComponentFactory.Instance.creatComponentByStylename("ddtcorei.cell.starHBox");
             }
             addChild(_markStarContainer);
+            _loc1_ = 0;
             if(_info is InventoryItemInfo)
             {
                _loc1_ = (_info as InventoryItemInfo).StrengthenLevel;
             }
-            else
+            if(_tipData is MarkChipData)
             {
-               _loc1_ = 0;
+               _loc1_ = (_tipData as MarkChipData).bornLv;
             }
             while(_markStarContainer.numChildren > _loc1_)
             {

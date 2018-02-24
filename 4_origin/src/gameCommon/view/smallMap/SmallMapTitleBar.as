@@ -15,7 +15,6 @@ package gameCommon.view.smallMap
    import com.pickgliss.ui.core.Disposeable;
    import com.pickgliss.ui.text.FilterFrameText;
    import com.pickgliss.utils.ObjectUtils;
-   import ddt.data.PathInfo;
    import ddt.data.map.MissionInfo;
    import ddt.events.DungeonInfoEvent;
    import ddt.events.RoomEvent;
@@ -23,6 +22,7 @@ package gameCommon.view.smallMap
    import ddt.manager.LanguageMgr;
    import ddt.manager.MessageTipManager;
    import ddt.manager.PathManager;
+   import ddt.manager.ServerConfigManager;
    import ddt.manager.SocketManager;
    import ddt.manager.SoundManager;
    import ddt.manager.StateManager;
@@ -32,6 +32,8 @@ package gameCommon.view.smallMap
    import flash.display.Sprite;
    import flash.events.KeyboardEvent;
    import flash.events.MouseEvent;
+   import flash.events.TimerEvent;
+   import flash.utils.Timer;
    import gameCommon.GameControl;
    import gameCommon.view.DungeonHelpView;
    import room.RoomManager;
@@ -48,6 +50,12 @@ package gameCommon.view.smallMap
       private var _h:int = 23;
       
       private var _hardTxt:FilterFrameText;
+      
+      private var _timeTxt:FilterFrameText;
+      
+      private var _timer:Timer;
+      
+      private var _punishTimes:int;
       
       private var _back:BackBar;
       
@@ -71,12 +79,13 @@ package gameCommon.view.smallMap
       
       private var alert2:BaseAlerFrame;
       
-      private var _startDate:Date;
+      private var _endTime:Number;
       
       public function SmallMapTitleBar(param1:MissionInfo)
       {
          super();
-         _startDate = TimeManager.Instance.Now();
+         _endTime = TimeManager.Instance.NowTime() + GameControl.Instance.Current.exitTimeLimit;
+         _punishTimes = ServerConfigManager.instance.gameExitPunishTimes;
          configUI();
          addEvent();
       }
@@ -208,6 +217,7 @@ package gameCommon.view.smallMap
       
       private function __exit(param1:MouseEvent) : void
       {
+         var _loc2_:* = null;
          SoundManager.instance.play("008");
          if(RoomManager.Instance.current.selfRoomPlayer.isViewer)
          {
@@ -234,23 +244,16 @@ package gameCommon.view.smallMap
          {
             if(GameControl.Instance.Current.selfGamePlayer.selfDieTimeDelayPassed)
             {
-               if(RoomManager.Instance.current.type < 2)
-               {
-                  alert1 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.game.ToolStripView.isExitPVP"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
-                  alert1.addEventListener("response",__responseHandler);
-                  alert1.addEventListener("keyDown",__onKeyDown);
-               }
-               else
+               if(RoomManager.Instance.current.type >= 2)
                {
                   alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.game.ToolStripView.isExit"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
                   alert.addEventListener("response",__responseHandler);
                   alert.addEventListener("keyDown",__onKeyDown);
+                  return;
                }
             }
-            return;
          }
-         var _loc2_:Number = TimeManager.Instance.TimeSpanToNow(_startDate).time;
-         if(RoomManager.Instance.current.type >= 2 && RoomManager.Instance.current.type != 12 && RoomManager.Instance.current.type != 13 && RoomManager.Instance.current.type != 16 && RoomManager.Instance.current.type != 18 && RoomManager.Instance.current.type != 25 && RoomManager.Instance.current.type != 23 && RoomManager.Instance.current.type != 40 && RoomManager.Instance.current.type != 121 && RoomManager.Instance.current.type != 120 && RoomManager.Instance.current.type != 123 && RoomManager.Instance.current.type != 58)
+         if(RoomManager.Instance.current.type >= 2 && RoomManager.Instance.current.type != 12 && RoomManager.Instance.current.type != 13 && RoomManager.Instance.current.type != 16 && RoomManager.Instance.current.type != 18 && RoomManager.Instance.current.type != 25 && RoomManager.Instance.current.type != 23 && RoomManager.Instance.current.type != 40 && RoomManager.Instance.current.type != 121 && RoomManager.Instance.current.type != 123 && RoomManager.Instance.current.type != 58)
          {
             alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.game.ToolStripView.isExit"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
             alert.addEventListener("response",__responseHandler);
@@ -271,20 +274,69 @@ package gameCommon.view.smallMap
             alert2.addEventListener("keyDown",__onKeyDown);
             return;
          }
-         if(_loc2_ < PathInfo.SUCIDE_TIME)
+         if(_endTime > TimeManager.Instance.NowTime())
          {
-            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.game.ToolStripView.cannotExit"));
-            return;
+            _loc2_ = LanguageMgr.GetTranslation("tank.game.ToolStripView.isExitPVP2",GameControl.Instance.Current.exitTimes);
+            alert1 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
+            alert1.addEventListener("response",__responseHandler);
+            alert1.addEventListener("keyDown",__onKeyDown);
+            _timeTxt = ComponentFactory.Instance.creatComponentByStylename("asset.game.smallMap.timeTxt");
+            alert1.addToContent(_timeTxt);
+            updateTime();
+            if(!_timer)
+            {
+               _timer = new Timer(1000);
+               _timer.addEventListener("timer",__onTimerDown);
+            }
+            _timer.reset();
+            _timer.start();
          }
-         alert1 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.game.ToolStripView.isExitPVP"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
-         alert1.addEventListener("response",__responseHandler);
-         alert1.addEventListener("keyDown",__onKeyDown);
+         else
+         {
+            _loc2_ = LanguageMgr.GetTranslation("tank.game.ToolStripView.isExitPVP",_punishTimes);
+            alert1 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
+            alert1.addEventListener("response",__responseHandler);
+            alert1.addEventListener("keyDown",__onKeyDown);
+         }
+      }
+      
+      private function __onTimerDown(param1:TimerEvent) : void
+      {
+         updateTime();
+      }
+      
+      private function updateTime() : void
+      {
+         var _loc2_:Number = NaN;
+         var _loc1_:int = 0;
+         var _loc3_:int = 0;
+         var _loc5_:* = null;
+         var _loc4_:* = null;
+         if(_timeTxt)
+         {
+            _loc2_ = _endTime - TimeManager.Instance.NowTime();
+            if(_loc2_ < 0)
+            {
+               _timeTxt.text = "00:00";
+            }
+            else
+            {
+               _loc1_ = _loc2_ / 60000;
+               _loc3_ = (_loc2_ - _loc1_ * 60000) / 1000;
+               _loc5_ = _loc1_ > 9?_loc1_.toString():"0" + _loc1_;
+               _loc4_ = _loc3_ > 9?_loc3_.toString():"0" + _loc3_;
+               _timeTxt.text = _loc5_ + ":" + _loc4_;
+            }
+         }
       }
       
       private function __responseChristmasHandler(param1:FrameEvent) : void
       {
-         (param1.target as BaseAlerFrame).removeEventListener("response",__responseChristmasHandler);
-         (param1.target as BaseAlerFrame).dispose();
+         SoundManager.instance.playButtonSound();
+         if(param1.responseCode == 2 || param1.responseCode == 3)
+         {
+            GameInSocketOut.sendGamePlayerExit();
+         }
          if(param1.target == alert)
          {
             alert = null;
@@ -297,11 +349,8 @@ package gameCommon.view.smallMap
          {
             alert2 = null;
          }
-         SoundManager.instance.play("008");
-         if(param1.responseCode == 2 || param1.responseCode == 3)
-         {
-            GameInSocketOut.sendGamePlayerExit();
-         }
+         (param1.target as BaseAlerFrame).removeEventListener("response",__responseChristmasHandler);
+         (param1.target as BaseAlerFrame).dispose();
       }
       
       private function __onKeyDown(param1:KeyboardEvent) : void
@@ -319,17 +368,7 @@ package gameCommon.view.smallMap
       
       private function __responseHandler(param1:FrameEvent) : void
       {
-         (param1.target as BaseAlerFrame).removeEventListener("response",__responseHandler);
-         (param1.target as BaseAlerFrame).dispose();
-         if(param1.target == alert)
-         {
-            alert = null;
-         }
-         else if(param1.target == alert1)
-         {
-            alert1 = null;
-         }
-         SoundManager.instance.play("008");
+         SoundManager.instance.playButtonSound();
          if(param1.responseCode == 2 || param1.responseCode == 3)
          {
             if(BombKingManager.instance.Recording)
@@ -337,12 +376,32 @@ package gameCommon.view.smallMap
                BombKingControl.instance.reset();
                StateManager.setState("main");
             }
+            else if(param1.target == alert1 && TimeManager.Instance.NowTime() < _endTime)
+            {
+               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.game.ToolStripView.cannotExit"));
+            }
             else
             {
                GameInSocketOut.sendGamePlayerExit();
                SocketManager.Instance.out.outCampBatttle();
             }
          }
+         if(param1.currentTarget == alert)
+         {
+            alert = null;
+         }
+         else if(param1.currentTarget == alert1)
+         {
+            ObjectUtils.disposeObject(_timeTxt);
+            if(_timer)
+            {
+               _timer.stop();
+            }
+            alert1 = null;
+         }
+         (param1.currentTarget as BaseAlerFrame).removeEventListener("keyDown",__onKeyDown);
+         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",__responseHandler);
+         (param1.currentTarget as BaseAlerFrame).dispose();
       }
       
       public function set enableExit(param1:Boolean) : void
@@ -371,6 +430,12 @@ package gameCommon.view.smallMap
       public function dispose() : void
       {
          removeEvent();
+         if(_timer)
+         {
+            _timer.stop();
+            _timer.removeEventListener("timer",__onTimerDown);
+            _timer = null;
+         }
          if(_hardTxt)
          {
             ObjectUtils.disposeObject(_hardTxt);

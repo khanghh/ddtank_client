@@ -1323,6 +1323,7 @@ package game.objects
          if(map)
          {
             map.smallMap.updatePos(smallView,pos);
+            map.updateObjectPos(this,pos);
          }
       }
       
@@ -2000,10 +2001,12 @@ package game.objects
                }
                _offsetY = _loc3_.getInt();
                map.smallMap.updatePos(_smallView,new Point(x,y));
+               map.updateObjectPos(this,new Point(x,y));
                return;
             }
             _offsetX = _loc3_.getInt();
             map.smallMap.updatePos(_smallView,new Point(x,y));
+            map.updateObjectPos(this,new Point(x,y));
             return;
          }
          hiddenByServer = !_loc3_.getBoolean();

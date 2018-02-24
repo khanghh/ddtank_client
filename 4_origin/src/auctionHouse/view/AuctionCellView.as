@@ -8,6 +8,7 @@ package auctionHouse.view
    import com.pickgliss.ui.ComponentFactory;
    import com.pickgliss.utils.ObjectUtils;
    import ddt.data.goods.InventoryItemInfo;
+   import ddt.data.goods.ItemTemplateInfo;
    import ddt.manager.DragManager;
    import ddt.manager.LanguageMgr;
    import ddt.manager.MessageTipManager;
@@ -64,15 +65,21 @@ package auctionHouse.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc3_:InventoryItemInfo = param1.data as InventoryItemInfo;
+         var _loc3_:ItemTemplateInfo = param1.data as ItemTemplateInfo;
          if(_loc3_ && param1.action != "split")
          {
             param1.action = "none";
-            if(_loc3_.getRemainDate() <= 0)
+            if(_loc3_.CategoryID == 74)
+            {
+               _goodsCount = 1;
+               bagCell = param1.source as BagCell;
+               DragManager.acceptDrag(bagCell,"link");
+            }
+            else if((_loc3_ as InventoryItemInfo).getRemainDate() <= 0)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionCellView.Object"));
             }
-            else if(_loc3_.IsBinds)
+            else if((_loc3_ as InventoryItemInfo).IsBinds)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionCellView.Sale"));
             }

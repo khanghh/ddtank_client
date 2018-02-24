@@ -528,8 +528,6 @@ package ddt.view.tips
          careteEXP();
          createMainProperty();
          seperateLine();
-         createArmShellProperty();
-         seperateLine();
          createNecklaceItem();
          createProperties();
          seperateLine();

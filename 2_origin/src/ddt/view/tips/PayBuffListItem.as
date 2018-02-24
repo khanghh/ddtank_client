@@ -65,9 +65,11 @@ package ddt.view.tips
                _countField.text = param1.ValidCount + "/" + param1.maxCount;
             }
             addChild(_countField);
+            _countField.x = _labelField.x + _labelField.textWidth + 10;
             _timeField = ComponentFactory.Instance.creatComponentByStylename("asset.core.PayBuffTipTime");
             _timeField.text = LanguageMgr.GetTranslation("tank.view.buff.VipLevelFree",levelDic[param1.Type]);
             addChild(_timeField);
+            _timeField.x = _countField.x + _countField.textWidth + 10;
             _w = _timeField.x + _timeField.width;
          }
          else

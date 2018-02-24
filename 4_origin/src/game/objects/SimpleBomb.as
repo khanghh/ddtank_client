@@ -239,6 +239,7 @@ package game.objects
             else
             {
                map.smallMap.updatePos(_smallBall,pos);
+               map.updateObjectPos(this,pos);
                var _loc8_:int = 0;
                var _loc7_:* = _emitters;
                for each(var _loc3_ in _emitters)

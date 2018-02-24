@@ -571,6 +571,7 @@ package game.objects
          if(map && map.smallMap)
          {
             map.smallMap.updatePos(smallView,pos);
+            map.updateObjectPos(this,pos);
          }
          player.dispatchEvent(new LivingEvent("checkCollide"));
       }

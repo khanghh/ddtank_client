@@ -51,12 +51,12 @@ package dragonBones.core
       public function set visible(param1:Boolean) : void{}
       
       public function get armature() : Armature{return null;}
-      
-      protected function setArmature(param1:Armature) : void{}
+
+       protected function setArmature(param1:Armature) : void{}
       
       public function get parent() : Bone{return null;}
-      
-      function setParent(param1:Bone) : void{}
+
+       protected function setParent(param1:Bone) : void{}
       
       public function dispose() : void{}
       

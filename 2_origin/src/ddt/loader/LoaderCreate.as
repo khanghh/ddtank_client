@@ -152,6 +152,11 @@ package ddt.loader
    import ddtKingWay.DDTKingWayManager;
    import ddtKingWay.analyzer.DDTKingWayDataAnalyzer;
    import defendisland.DefendislandManager;
+   import devilTurn.DevilTurnManager;
+   import devilTurn.analyze.DevilTurnBoxConvertAnalyzer;
+   import devilTurn.analyze.DevilTurnGoodsItemAnalyzer;
+   import devilTurn.analyze.DevilTurnPointShopAnalyzer;
+   import devilTurn.analyze.DevilTurnRankRewardAnalyzer;
    import dragonBoat.DragonBoatManager;
    import dragonBoat.analyzer.DragonBoatActiveDataAnalyzer;
    import enchant.EnchantInfoAnalyzer;
@@ -320,6 +325,13 @@ package ddt.loader
       {
          var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveSoundSwf3(),4);
          _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingAudioIIFail");
+         return _loc1_;
+      }
+      
+      public function createAudioBattleLoader() : BaseLoader
+      {
+         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveSoundSwfBattle(),4);
+         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingAudioBattleFail");
          return _loc1_;
       }
       
@@ -1729,6 +1741,38 @@ package ddt.loader
          var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("EngraveRefineryConfigInfo.xml"),5);
          _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("mark.transferTemplateLoadError");
          _loc1_.analyzer = new MarkTransferAnalyzer(MarkMgr.inst.setMarkTransferTempalte);
+         return _loc1_;
+      }
+      
+      public function createDevilTurnGoodsItemLoader() : BaseLoader
+      {
+         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("DevilTreasItemList.xml"),5);
+         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("tank.devilTurn.loadGoodsItemError");
+         _loc1_.analyzer = new DevilTurnGoodsItemAnalyzer(DevilTurnManager.instance.loadGoodsItemComplete);
+         return _loc1_;
+      }
+      
+      public function createDevilTurnBoxConvertLoader() : BaseLoader
+      {
+         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("DevilTreasSarahToBoxList.xml"),5);
+         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("tank.devilTurn.loadBoxConvertError");
+         _loc1_.analyzer = new DevilTurnBoxConvertAnalyzer(DevilTurnManager.instance.loadBoxConvertItemComplete);
+         return _loc1_;
+      }
+      
+      public function createDevilTurnPointShopLoader() : BaseLoader
+      {
+         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("DevilTreasPointsList.xml"),5);
+         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("tank.devilTurn.loadPointShopError");
+         _loc1_.analyzer = new DevilTurnPointShopAnalyzer(DevilTurnManager.instance.loadPointsShopItemComplete);
+         return _loc1_;
+      }
+      
+      public function createDevilTurnRankAewardLoader() : BaseLoader
+      {
+         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("DevilTreasRankRewardList.xml"),5);
+         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("tank.devilTurn.loadRankAewardError");
+         _loc1_.analyzer = new DevilTurnRankRewardAnalyzer(DevilTurnManager.instance.loadRankAwardItemComplete);
          return _loc1_;
       }
    }

@@ -206,6 +206,8 @@ package hallIcon
       public static const MINES:String = "mines";
       
       public static const TEAM_BATTLE:String = "teamBattle";
+      
+      public static const DEVIL_TURN:String = "devilTurn";
        
       
       public function HallIconType(){super();}

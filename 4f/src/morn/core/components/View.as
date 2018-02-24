@@ -12,6 +12,7 @@ package morn.core.components
    import morn.core.ex.NumberImageEx;
    import morn.core.ex.NumericStepper;
    import morn.core.ex.PageNavigaterEx;
+   import morn.core.ex.ScaleLeftRightImageEx;
    import morn.core.ex.TabButtonEx;
    import morn.core.ex.TabEx;
    import morn.core.ex.TabListEx;
@@ -64,7 +65,8 @@ package morn.core.components
          "TabEx":TabEx,
          "NumericStepper":NumericStepper,
          "TabListEx":TabListEx,
-         "TabButtonEx":TabButtonEx
+         "TabButtonEx":TabButtonEx,
+         "ScaleLeftRightImageEx":ScaleLeftRightImageEx
       };
       
       protected static var viewClassMap:Object = {};

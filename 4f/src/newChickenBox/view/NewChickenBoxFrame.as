@@ -83,9 +83,7 @@ package newChickenBox.view
       
       private var _refreshTimerTxt:FilterFrameText;
       
-      private var _panel:ScrollPanel;
-      
-      public var frame:BaseAlerFrame;
+      private var _helpFrame:BaseAlerFrame;
       
       private var _freeOpenCountTxt:FilterFrameText;
       
@@ -147,7 +145,7 @@ package newChickenBox.view
       
       private function flushItem(param1:MouseEvent) : void{}
       
-      private function openAlertFrame() : BaseAlerFrame{return null;}
+      private function openAlertFrame() : void{}
       
       private function noAlertEable(param1:MouseEvent) : void{}
       

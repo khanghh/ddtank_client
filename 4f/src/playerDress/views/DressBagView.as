@@ -4,7 +4,6 @@ package playerDress.views
    import bagAndInfo.cell.BagCell;
    import com.pickgliss.events.FrameEvent;
    import com.pickgliss.events.ListItemEvent;
-   import com.pickgliss.ui.AlertManager;
    import com.pickgliss.ui.ComponentFactory;
    import com.pickgliss.ui.controls.ComboBox;
    import com.pickgliss.ui.controls.SelectedButton;
@@ -24,6 +23,8 @@ package playerDress.views
    import ddt.manager.MessageTipManager;
    import ddt.manager.PlayerManager;
    import ddt.manager.SoundManager;
+   import ddt.utils.ConfirmAlertData;
+   import ddt.utils.HelperBuyAlert;
    import ddt.utils.PositionUtils;
    import flash.display.Bitmap;
    import flash.display.Sprite;
@@ -35,6 +36,8 @@ package playerDress.views
    {
       
       public static const CELLS_NUM:int = 49;
+      
+      private static var _sortdreesBagData:ConfirmAlertData = new ConfirmAlertData();
        
       
       private var _assortBox:ComboBox;

@@ -3,7 +3,6 @@ package email.view
    import baglocked.BaglockedManager;
    import com.pickgliss.events.FrameEvent;
    import com.pickgliss.ui.AlertManager;
-   import com.pickgliss.ui.ShowTipManager;
    import com.pickgliss.ui.controls.alert.BaseAlerFrame;
    import com.pickgliss.utils.ObjectUtils;
    import ddt.data.EquipType;
@@ -12,7 +11,6 @@ package email.view
    import ddt.manager.LeavePageManager;
    import ddt.manager.PlayerManager;
    import ddt.manager.SoundManager;
-   import email.MailManager;
    import email.manager.MailControl;
    import flash.events.MouseEvent;
    import mark.data.MarkChipData;
@@ -125,6 +123,7 @@ package email.view
                _loc1_.bornLv = _loc3_.StrengthenLevel;
                _loc1_.hammerLv = _loc3_.StrengthenExp;
                _loc1_.hLv = _loc3_.AttackCompose;
+               _loc1_.isbind = _loc3_.IsBinds;
                _loc8_ = new MarkProData();
                _loc8_.type = _loc3_.DefendCompose;
                _loc8_.value = _loc3_.AgilityCompose;
@@ -154,11 +153,6 @@ package email.view
                _loc2_.attachValue = parseInt(_loc3_.Skin.split("|")[2]);
                _loc2_.hummerCount = _loc3_.Hole6Level;
                _loc1_.props.push(_loc2_);
-               _cell.markInfo = _loc1_;
-               if(MailManager.Instance.isSelecteMarkTip(_loc1_))
-               {
-                  ShowTipManager.Instance.removeTip(_cell);
-               }
             }
             _cell.info = _loc3_;
             mouseEnabled = true;

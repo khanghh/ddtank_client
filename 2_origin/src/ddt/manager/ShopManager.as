@@ -287,6 +287,22 @@ package ddt.manager
          return _loc2_;
       }
       
+      public function getValidGoodsArrayByType(param1:int) : Array
+      {
+         var _loc2_:Array = [];
+         var _loc4_:Vector.<ShopItemInfo> = _shopSortList[param1];
+         var _loc6_:int = 0;
+         var _loc5_:* = _loc4_;
+         for each(var _loc3_ in _loc4_)
+         {
+            if(_loc3_.isValid)
+            {
+               _loc2_.push(_loc3_);
+            }
+         }
+         return _loc2_;
+      }
+      
       public function consortiaShopLevelTemplates(param1:int) : Vector.<ShopItemInfo>
       {
          return _shopSortList[80 + param1 - 1] as Vector.<ShopItemInfo>;

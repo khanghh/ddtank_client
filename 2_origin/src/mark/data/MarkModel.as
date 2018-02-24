@@ -1,5 +1,7 @@
 package mark.data
 {
+   import ddt.data.goods.InventoryItemInfo;
+   import ddt.data.goods.ItemTemplateInfo;
    import flash.utils.Dictionary;
    import mark.MarkMgr;
    
@@ -59,6 +61,85 @@ package mark.data
          _proNumInfoArr = [];
          bags = new Dictionary();
          super();
+      }
+      
+      public static function exchangeMark(param1:ItemTemplateInfo) : MarkChipData
+      {
+         var _loc4_:InventoryItemInfo = param1 as InventoryItemInfo;
+         var _loc2_:MarkChipData = new MarkChipData();
+         if(!_loc4_)
+         {
+            return _loc2_;
+         }
+         _loc2_.itemID = _loc4_.ItemID;
+         _loc2_.isbind = _loc4_.IsBinds;
+         _loc2_.templateId = _loc4_.TemplateID;
+         _loc2_.bornLv = _loc4_.StrengthenLevel;
+         _loc2_.hammerLv = _loc4_.StrengthenExp;
+         _loc2_.hLv = _loc4_.AttackCompose;
+         var _loc8_:MarkProData = new MarkProData();
+         _loc8_.type = _loc4_.DefendCompose;
+         _loc8_.value = _loc4_.AgilityCompose;
+         _loc8_.attachValue = _loc4_.LuckCompose;
+         _loc2_.mainPro = _loc8_;
+         var _loc7_:MarkProData = new MarkProData();
+         _loc7_.type = _loc4_.Hole1;
+         _loc7_.value = _loc4_.Hole2;
+         _loc7_.attachValue = _loc4_.Hole3;
+         _loc7_.hummerCount = _loc4_.Hole5Exp;
+         _loc2_.props.push(_loc7_);
+         var _loc6_:MarkProData = new MarkProData();
+         _loc6_.type = _loc4_.Hole4;
+         _loc6_.value = _loc4_.Hole5;
+         _loc6_.attachValue = _loc4_.Hole6;
+         _loc6_.hummerCount = _loc4_.Hole6Exp;
+         _loc2_.props.push(_loc6_);
+         var _loc5_:MarkProData = new MarkProData();
+         _loc5_.type = _loc4_.ValidDate;
+         _loc5_.value = _loc4_.RefineryLevel;
+         _loc5_.attachValue = _loc4_.StrengthenTimes;
+         _loc5_.hummerCount = _loc4_.Hole5Exp;
+         _loc2_.props.push(_loc5_);
+         var _loc3_:MarkProData = new MarkProData();
+         if(_loc4_.Skin != null && _loc4_.Skin.split("|").length >= 3)
+         {
+            _loc3_.type = parseInt(_loc4_.Skin.split("|")[0]);
+            _loc3_.value = parseInt(_loc4_.Skin.split("|")[1]);
+            _loc3_.attachValue = parseInt(_loc4_.Skin.split("|")[2]);
+         }
+         _loc3_.hummerCount = _loc4_.Hole6Level;
+         _loc2_.props.push(_loc3_);
+         return _loc2_;
+      }
+      
+      public static function exchangeItem(param1:MarkChipData) : InventoryItemInfo
+      {
+         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
+         _loc2_.IsBinds = param1.isbind;
+         _loc2_.ItemID = param1.itemID;
+         _loc2_.BagType = 74;
+         _loc2_.TemplateID = param1.templateId;
+         _loc2_.StrengthenLevel = param1.bornLv;
+         _loc2_.StrengthenExp = param1.hammerLv;
+         _loc2_.AttackCompose = param1.hLv;
+         _loc2_.DefendCompose = param1.mainPro.type;
+         _loc2_.AgilityCompose = param1.mainPro.value;
+         _loc2_.LuckCompose = param1.mainPro.attachValue;
+         _loc2_.Hole1 = param1.props[0].type;
+         _loc2_.Hole2 = param1.props[0].value;
+         _loc2_.Hole3 = param1.props[0].attachValue;
+         _loc2_.Hole5Exp = param1.props[0].hummerCount;
+         _loc2_.Hole4 = param1.props[1].type;
+         _loc2_.Hole5 = param1.props[1].value;
+         _loc2_.Hole6 = param1.props[1].attachValue;
+         _loc2_.Hole6Exp = param1.props[1].hummerCount;
+         _loc2_.ValidDate = Number(param1.props[2].type);
+         _loc2_.RefineryLevel = param1.props[2].value;
+         _loc2_.StrengthenTimes = param1.props[2].attachValue;
+         _loc2_.Hole5Exp = param1.props[2].hummerCount;
+         _loc2_.Skin = String(param1.props[3].type) + "|" + String(param1.props[3].value) + "|" + String(param1.props[3].attachValue);
+         _loc2_.Hole6Level = param1.props[3].hummerCount;
+         return _loc2_;
       }
       
       public function get proNumInfoArr() : Array

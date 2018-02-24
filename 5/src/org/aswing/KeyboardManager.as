@@ -58,23 +58,6 @@ public class KeyboardManager extends EventDispatcher
         return getInstance().isKeyDown(param1);
     }
 
-    public function customDispatchEvent(param1:Event) : Boolean
-    {
-        return _stage.dispatchEvent(param1);
-    }
-
-    public function init(param1:Stage) : void
-    {
-        if(!inited)
-        {
-            inited = true;
-            _stage = param1;
-            param1.addEventListener("keyDown",__onKeyDown,false,0,true);
-            param1.addEventListener("keyUp",__onKeyUp,false,0,true);
-            param1.addEventListener("deactivate",__deactived,false,0,true);
-        }
-    }
-
     override public function dispatchEvent(param1:Event) : Boolean
     {
         if(isStopDispatching)
@@ -195,5 +178,24 @@ public class KeyboardManager extends EventDispatcher
     {
         _isStopDispatching = param1;
     }
+//======================================================================================================================
+    public function customDispatchEvent(param1:Event) : Boolean
+    {
+        return _stage.dispatchEvent(param1);
+    }
+
+    public function init(param1:Stage) : void
+    {
+        if(!inited)
+        {
+            inited = true;
+            _stage = param1;
+            param1.addEventListener("keyDown",__onKeyDown,false,0,true);
+            param1.addEventListener("keyUp",__onKeyUp,false,0,true);
+            param1.addEventListener("deactivate",__deactived,false,0,true);
+        }
+    }
+
+//======================================================================================================================
 }
 }

@@ -25,7 +25,7 @@ package dragonBones.display
       override protected function updateTransform() : void{}
       
       override protected function updateDisplayVisible(param1:Boolean) : void{}
-
+      
       override protected function updateDisplayColor(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number, param7:Number, param8:Number, param9:Boolean = false) : void{}
       
       override protected function updateDisplayBlendMode(param1:String) : void{}

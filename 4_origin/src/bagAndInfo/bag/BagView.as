@@ -70,6 +70,8 @@ package bagAndInfo.bag
    import ddt.manager.SocketManager;
    import ddt.manager.SoundManager;
    import ddt.manager.TimeManager;
+   import ddt.utils.ConfirmAlertData;
+   import ddt.utils.HelperBuyAlert;
    import ddt.utils.PositionUtils;
    import ddt.view.chat.ChatBugleInputFrame;
    import ddt.view.goods.AddPricePanel;
@@ -135,6 +137,10 @@ package bagAndInfo.bag
       public static const MARK:int = 100;
       
       public static var isShowCardBag:Boolean = false;
+      
+      private static var _sortEquipBagData:ConfirmAlertData = new ConfirmAlertData();
+      
+      private static var _sortPetEquipBagData:ConfirmAlertData = new ConfirmAlertData();
       
       private static const UseColorShellLevel:int = 10;
        
@@ -1831,7 +1837,7 @@ package bagAndInfo.bag
             _bgShapeII.visible = _bagType == 2;
          }
          set_breakBtn_enable();
-         var _loc3_:* = _bagType != 2;
+         var _loc3_:* = _bagType != 2 && _bagType != 100;
          _continueBtn.enable = _loc3_;
          _sellBtn.enable = _loc3_;
          if(_bagType == 0 || _bagType == 1 || _bagType == 5)
@@ -2094,22 +2100,50 @@ package bagAndInfo.bag
       
       protected function __sortBagClick(param1:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         evt = param1;
          SoundManager.instance.play("008");
          if(_bagType != 21)
          {
             if(_isScreenFood && _bagType == 0)
             {
+               onClickSortPetEquipBag = function():void
+               {
+                  PlayerManager.Instance.Self.getBag(_bagType).foldPetEquips(_bagType,PlayerManager.Instance.Self.getBag(_bagType),0,48);
+               };
                if(PlayerManager.Instance.Self.bagLocked)
                {
                   BaglockedManager.Instance.show();
                   return;
                }
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("petBag.sortTips"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
-               _loc2_.addEventListener("response",__onSortBagResponse);
+               if(_sortPetEquipBagData.notShowAlertAgain)
+               {
+                  PlayerManager.Instance.Self.getBag(_bagType).foldPetEquips(_bagType,PlayerManager.Instance.Self.getBag(_bagType),0,48);
+                  return;
+               }
+               var msg:String = LanguageMgr.GetTranslation("petBag.sortTips");
+               HelperBuyAlert.getInstance().alert(msg,_sortPetEquipBagData,"SimpleAlertWithNotShowAgain",null,onClickSortPetEquipBag,null,0);
                return;
             }
-            if(_bagArrangeSprite)
+            if(_bagArrangeSprite && _bagType == 1)
+            {
+               PlayerManager.Instance.Self.PropBag.sortBag(_bagType,PlayerManager.Instance.Self.getBag(_bagType),0,95,_bagArrangeSprite.arrangeAdd);
+               return;
+            }
+            if(_bagArrangeSprite && _bagArrangeSprite.arrangeAdd && bagType == 0 && !_sortEquipBagData.notShowAlertAgain)
+            {
+               onClickSortEquipBag = function():void
+               {
+                  PlayerManager.Instance.Self.PropBag.sortBag(_bagType,PlayerManager.Instance.Self.getBag(_bagType),0,48,_bagArrangeSprite.arrangeAdd);
+               };
+               if(PlayerManager.Instance.Self.bagLocked)
+               {
+                  BaglockedManager.Instance.show();
+                  return;
+               }
+               msg = LanguageMgr.GetTranslation("bag.bagView.equipSortTips");
+               HelperBuyAlert.getInstance().alert(msg,_sortEquipBagData,"SimpleAlertWithNotShowAgain",null,onClickSortEquipBag,null,0);
+            }
+            else if(_bagArrangeSprite)
             {
                PlayerManager.Instance.Self.PropBag.sortBag(_bagType,PlayerManager.Instance.Self.getBag(_bagType),0,48,_bagArrangeSprite.arrangeAdd);
             }
@@ -2117,17 +2151,6 @@ package bagAndInfo.bag
          else
          {
             PlayerManager.Instance.Self.PropBag.sortBag(_bagType,PlayerManager.Instance.Self.getBag(_bagType),32,178,true);
-         }
-      }
-      
-      protected function __onSortBagResponse(param1:FrameEvent) : void
-      {
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onSortBagResponse);
-         _loc2_.dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
-         {
-            PlayerManager.Instance.Self.getBag(_bagType).foldPetEquips(_bagType,PlayerManager.Instance.Self.getBag(_bagType),0,48);
          }
       }
       
@@ -3171,6 +3194,10 @@ package bagAndInfo.bag
                else if(_loc4_.info.CategoryID == 11 && int(_loc4_.info.Property1) == 106)
                {
                   BagAndInfoManager.Instance.showBagAndInfo(9);
+               }
+               else if(_loc4_.info.CategoryID == 11 && (int(_loc4_.info.Property1) == 120 || int(_loc4_.info.Property1) == 21))
+               {
+                  SocketManager.Instance.out.sendUseCard(_loc4_.itemInfo.BagType,_loc4_.itemInfo.Place,[_loc4_.info.TemplateID],_loc4_.info.PayType);
                }
                else if(_loc4_.info.CategoryID == 11 && (int(_loc4_.info.Property1) == 100 || int(_loc4_.info.Property1) == 1100 || int(_loc4_.info.Property1) == 115 || int(_loc4_.info.Property1) == 1200))
                {

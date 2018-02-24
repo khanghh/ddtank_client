@@ -120,7 +120,7 @@ package mark.items
             DoubleClickManager.Instance.enableDoubleClick(_cell);
          }
          _cell.info = ItemManager.Instance.getTemplateById(param1.templateId);
-         _cell.tipData = null;
+         _cell.tipData = param1;
          _loc8_ = 1;
          while(_loc8_ < _loc2_.length)
          {

@@ -537,6 +537,11 @@ package ddt.manager
          return info.FLASHSITE + "audiolite.swf";
       }
       
+      public static function solveSoundSwfBattle() : String
+      {
+         return info.FLASHSITE + "audiobattle.swf";
+      }
+      
       public static function solveParticalXml() : String
       {
          return info.FLASHSITE + "partical.xml";

@@ -1,5 +1,7 @@
 package mark.data
 {
+   import ddt.data.goods.InventoryItemInfo;
+   import ddt.data.goods.ItemTemplateInfo;
    import flash.utils.Dictionary;
    import mark.MarkMgr;
    
@@ -52,6 +54,10 @@ package mark.data
       public var cfgTransfer:Array = null;
       
       public function MarkModel(){super();}
+      
+      public static function exchangeMark(param1:ItemTemplateInfo) : MarkChipData{return null;}
+      
+      public static function exchangeItem(param1:MarkChipData) : InventoryItemInfo{return null;}
       
       public function get proNumInfoArr() : Array{return null;}
       

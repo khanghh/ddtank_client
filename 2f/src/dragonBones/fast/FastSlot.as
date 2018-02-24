@@ -47,8 +47,8 @@ package dragonBones.fast
       override public function dispose() : void{}
       
       override function updateByCache() : void{}
-      
-      protected function update() : void{}
+
+       protected function update() : void{}
       
       override protected function calculateRelativeParentTransform() : void{}
 
@@ -94,7 +94,7 @@ package dragonBones.fast
 
        protected function getDisplayIndex() : int{return 0;}
 
-       protected function addDisplayToContainer(param1:Object, param2:int = -1) : void{}
+       protected  function addDisplayToContainer(param1:Object, param2:int = -1) : void{}
 
        protected function removeDisplayFromContainer() : void{}
 

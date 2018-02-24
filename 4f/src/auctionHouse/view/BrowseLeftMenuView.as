@@ -124,6 +124,14 @@ package auctionHouse.view
       private static const PETEQUIP:int = 38;
       
       private static const PETSTONE:int = 39;
+      
+      private static const MARK1:int = 40;
+      
+      private static const MARK2:int = 41;
+      
+      private static const MARK3:int = 42;
+      
+      private static const MARK4:int = 43;
        
       
       private var menu:VerticalMenu;

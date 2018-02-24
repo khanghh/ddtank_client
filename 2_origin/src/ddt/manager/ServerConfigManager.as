@@ -2358,5 +2358,115 @@ package ddt.manager
          }
          return _loc1_;
       }
+      
+      public function get devilTurnCfgBox() : Array
+      {
+         var _loc1_:Array = [];
+         if(_serverConfigInfoList.hasKey("DevilTreasureCfgBox"))
+         {
+            _loc1_ = _serverConfigInfoList["DevilTreasureCfgBox"].Value.split("|");
+         }
+         return _loc1_;
+      }
+      
+      public function get devilTurnTemplateID() : int
+      {
+         var _loc1_:int = 0;
+         if(_serverConfigInfoList.hasKey("DevilTreasureTemplateID"))
+         {
+            _loc1_ = _serverConfigInfoList["DevilTreasureTemplateID"].Value;
+         }
+         return _loc1_;
+      }
+      
+      public function get devilTurnBeginDate() : String
+      {
+         var _loc1_:* = null;
+         if(_serverConfigInfoList.hasKey("DevilTreasureBeginDate"))
+         {
+            _loc1_ = String(_serverConfigInfoList["DevilTreasureBeginDate"].Value);
+         }
+         return _loc1_;
+      }
+      
+      public function get devilTurnEndDate() : String
+      {
+         var _loc1_:* = null;
+         if(_serverConfigInfoList.hasKey("DevilTreasureEndDate"))
+         {
+            _loc1_ = String(_serverConfigInfoList["DevilTreasureEndDate"].Value);
+         }
+         return _loc1_;
+      }
+      
+      public function get devilTurnLotteryOneCost() : int
+      {
+         var _loc1_:int = 0;
+         if(_serverConfigInfoList.hasKey("DevilTreasureOneCost"))
+         {
+            _loc1_ = _serverConfigInfoList["DevilTreasureOneCost"].Value;
+         }
+         return _loc1_;
+      }
+      
+      public function get devilTurnLotteryTenCost() : int
+      {
+         var _loc1_:int = 0;
+         if(_serverConfigInfoList.hasKey("DevilTreasureTenCost"))
+         {
+            _loc1_ = _serverConfigInfoList["DevilTreasureTenCost"].Value;
+         }
+         return _loc1_;
+      }
+      
+      public function get devilTurnTotalJackpot() : int
+      {
+         var _loc1_:int = 0;
+         if(_serverConfigInfoList.hasKey("DevilTreasurePrizePoolMax"))
+         {
+            _loc1_ = _serverConfigInfoList["DevilTreasurePrizePoolMax"].Value;
+         }
+         return _loc1_;
+      }
+      
+      public function get devilTurnFreeLotteryCount() : int
+      {
+         var _loc1_:int = 0;
+         if(_serverConfigInfoList.hasKey("DevilTreasureFreeLotteryCount"))
+         {
+            _loc1_ = _serverConfigInfoList["DevilTreasureFreeLotteryCount"].Value;
+         }
+         return _loc1_;
+      }
+      
+      public function get devilTurnOpenLevelLimit() : int
+      {
+         var _loc1_:int = 20;
+         if(_serverConfigInfoList.hasKey("DevilTreasLevelLimit"))
+         {
+            _loc1_ = _serverConfigInfoList["DevilTreasLevelLimit"].Value;
+         }
+         return _loc1_;
+      }
+      
+      public function get consortiaTaskPriceArr() : Array
+      {
+         var _loc1_:Array = [];
+         if(_serverConfigInfoList.hasKey("ConsortiaMissionLockPrices"))
+         {
+            _loc1_ = _serverConfigInfoList["ConsortiaMissionLockPrices"].Value.split("|");
+         }
+         return _loc1_;
+      }
+      
+      public function get gameExitPunishTimes() : int
+      {
+         var _loc1_:int = 5;
+         if(_serverConfigInfoList.hasKey("GamePvpExitPunish"))
+         {
+            _loc1_ = String(_serverConfigInfoList["GamePvpExitPunish"].Value).split(",")[3];
+         }
+         return _loc1_;
+      }
    }
 }

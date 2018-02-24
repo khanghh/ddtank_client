@@ -7,13 +7,11 @@ package email.view
    import bagAndInfo.cell.LinkedBagCell;
    import baglocked.BaglockedManager;
    import com.pickgliss.ui.ComponentFactory;
-   import com.pickgliss.ui.ShowTipManager;
    import ddt.data.goods.InventoryItemInfo;
    import ddt.manager.DragManager;
    import ddt.manager.LanguageMgr;
    import ddt.manager.MessageTipManager;
    import ddt.manager.PlayerManager;
-   import email.MailManager;
    import flash.events.MouseEvent;
    import mark.data.MarkChipData;
    
@@ -145,17 +143,7 @@ package email.view
       override protected function onMouseOver(param1:MouseEvent) : void
       {
          buttonMode = true;
-         if(!_info)
-         {
-            return;
-         }
-         if(_info.CategoryID == 74 && MailManager.Instance.isSelecteMarkTip(_markInfo))
-         {
-            ShowTipManager.Instance.addTip(this);
-            tipStyle = "mark.MarkChipTip";
-            tipData = _markInfo;
-            ShowTipManager.Instance.showTip(this);
-         }
+         super.onMouseOver(param1);
       }
       
       override public function dispose() : void

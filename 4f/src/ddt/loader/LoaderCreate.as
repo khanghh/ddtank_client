@@ -152,6 +152,11 @@ package ddt.loader
    import ddtKingWay.DDTKingWayManager;
    import ddtKingWay.analyzer.DDTKingWayDataAnalyzer;
    import defendisland.DefendislandManager;
+   import devilTurn.DevilTurnManager;
+   import devilTurn.analyze.DevilTurnBoxConvertAnalyzer;
+   import devilTurn.analyze.DevilTurnGoodsItemAnalyzer;
+   import devilTurn.analyze.DevilTurnPointShopAnalyzer;
+   import devilTurn.analyze.DevilTurnRankRewardAnalyzer;
    import dragonBoat.DragonBoatManager;
    import dragonBoat.analyzer.DragonBoatActiveDataAnalyzer;
    import enchant.EnchantInfoAnalyzer;
@@ -296,6 +301,8 @@ package ddt.loader
       public function createAudioIILoader() : BaseLoader{return null;}
       
       public function createAudioLiteLoader() : BaseLoader{return null;}
+      
+      public function createAudioBattleLoader() : BaseLoader{return null;}
       
       public function loadExppression(param1:Function) : void{}
       
@@ -624,5 +631,13 @@ package ddt.loader
       public function createMarkProInfoLoader() : BaseLoader{return null;}
       
       public function createMarkTransferLoader() : BaseLoader{return null;}
+      
+      public function createDevilTurnGoodsItemLoader() : BaseLoader{return null;}
+      
+      public function createDevilTurnBoxConvertLoader() : BaseLoader{return null;}
+      
+      public function createDevilTurnPointShopLoader() : BaseLoader{return null;}
+      
+      public function createDevilTurnRankAewardLoader() : BaseLoader{return null;}
    }
 }

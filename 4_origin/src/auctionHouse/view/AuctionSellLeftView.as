@@ -625,30 +625,44 @@ package auctionHouse.view
       
       private function auctionGood() : void
       {
+         var _loc4_:int = 0;
          var _loc3_:int = 0;
+         var _loc5_:int = 0;
          var _loc7_:int = 0;
          var _loc2_:int = 0;
+         var _loc8_:int = 0;
          var _loc1_:int = 0;
-         var _loc4_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
+         var _loc6_:* = null;
          if(_cell.info)
          {
-            _loc3_ = (_cell.info as InventoryItemInfo).BagType;
-            _loc7_ = (_cell.info as InventoryItemInfo).Place;
-            _loc2_ = Math.floor(Number(_startMoney.text));
-            _loc1_ = _mouthfulM.text == ""?0:Number(Math.floor(Number(_mouthfulM.text)));
-            _loc4_ = _selectRate - 1;
-            _loc6_ = _cell.goodsCount;
-            SocketManager.Instance.out.auctionGood(_loc3_,_loc7_,1,_loc2_,_loc1_,_loc4_,_loc6_,_sellLoudBtn.selected);
-            _loc5_ = {};
-            _loc5_.itemName = _cell.info.Name;
-            _loc5_.itemType = _cell.info.Data;
-            _loc5_.itemLevel = _cell.info.Level;
-            _loc5_.startPrice = _loc2_;
-            _loc5_.mouthfulPrice = _loc1_;
-            _loc5_.time = _loc4_;
-            SharedManager.Instance.AuctionInfos[_cell.info.Name] = _loc5_;
+            if(_cell.info.CategoryID != 74)
+            {
+               _loc2_ = (_cell.info as InventoryItemInfo).BagType;
+               _loc8_ = (_cell.info as InventoryItemInfo).Place;
+               _loc3_ = Math.floor(Number(_startMoney.text));
+               _loc4_ = _mouthfulM.text == ""?0:Number(Math.floor(Number(_mouthfulM.text)));
+               _loc5_ = _selectRate - 1;
+               _loc7_ = _cell.goodsCount;
+               SocketManager.Instance.out.auctionGood(_loc2_,_loc8_,1,_loc3_,_loc4_,_loc5_,_loc7_,_sellLoudBtn.selected);
+            }
+            else
+            {
+               _loc2_ = (_cell.info as InventoryItemInfo).BagType;
+               _loc1_ = (_cell.info as InventoryItemInfo).ItemID;
+               _loc3_ = Math.floor(Number(_startMoney.text));
+               _loc4_ = _mouthfulM.text == ""?0:Number(Math.floor(Number(_mouthfulM.text)));
+               _loc5_ = _selectRate - 1;
+               _loc7_ = 1;
+               SocketManager.Instance.out.auctionGood(_loc2_,_loc1_,1,_loc3_,_loc4_,_loc5_,_loc7_,_sellLoudBtn.selected);
+            }
+            _loc6_ = {};
+            _loc6_.itemName = _cell.info.Name;
+            _loc6_.itemType = _cell.info.Data;
+            _loc6_.itemLevel = _cell.info.Level;
+            _loc6_.startPrice = _loc3_;
+            _loc6_.mouthfulPrice = _loc4_;
+            _loc6_.time = _loc5_;
+            SharedManager.Instance.AuctionInfos[_cell.info.Name] = _loc6_;
             SharedManager.Instance.save();
          }
          selectBidUpdate(null);

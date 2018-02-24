@@ -96,6 +96,7 @@ package game.objects
          }
          checkWalkBall();
          map.smallMap.updatePos(_smallBall,pos);
+         map.updateObjectPos(this,pos);
          if(_isLiving)
          {
             _loc4_ = getCollideRect();

@@ -135,6 +135,8 @@ package ddt.manager
       
       public static function solveSoundSwf3() : String{return null;}
       
+      public static function solveSoundSwfBattle() : String{return null;}
+      
       public static function solveParticalXml() : String{return null;}
       
       public static function solveShapeSwf() : String{return null;}

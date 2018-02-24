@@ -944,20 +944,29 @@ package ddt.manager
          sendPackage(_loc2_);
       }
       
-      public function sendReleaseConsortiaTask(param1:int, param2:Boolean = true, param3:int = 1) : void
+      public function sendReleaseConsortiaTask(param1:int, param2:Boolean = true, param3:int = 1, param4:int = 0, param5:int = 0, param6:int = 0) : void
       {
-         var _loc4_:PackageOut = new PackageOut(129);
-         _loc4_.writeInt(22);
-         _loc4_.writeInt(param1);
+         var _loc7_:PackageOut = new PackageOut(129);
+         _loc7_.writeInt(22);
+         _loc7_.writeInt(param1);
          if(param1 == 0)
          {
-            _loc4_.writeInt(param3);
+            _loc7_.writeInt(param3);
+         }
+         else if(param1 == 2)
+         {
+            _loc7_.writeByte(param4);
          }
          else
          {
-            _loc4_.writeBoolean(param2);
+            _loc7_.writeBoolean(param2);
+            if(param1 == 1)
+            {
+               _loc7_.writeInt(param5);
+               _loc7_.writeInt(param6);
+            }
          }
-         sendPackage(_loc4_);
+         sendPackage(_loc7_);
       }
       
       public function addSpeed(param1:int, param2:int) : void
@@ -7594,6 +7603,108 @@ package ddt.manager
          _loc4_.writeBoolean(param2);
          _loc4_.writeBoolean(param3);
          sendPackage(_loc4_);
+      }
+      
+      public function sendStopExpStorage(param1:int) : void
+      {
+         var _loc2_:PackageOut = new PackageOut(658);
+         _loc2_.writeInt(param1);
+         sendPackage(_loc2_);
+      }
+      
+      public function sendGetGourdExpStorage() : void
+      {
+         var _loc1_:PackageOut = new PackageOut(393);
+         sendPackage(_loc1_);
+      }
+      
+      public function sendDevilGetInfo() : void
+      {
+         var _loc1_:PackageOut = new PackageOut(608);
+         _loc1_.writeByte(10);
+         sendPackage(_loc1_);
+      }
+      
+      public function sendDevilTurnSacrifice(param1:Boolean, param2:int, param3:Boolean = true) : void
+      {
+         var _loc4_:PackageOut = new PackageOut(608);
+         _loc4_.writeByte(11);
+         _loc4_.writeBoolean(param1);
+         _loc4_.writeByte(param2);
+         _loc4_.writeBoolean(param3);
+         sendPackage(_loc4_);
+      }
+      
+      public function sendDevilTurnScoreConversion(param1:int) : void
+      {
+         var _loc2_:PackageOut = new PackageOut(608);
+         _loc2_.writeByte(18);
+         _loc2_.writeInt(param1);
+         sendPackage(_loc2_);
+      }
+      
+      public function sendDevilTurnBeadConversion(param1:int) : void
+      {
+         var _loc2_:PackageOut = new PackageOut(608);
+         _loc2_.writeByte(12);
+         _loc2_.writeInt(param1);
+         sendPackage(_loc2_);
+      }
+      
+      public function sendDevilTurnOpenBox(param1:int) : void
+      {
+         var _loc2_:PackageOut = new PackageOut(608);
+         _loc2_.writeByte(13);
+         _loc2_.writeInt(param1);
+         sendPackage(_loc2_);
+      }
+      
+      public function sendDevilTurnDiceStart(param1:int) : void
+      {
+         var _loc2_:PackageOut = new PackageOut(608);
+         _loc2_.writeByte(16);
+         _loc2_.writeInt(param1);
+         sendPackage(_loc2_);
+      }
+      
+      public function sendDevilTurnContinueDice(param1:int, param2:Boolean) : void
+      {
+         var _loc3_:PackageOut = new PackageOut(608);
+         _loc3_.writeByte(17);
+         _loc3_.writeInt(param1);
+         _loc3_.writeBoolean(param2);
+         sendPackage(_loc3_);
+      }
+      
+      public function sendDevilTurnGetBox(param1:int) : void
+      {
+         var _loc2_:PackageOut = new PackageOut(608);
+         _loc2_.writeByte(19);
+         _loc2_.writeInt(param1);
+         sendPackage(_loc2_);
+      }
+      
+      public function sendDevilTurnBoxExpire(param1:int) : void
+      {
+         var _loc2_:PackageOut = new PackageOut(608);
+         _loc2_.writeByte(27);
+         _loc2_.writeInt(param1);
+         sendPackage(_loc2_);
+      }
+      
+      public function sendDevilTurnBoxAbandon(param1:int) : void
+      {
+         var _loc2_:PackageOut = new PackageOut(608);
+         _loc2_.writeByte(28);
+         _loc2_.writeInt(param1);
+         sendPackage(_loc2_);
+      }
+      
+      public function sendDevilTurnUpdateJackpot() : void
+      {
+         var _loc1_:PackageOut = new PackageOut(608);
+         _loc1_.writeByte(3);
+         sendPackage(_loc1_);
       }
    }
 }

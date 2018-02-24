@@ -2,7 +2,7 @@
 <module type="Flex" version="4">
   <component name="FlexBuildConfigurationManager" active="4f">
     <configurations>
-      <configuration name="4f" target-platform="Desktop" pure-as="true" output-type="Library" output-file="4f.swc" output-folder="$MODULE_DIR$/../out/production/4f">
+      <configuration name="4f" target-platform="Desktop" pure-as="true" output-type="Library" output-file="4f.swc" output-folder="$MODULE_DIR$/../out/4f">
         <dependencies target-player="28.0">
           <entries>
             <entry library-id="c282cec3-a27f-4a05-b449-ddc9aa4d818a">

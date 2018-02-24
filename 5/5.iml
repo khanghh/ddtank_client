@@ -9,7 +9,7 @@
               <dependency linkage="Merged" />
             </entry>
             <entry library-id="498cafe1-cd60-4509-a024-a90f561089e5">
-              <dependency linkage="External" />
+              <dependency linkage="Merged" />
             </entry>
           </entries>
           <sdk name="AIRSDK_Compiler" />

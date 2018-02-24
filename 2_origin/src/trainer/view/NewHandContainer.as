@@ -140,7 +140,7 @@ package trainer.view
          {
             clearArrow(param1);
          }
-         if(param1 != 128 && param1 != 129 && param1 != 142)
+         if(param1 != 128 && param1 != 129 && param1 != 142 && param1 != 153)
          {
             if(!param8)
             {

@@ -3,7 +3,6 @@ package email.view
    import baglocked.BaglockedManager;
    import com.pickgliss.events.FrameEvent;
    import com.pickgliss.ui.AlertManager;
-   import com.pickgliss.ui.ShowTipManager;
    import com.pickgliss.ui.controls.alert.BaseAlerFrame;
    import com.pickgliss.utils.ObjectUtils;
    import ddt.data.EquipType;
@@ -12,7 +11,6 @@ package email.view
    import ddt.manager.LeavePageManager;
    import ddt.manager.PlayerManager;
    import ddt.manager.SoundManager;
-   import email.MailManager;
    import email.manager.MailControl;
    import flash.events.MouseEvent;
    import mark.data.MarkChipData;

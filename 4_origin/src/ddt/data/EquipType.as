@@ -445,6 +445,8 @@ package ddt.data
       
       public static const AresShield:int = 17013;
       
+      public static const DevilEye:int = 17015;
+      
       public static const WishKingBlessing:int = 17200;
       
       public static const CardMaxLv:int = 30;
@@ -570,6 +572,10 @@ package ddt.data
       public static const ROOMBORDENBOX:int = 43;
       
       public static const ROOMBORDENTYPE:int = 73;
+      
+      public static const GOURD_EXP_BOTTLE:Array = [11196,11197,11198,11199,12211];
+      
+      public static const DEVIL_TURN_BEADLIST:Array = [12623,12624,12625,12626,12627];
        
       
       public function EquipType()
@@ -792,6 +798,10 @@ package ddt.data
          {
             return true;
          }
+         if(param1.CategoryID == 11 && param1.Property1 == "120")
+         {
+            return true;
+         }
          if((param1.CategoryID == 20 || param1.CategoryID == 53) && param1.Property1 == "0")
          {
             return true;
@@ -912,103 +922,103 @@ package ddt.data
                                                                                                                return false;
                                                                                                             }
                                                                                                          }
-                                                                                                         addr529:
+                                                                                                         addr543:
                                                                                                          return true;
                                                                                                       }
-                                                                                                      addr528:
-                                                                                                      §§goto(addr529);
+                                                                                                      addr542:
+                                                                                                      §§goto(addr543);
                                                                                                    }
-                                                                                                   addr527:
-                                                                                                   §§goto(addr528);
+                                                                                                   addr541:
+                                                                                                   §§goto(addr542);
                                                                                                 }
-                                                                                                addr526:
-                                                                                                §§goto(addr527);
+                                                                                                addr540:
+                                                                                                §§goto(addr541);
                                                                                              }
-                                                                                             addr525:
-                                                                                             §§goto(addr526);
+                                                                                             addr539:
+                                                                                             §§goto(addr540);
                                                                                           }
-                                                                                          addr524:
-                                                                                          §§goto(addr525);
+                                                                                          addr538:
+                                                                                          §§goto(addr539);
                                                                                        }
-                                                                                       addr523:
-                                                                                       §§goto(addr524);
+                                                                                       addr537:
+                                                                                       §§goto(addr538);
                                                                                     }
-                                                                                    addr522:
-                                                                                    §§goto(addr523);
+                                                                                    addr536:
+                                                                                    §§goto(addr537);
                                                                                  }
-                                                                                 addr521:
-                                                                                 §§goto(addr522);
+                                                                                 addr535:
+                                                                                 §§goto(addr536);
                                                                               }
-                                                                              addr520:
-                                                                              §§goto(addr521);
+                                                                              addr534:
+                                                                              §§goto(addr535);
                                                                            }
-                                                                           addr519:
-                                                                           §§goto(addr520);
+                                                                           addr533:
+                                                                           §§goto(addr534);
                                                                         }
-                                                                        addr518:
-                                                                        §§goto(addr519);
+                                                                        addr532:
+                                                                        §§goto(addr533);
                                                                      }
-                                                                     addr517:
-                                                                     §§goto(addr518);
+                                                                     addr531:
+                                                                     §§goto(addr532);
                                                                   }
-                                                                  addr516:
-                                                                  §§goto(addr517);
+                                                                  addr530:
+                                                                  §§goto(addr531);
                                                                }
-                                                               addr515:
-                                                               §§goto(addr516);
+                                                               addr529:
+                                                               §§goto(addr530);
                                                             }
-                                                            addr514:
-                                                            §§goto(addr515);
+                                                            addr528:
+                                                            §§goto(addr529);
                                                          }
-                                                         addr513:
-                                                         §§goto(addr514);
+                                                         addr527:
+                                                         §§goto(addr528);
                                                       }
-                                                      addr512:
-                                                      §§goto(addr513);
+                                                      addr526:
+                                                      §§goto(addr527);
                                                    }
-                                                   addr511:
-                                                   §§goto(addr512);
+                                                   addr525:
+                                                   §§goto(addr526);
                                                 }
-                                                addr510:
-                                                §§goto(addr511);
+                                                addr524:
+                                                §§goto(addr525);
                                              }
-                                             addr509:
-                                             §§goto(addr510);
+                                             addr523:
+                                             §§goto(addr524);
                                           }
-                                          addr508:
-                                          §§goto(addr509);
+                                          addr522:
+                                          §§goto(addr523);
                                        }
-                                       addr507:
-                                       §§goto(addr508);
+                                       addr521:
+                                       §§goto(addr522);
                                     }
-                                    addr506:
-                                    §§goto(addr507);
+                                    addr520:
+                                    §§goto(addr521);
                                  }
-                                 addr505:
-                                 §§goto(addr506);
+                                 addr519:
+                                 §§goto(addr520);
                               }
-                              addr504:
-                              §§goto(addr505);
+                              addr518:
+                              §§goto(addr519);
                            }
-                           addr503:
-                           §§goto(addr504);
+                           addr517:
+                           §§goto(addr518);
                         }
-                        addr502:
-                        §§goto(addr503);
+                        addr516:
+                        §§goto(addr517);
                      }
-                     addr501:
-                     §§goto(addr502);
+                     addr515:
+                     §§goto(addr516);
                   }
-                  addr500:
-                  §§goto(addr501);
+                  addr514:
+                  §§goto(addr515);
                }
-               addr499:
-               §§goto(addr500);
+               addr513:
+               §§goto(addr514);
             }
-            addr498:
-            §§goto(addr499);
+            addr512:
+            §§goto(addr513);
          }
-         §§goto(addr498);
+         §§goto(addr512);
       }
       
       public static function isEquipBoolean(param1:ItemTemplateInfo) : Boolean

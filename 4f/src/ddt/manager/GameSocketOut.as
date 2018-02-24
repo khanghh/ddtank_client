@@ -207,7 +207,7 @@ package ddt.manager
       
       public function sendConsortiaInvate(param1:String) : void{}
       
-      public function sendReleaseConsortiaTask(param1:int, param2:Boolean = true, param3:int = 1) : void{}
+      public function sendReleaseConsortiaTask(param1:int, param2:Boolean = true, param3:int = 1, param4:int = 0, param5:int = 0, param6:int = 0) : void{}
       
       public function addSpeed(param1:int, param2:int) : void{}
       
@@ -1738,5 +1738,31 @@ package ddt.manager
       public function sendOperationStatus(param1:int, param2:int) : void{}
       
       public function sendTreasureRoomReward(param1:int, param2:Boolean, param3:Boolean) : void{}
+      
+      public function sendStopExpStorage(param1:int) : void{}
+      
+      public function sendGetGourdExpStorage() : void{}
+      
+      public function sendDevilGetInfo() : void{}
+      
+      public function sendDevilTurnSacrifice(param1:Boolean, param2:int, param3:Boolean = true) : void{}
+      
+      public function sendDevilTurnScoreConversion(param1:int) : void{}
+      
+      public function sendDevilTurnBeadConversion(param1:int) : void{}
+      
+      public function sendDevilTurnOpenBox(param1:int) : void{}
+      
+      public function sendDevilTurnDiceStart(param1:int) : void{}
+      
+      public function sendDevilTurnContinueDice(param1:int, param2:Boolean) : void{}
+      
+      public function sendDevilTurnGetBox(param1:int) : void{}
+      
+      public function sendDevilTurnBoxExpire(param1:int) : void{}
+      
+      public function sendDevilTurnBoxAbandon(param1:int) : void{}
+      
+      public function sendDevilTurnUpdateJackpot() : void{}
    }
 }

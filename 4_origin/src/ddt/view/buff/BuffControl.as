@@ -1,14 +1,18 @@
 package ddt.view.buff
 {
+   import bagAndInfo.BagAndInfoManager;
    import com.pickgliss.ui.ComponentFactory;
+   import com.pickgliss.ui.LayerManager;
    import com.pickgliss.ui.controls.BaseButton;
    import com.pickgliss.ui.controls.container.HBox;
    import com.pickgliss.ui.core.Disposeable;
    import com.pickgliss.ui.image.ScaleFrameImage;
    import com.pickgliss.utils.ObjectUtils;
    import ddt.data.BuffInfo;
+   import ddt.data.GourdExpBottleInfo;
    import ddt.events.CEvent;
    import ddt.events.PkgEvent;
+   import ddt.events.PlayerPropertyEvent;
    import ddt.manager.LanguageMgr;
    import ddt.manager.PathManager;
    import ddt.manager.PlayerManager;
@@ -16,16 +20,19 @@ package ddt.view.buff
    import ddt.manager.SoundManager;
    import ddt.utils.HelpFrameUtils;
    import ddt.view.buff.buffButton.BuffButton;
+   import ddt.view.buff.buffButton.GourdExpBottleButton;
    import ddt.view.buff.buffButton.GrowHelpBuffButton;
    import ddt.view.buff.buffButton.LabyrinthBuffButton;
    import ddt.view.buff.buffButton.PayBuffButton;
    import flash.display.MovieClip;
    import flash.display.Sprite;
    import flash.events.MouseEvent;
+   import flash.geom.Point;
    import oldplayergetticket.GetTicketManager;
    import road7th.comm.PackageIn;
    import road7th.data.DictionaryData;
    import road7th.data.DictionaryEvent;
+   import trainer.view.NewHandContainer;
    
    public class BuffControl extends Sprite implements Disposeable
    {
@@ -52,6 +59,8 @@ package ddt.view.buff
       private var _getTicketBtn:BaseButton;
       
       private var _attestBtn:ScaleFrameImage;
+      
+      private var _gourdExpBottle:GourdExpBottleButton;
       
       public function BuffControl(param1:String = "", param2:int = 0)
       {
@@ -119,6 +128,20 @@ package ddt.view.buff
          _buffData.addEventListener("add",__addBuff);
          _buffData.addEventListener("remove",__removeBuff);
          _buffData.addEventListener("update",__addBuff);
+         PlayerManager.Instance.Self.addEventListener("propertychange",addGourdExpBottleBuffEvent);
+      }
+      
+      protected function addGourdExpBottleBuffEvent(param1:PlayerPropertyEvent) : void
+      {
+         if(param1.changedProperties["Grade"])
+         {
+            if(PlayerManager.Instance.Self.Grade >= 30)
+            {
+               SocketManager.Instance.addEventListener(PkgEvent.format(393),__addGourdExpBottleButton);
+               SocketManager.Instance.out.sendStopExpStorage(1);
+               PlayerManager.Instance.Self.removeEventListener("propertychange",addGourdExpBottleBuffEvent);
+            }
+         }
       }
       
       private function removeEvents() : void
@@ -130,6 +153,7 @@ package ddt.view.buff
             _buffData.removeEventListener("remove",__removeBuff);
             _buffData.removeEventListener("update",__addBuff);
          }
+         PlayerManager.Instance.Self.removeEventListener("propertychange",addGourdExpBottleBuffEvent);
       }
       
       private function initBuffButtons() : void
@@ -142,6 +166,45 @@ package ddt.view.buff
          addExpBuff();
          addAttestBuff();
          addRegressTicketBuff();
+         addGourdExpBottleBuff();
+      }
+      
+      private function addGourdExpBottleBuff() : void
+      {
+         if(PlayerManager.Instance.Self.Grade >= 30)
+         {
+            SocketManager.Instance.addEventListener(PkgEvent.format(393),__addGourdExpBottleButton);
+            SocketManager.Instance.out.sendStopExpStorage(1);
+         }
+      }
+      
+      private function __addGourdExpBottleButton(param1:PkgEvent) : void
+      {
+         var _loc2_:PackageIn = param1.pkg;
+         var _loc3_:GourdExpBottleInfo = new GourdExpBottleInfo();
+         _loc3_.UserID = _loc2_.readInt();
+         _loc3_.TemplateID = _loc2_.readInt();
+         _loc3_.Exp = _loc2_.readInt();
+         _loc3_.Stage = _loc2_.readInt();
+         _loc3_.IsFrist = _loc2_.readInt();
+         if(_loc3_.Stage > 0)
+         {
+            if(!_gourdExpBottle)
+            {
+               _gourdExpBottle = new GourdExpBottleButton();
+               _buffList.addChild(_gourdExpBottle);
+            }
+            _gourdExpBottle.gourdInfo = _loc3_;
+         }
+         else
+         {
+            deleteGourdExpBottleBtn();
+         }
+         if(_loc3_.IsFrist == 1)
+         {
+            BagAndInfoManager.Instance.hideBagAndInfo();
+            NewHandContainer.Instance.showArrow(153,180,new Point(16 + x + (_buffList.numChildren - 1) * 32,73 + y),"","",LayerManager.Instance.getLayerByType(2));
+         }
       }
       
       private function addAttestBuff() : void
@@ -563,11 +626,25 @@ package ddt.view.buff
          }
       }
       
+      private function deleteGourdExpBottleBtn() : void
+      {
+         if(_gourdExpBottle)
+         {
+            _gourdExpBottle.dispose();
+            _gourdExpBottle = null;
+         }
+      }
+      
       public function dispose() : void
       {
          removeEvents();
+         if(PlayerManager.Instance.Self.Grade >= 30)
+         {
+            SocketManager.Instance.removeEventListener(PkgEvent.format(393),__addGourdExpBottleButton);
+         }
          deleteGetTicketBtn();
          deleteExpBlessedBtn();
+         deleteGourdExpBottleBtn();
          if(_growHelpBuff)
          {
             _growHelpBuff.dispose();

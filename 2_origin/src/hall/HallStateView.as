@@ -7,6 +7,7 @@ package hall
    import LimitAward.LimitAwardButton;
    import academy.AcademyManager;
    import accumulativeLogin.AccumulativeManager;
+   import angelInvestment.AngelInvestmentManager;
    import anotherDimension.controller.AnotherDimensionManager;
    import bagAndInfo.BagAndInfoManager;
    import baglocked.BaglockedManager;
@@ -2884,6 +2885,7 @@ package hall
             _systemPost = null;
          }
          BombKingManager.instance.removeFromeHallStateView(this);
+         AngelInvestmentManager.instance.initHall(false);
          GypsyShopManager.getInstance().hideNPC();
          GypsyShopManager.getInstance().dispose();
          LanternFestivalManager.getInstance().dispose();

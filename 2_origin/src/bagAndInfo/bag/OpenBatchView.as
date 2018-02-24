@@ -157,6 +157,10 @@ package bagAndInfo.bag
                   {
                      SocketManager.Instance.out.sendOpenAmuletBox(_item.BagType,_item.Place,int(_inputText.text));
                   }
+                  else if(EquipType.GOURD_EXP_BOTTLE.indexOf(_item.TemplateID) >= 0)
+                  {
+                     SocketManager.Instance.out.sendUseCard(_item.BagType,_item.Place,[_item.TemplateID],_item.PayType,false,true,int(_inputText.text));
+                  }
                   else
                   {
                      SocketManager.Instance.out.sendItemOpenUp(_item.BagType,_item.Place,int(_inputText.text));

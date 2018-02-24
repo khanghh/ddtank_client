@@ -87,6 +87,7 @@ package game.objects
             else
             {
                map.smallMap.updatePos(_smallBall,pos);
+               map.updateObjectPos(this,pos);
                if(_currentBombTimer > -1)
                {
                   _loc7_ = Point.distance(param1,pos);

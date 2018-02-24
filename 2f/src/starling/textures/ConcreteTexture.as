@@ -1,14 +1,19 @@
 package starling.textures
 {
    import flash.display.Bitmap;
-import flash.display.BitmapData;
-import flash.display3D.textures.TextureBase;
-import flash.geom.Point;
-import flash.media.Camera;
-import flash.net.NetStream;
-import flash.utils.ByteArray;
-
-import starling.errors.MissingContextError;
+   import flash.display.BitmapData;
+   import flash.display3D.Context3D;
+   import flash.display3D.textures.TextureBase;
+   import flash.geom.Matrix;
+   import flash.geom.Point;
+   import flash.geom.Rectangle;
+   import flash.media.Camera;
+   import flash.net.NetStream;
+   import flash.utils.ByteArray;
+   import flash.utils.getQualifiedClassName;
+   import starling.core.RenderSupport;
+   import starling.core.Starling;
+   import starling.errors.MissingContextError;
    import starling.errors.NotSupportedError;
    import starling.utils.Color;
    import starling.utils.execute;

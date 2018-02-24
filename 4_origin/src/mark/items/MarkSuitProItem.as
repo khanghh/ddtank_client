@@ -30,7 +30,7 @@ package mark.items
                   _loc3_ = _loc2_;
                }
             }
-            chipIcon.gotoAndStop(Math.ceil(_loc3_.Id / 2));
+            chipIcon.gotoAndStop(Math.ceil(_loc3_.Id / 2) - 1);
             _loc4_ = new FilterFrameText();
             _loc4_.htmlText = _loc3_.Explain;
             chipIcon.toolTip = _loc4_.text;

@@ -158,6 +158,10 @@ package gameCommon.model
       
       private var _isFog:Boolean;
       
+      private var _backEffFog:Boolean;
+      
+      private var _backEffRadius:Number = -1;
+      
       private var _isRedSkull:Boolean;
       
       private var _isNoNole:Boolean;
@@ -371,6 +375,12 @@ package gameCommon.model
       public function get isFog() : Boolean{return false;}
       
       public function set isFog(param1:Boolean) : void{}
+      
+      public function get backEffFog() : Boolean{return false;}
+      
+      public function set updateBackFog(param1:Number) : void{}
+      
+      public function get backEffRadius() : Number{return 0;}
       
       public function get isRedSkull() : Boolean{return false;}
       

@@ -35,7 +35,7 @@ package ddt.utils
          _loc9_.onConfirm = param5;
          _loc9_.onCheckOut = param4;
          _loc9_.onCancel = param6;
-         _loc9_.alert("Cảnh cáo：",param1,"O K","Hủy",false,false,false,2,null,_loc10_,30,true,param7,param8);
+         _loc9_.alert("Cảnh cáo：",param1,"O K","Hủy",false,true,false,2,null,_loc10_,30,true,param7,param8);
          return _loc9_;
       }
    }

@@ -72,18 +72,18 @@ package dragonBones
       public function invalidUpdate() : void{}
       
       override protected function calculateRelativeParentTransform() : void{}
-      
-      function update(param1:Boolean = false) : void{}
-      
-      function hideSlots() : void{}
-      
-      function arriveAtFrame(param1:Frame, param2:TimelineState, param3:AnimationState, param4:Boolean) : void{}
-      
-      function addState(param1:TimelineState) : void{}
-      
-      function removeState(param1:TimelineState) : void{}
-      
-      function removeAllStates() : void{}
+
+       protected function update(param1:Boolean = false) : void{}
+
+       protected function hideSlots() : void{}
+
+       protected function arriveAtFrame(param1:Frame, param2:TimelineState, param3:AnimationState, param4:Boolean) : void{}
+
+       protected function addState(param1:TimelineState) : void{}
+
+       protected function removeState(param1:TimelineState) : void{}
+
+       protected function removeAllStates() : void{}
       
       private function blendingTimeline() : void{}
       

@@ -13,7 +13,6 @@ package academy
    public class AcademyController extends BaseStateView
    {
        
-      
       private var _model:AcademyModel;
       
       private var _view:AcademyView;

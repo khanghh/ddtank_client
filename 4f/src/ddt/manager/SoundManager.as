@@ -23,6 +23,8 @@ package ddt.manager
       
       public static const AUDIOII:String = "audioii";
       
+      public static const AUDIOBATTLE:String = "audiobattle";
+      
       private static const MusicFailedTryTime:int = 3;
       
       private static var _instance:SoundManager;
@@ -53,6 +55,8 @@ package ddt.manager
       private var _musicVolume:Number;
       
       private var soundVolumn:Number;
+      
+      public var audioBattleComplete:Boolean;
       
       public var audioLiteComplete:Boolean;
       
@@ -95,6 +99,8 @@ package ddt.manager
       private function initII() : void{}
       
       private function initLite() : void{}
+      
+      private function initBattle() : void{}
       
       public function get audioAllComplete() : Boolean{return false;}
       

@@ -81,6 +81,10 @@ package ddt.data.goods
       
       public function get IsBadgeType() : Boolean{return false;}
       
+      public function get goodsPrice() : int{return 0;}
+      
+      public function get goodsPriceToString() : String{return null;}
+      
       public function toString(param1:Boolean = false) : String{return null;}
       
       public function toStringI() : String{return null;}

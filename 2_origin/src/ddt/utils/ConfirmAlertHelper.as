@@ -3,6 +3,7 @@ package ddt.utils
    import com.pickgliss.events.FrameEvent;
    import com.pickgliss.ui.AlertManager;
    import com.pickgliss.ui.controls.alert.BaseAlerFrame;
+   import com.pickgliss.ui.controls.alert.SimpleAlertWithNotShowAgain;
    import ddt.events.CEvent;
    import flash.events.EventDispatcher;
    
@@ -59,6 +60,10 @@ package ddt.utils
       protected function confirmResponse(param1:FrameEvent) : void
       {
          _frame.removeEventListener("response",confirmResponse);
+         if(_frame is SimpleAlertWithNotShowAgain)
+         {
+            _data.notShowAlertAgain = (_frame as SimpleAlertWithNotShowAgain).isNoPrompt;
+         }
          _data.isBind = _frame.isBand;
          if(param1.responseCode == 2 || param1.responseCode == 3)
          {

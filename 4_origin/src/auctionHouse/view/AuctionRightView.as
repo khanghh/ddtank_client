@@ -146,10 +146,10 @@ package auctionHouse.view
          _bidpriceTxt.text = LanguageMgr.GetTranslation("tank.ddtauctionHouse.text.price");
          _tableline = ComponentFactory.Instance.creatBitmap("asset.ddtauction.tableLine");
          addChild(_tableline);
-         _tableline.x = 264;
+         _tableline.x = 258;
          _tableline1 = ComponentFactory.Instance.creatBitmap("asset.ddtauction.tableLine");
          addChild(_tableline1);
-         _tableline1.x = 314;
+         _tableline1.x = 323;
          _tableline2 = ComponentFactory.Instance.creatBitmap("asset.ddtauction.tableLine");
          addChild(_tableline2);
          _tableline2.x = 426;
@@ -160,7 +160,7 @@ package auctionHouse.view
          addChild(_tableline4);
          GoodsName_btn = new Sprite();
          GoodsName_btn.graphics.beginFill(16777215,1);
-         GoodsName_btn.graphics.drawRect(0,6,190,30);
+         GoodsName_btn.graphics.drawRect(0,6,186,30);
          GoodsName_btn.graphics.endFill();
          GoodsName_btn.alpha = 0;
          GoodsName_btn.buttonMode = true;
@@ -168,12 +168,12 @@ package auctionHouse.view
          GoodsName_btn.x = 74;
          RemainingTime_btn = new Sprite();
          RemainingTime_btn.graphics.beginFill(16777215,1);
-         RemainingTime_btn.graphics.drawRect(0,6,109,30);
+         RemainingTime_btn.graphics.drawRect(0,6,103,30);
          RemainingTime_btn.graphics.endFill();
          RemainingTime_btn.alpha = 0;
          RemainingTime_btn.buttonMode = true;
          addChild(RemainingTime_btn);
-         RemainingTime_btn.x = 317;
+         RemainingTime_btn.x = 323;
          SellPerson_btn = new Sprite();
          SellPerson_btn.graphics.beginFill(16777215,1);
          SellPerson_btn.graphics.drawRect(0,6,88,30);

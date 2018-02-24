@@ -124,6 +124,14 @@ package auctionHouse.view
       private static const PETEQUIP:int = 38;
       
       private static const PETSTONE:int = 39;
+      
+      private static const MARK1:int = 40;
+      
+      private static const MARK2:int = 41;
+      
+      private static const MARK3:int = 42;
+      
+      private static const MARK4:int = 43;
        
       
       private var menu:VerticalMenu;
@@ -255,142 +263,154 @@ package auctionHouse.view
       
       function setCategory(param1:Vector.<CateCoryInfo>) : void
       {
-         var _loc52_:* = null;
+         var _loc58_:* = null;
          var _loc6_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftStripAsset(ComponentFactory.Instance.creatComponentByStylename("ddtauctionHouse.fuzhuang")),getMainCateInfo(21,LanguageMgr.GetTranslation("")));
          var _loc5_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftStripAsset(ComponentFactory.Instance.creatComponentByStylename("ddtauctionHouse.meirong")),getMainCateInfo(22,LanguageMgr.GetTranslation("")));
          var _loc3_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftStripAsset(ComponentFactory.Instance.creatComponentByStylename("ddtauctionHouse.prop")),getMainCateInfo(23,LanguageMgr.GetTranslation("")));
-         var _loc46_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftStripAsset(ComponentFactory.Instance.creatComponentByStylename("ddtauctionHouse.weapon")),getMainCateInfo(25,LanguageMgr.GetTranslation("")));
-         var _loc47_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftStripAsset(ComponentFactory.Instance.creatComponentByStylename("ddtauctionHouse.qianghuahecheng")),getMainCateInfo(1100,LanguageMgr.GetTranslation("")));
-         var _loc51_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftStripAsset(ComponentFactory.Instance.creatComponentByStylename("ddtauctionHouse.baozhuzuantou")),getMainCateInfo(26,LanguageMgr.GetTranslation("")));
-         var _loc48_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftStripAsset(ComponentFactory.Instance.creatComponentByStylename("ddtauctionHouse.xycp")),getMainCateInfo(30,LanguageMgr.GetTranslation("")));
-         var _loc53_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftStripAsset(ComponentFactory.Instance.creatComponentByStylename("ddtauctionHouse.cards")),getMainCateInfo(31,LanguageMgr.GetTranslation("")));
-         var _loc22_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftStripAsset(ComponentFactory.Instance.creatComponentByStylename("ddtauctionHouse.pets")),getMainCateInfo(36,LanguageMgr.GetTranslation("")));
-         var _loc40_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtauctionHouse.Weapon");
+         var _loc52_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftStripAsset(ComponentFactory.Instance.creatComponentByStylename("ddtauctionHouse.weapon")),getMainCateInfo(25,LanguageMgr.GetTranslation("")));
+         var _loc53_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftStripAsset(ComponentFactory.Instance.creatComponentByStylename("ddtauctionHouse.qianghuahecheng")),getMainCateInfo(1100,LanguageMgr.GetTranslation("")));
+         var _loc57_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftStripAsset(ComponentFactory.Instance.creatComponentByStylename("ddtauctionHouse.baozhuzuantou")),getMainCateInfo(26,LanguageMgr.GetTranslation("")));
+         var _loc54_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftStripAsset(ComponentFactory.Instance.creatComponentByStylename("ddtauctionHouse.xycp")),getMainCateInfo(30,LanguageMgr.GetTranslation("")));
+         var _loc59_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftStripAsset(ComponentFactory.Instance.creatComponentByStylename("ddtauctionHouse.cards")),getMainCateInfo(31,LanguageMgr.GetTranslation("")));
+         var _loc26_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftStripAsset(ComponentFactory.Instance.creatComponentByStylename("ddtauctionHouse.pets")),getMainCateInfo(36,LanguageMgr.GetTranslation("")));
+         var _loc28_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftStripAsset(ComponentFactory.Instance.creatComponentByStylename("ddtauctionHouse.mark")),getMainCateInfo(36,LanguageMgr.GetTranslation("")));
+         var _loc45_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtauctionHouse.Weapon");
          var _loc10_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtauctionHouse.cloth");
-         var _loc45_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.auctionHouse.beauty");
-         var _loc50_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtauction.qianghuahechengIcon");
+         var _loc50_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.auctionHouse.beauty");
+         var _loc56_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtauction.qianghuahechengIcon");
          var _loc15_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtauction.hechengshi");
-         var _loc42_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.auctionHouse.sphere");
-         var _loc43_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtauctionHouse.drill");
+         var _loc47_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.auctionHouse.sphere");
+         var _loc48_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtauctionHouse.drill");
          var _loc7_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtauctionHouse.rarechip");
          var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtauctionHouse.cards");
-         var _loc44_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtauctionHouse.prop");
-         var _loc41_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtauctionHouse.petIcon");
-         _loc42_.scaleX = 0.397435897435897;
-         _loc42_.scaleY = 0.384615384615385;
-         menu.addItemAt(_loc46_,-1);
+         var _loc49_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtauctionHouse.prop");
+         var _loc46_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtauctionHouse.petIcon");
+         var _loc51_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtauctionHouse.markIcon");
+         _loc47_.scaleX = 0.397435897435897;
+         _loc47_.scaleY = 0.384615384615385;
+         menu.addItemAt(_loc52_,-1);
          menu.addItemAt(_loc6_,-1);
          menu.addItemAt(_loc5_,-1);
-         menu.addItemAt(_loc47_,-1);
-         menu.addItemAt(_loc51_,-1);
-         menu.addItemAt(_loc48_,-1);
          menu.addItemAt(_loc53_,-1);
+         menu.addItemAt(_loc57_,-1);
+         menu.addItemAt(_loc54_,-1);
+         menu.addItemAt(_loc59_,-1);
          menu.addItemAt(_loc3_,-1);
-         menu.addItemAt(_loc22_,-1);
-         _loc46_.addChild(_loc40_);
+         menu.addItemAt(_loc26_,-1);
+         menu.addItemAt(_loc28_,-1);
+         _loc52_.addChild(_loc45_);
          _loc6_.addChild(_loc10_);
-         _loc5_.addChild(_loc45_);
-         _loc47_.addChild(_loc50_);
-         _loc51_.addChild(_loc42_);
-         _loc48_.addChild(_loc7_);
-         _loc53_.addChild(_loc2_);
-         _loc3_.addChild(_loc44_);
-         _loc22_.addChild(_loc41_);
-         var _loc57_:int = 0;
-         var _loc56_:* = param1;
+         _loc5_.addChild(_loc50_);
+         _loc53_.addChild(_loc56_);
+         _loc57_.addChild(_loc47_);
+         _loc54_.addChild(_loc7_);
+         _loc59_.addChild(_loc2_);
+         _loc3_.addChild(_loc49_);
+         _loc26_.addChild(_loc46_);
+         _loc28_.addChild(_loc51_);
+         var _loc63_:int = 0;
+         var _loc62_:* = param1;
          for each(var _loc11_ in param1)
          {
             if(_loc11_.ID == 1 || _loc11_.ID == 2 || _loc11_.ID == 5)
             {
-               _loc52_ = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),_loc11_);
-               menu.addItemAt(_loc52_,1);
+               _loc58_ = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),_loc11_);
+               menu.addItemAt(_loc58_,1);
             }
             else if(_loc11_.ID == 13 || _loc11_.ID == 15 || _loc11_.ID == 6 || _loc11_.ID == 4 || _loc11_.ID == 3)
             {
-               _loc52_ = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),_loc11_);
-               menu.addItemAt(_loc52_,2);
+               _loc58_ = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),_loc11_);
+               menu.addItemAt(_loc58_,2);
             }
             else if(_loc11_.ID == 11 || _loc11_.ID == 16)
             {
-               _loc52_ = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),_loc11_);
-               menu.addItemAt(_loc52_,7);
+               _loc58_ = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),_loc11_);
+               menu.addItemAt(_loc58_,7);
             }
             else
             {
-               _loc52_ = null;
+               _loc58_ = null;
             }
          }
          var _loc8_:CateCoryInfo = new CateCoryInfo();
          _loc8_.ID = 24;
          _loc8_.Name = LanguageMgr.GetTranslation("tank.auctionHouse.view.jewelry");
-         var _loc29_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),_loc8_);
-         menu.addItemAt(_loc29_,1);
-         var _loc28_:CateCoryInfo = new CateCoryInfo();
-         _loc28_.ID = 7;
-         _loc28_.Name = LanguageMgr.GetTranslation("tank.auctionHouse.view.BrowseLeftMenuView.Weapon");
-         var _loc39_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),_loc28_);
-         menu.addItemAt(_loc39_,0);
+         var _loc34_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),_loc8_);
+         menu.addItemAt(_loc34_,1);
          var _loc33_:CateCoryInfo = new CateCoryInfo();
-         _loc33_.ID = 17;
-         _loc33_.Name = LanguageMgr.GetTranslation("tank.auctionHouse.view.offhand");
-         var _loc31_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),_loc33_);
-         menu.addItemAt(_loc31_,0);
-         var _loc16_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(11025,LanguageMgr.GetTranslation("tank.auctionHouse.view.BrowseLeftMenuView.qianghua")));
-         menu.addItemAt(_loc16_,3);
-         var _loc17_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1106,LanguageMgr.GetTranslation("BrowseLeftMenuView.zhuque")));
-         var _loc20_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1107,LanguageMgr.GetTranslation("BrowseLeftMenuView.xuanwu")));
-         var _loc19_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1108,LanguageMgr.GetTranslation("BrowseLeftMenuView.qinglong")));
-         var _loc21_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1109,LanguageMgr.GetTranslation("BrowseLeftMenuView.baihu")));
-         menu.addItemAt(_loc17_,3);
-         menu.addItemAt(_loc20_,3);
+         _loc33_.ID = 7;
+         _loc33_.Name = LanguageMgr.GetTranslation("tank.auctionHouse.view.BrowseLeftMenuView.Weapon");
+         var _loc44_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),_loc33_);
+         menu.addItemAt(_loc44_,0);
+         var _loc38_:CateCoryInfo = new CateCoryInfo();
+         _loc38_.ID = 17;
+         _loc38_.Name = LanguageMgr.GetTranslation("tank.auctionHouse.view.offhand");
+         var _loc36_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),_loc38_);
+         menu.addItemAt(_loc36_,0);
+         var _loc19_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(11025,LanguageMgr.GetTranslation("tank.auctionHouse.view.BrowseLeftMenuView.qianghua")));
          menu.addItemAt(_loc19_,3);
-         menu.addItemAt(_loc21_,3);
-         var _loc30_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1111,LanguageMgr.GetTranslation("BrowseLeftMenuView.wuqisp")));
-         var _loc32_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1112,LanguageMgr.GetTranslation("BrowseLeftMenuView.fuwuqisp")));
-         var _loc27_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1121,LanguageMgr.GetTranslation("BrowseLeftMenuView.xiangliansp")));
-         menu.addItemAt(_loc27_,5);
-         menu.addItemAt(_loc30_,5);
+         var _loc22_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1106,LanguageMgr.GetTranslation("BrowseLeftMenuView.zhuque")));
+         var _loc24_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1107,LanguageMgr.GetTranslation("BrowseLeftMenuView.xuanwu")));
+         var _loc23_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1108,LanguageMgr.GetTranslation("BrowseLeftMenuView.qinglong")));
+         var _loc25_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1109,LanguageMgr.GetTranslation("BrowseLeftMenuView.baihu")));
+         menu.addItemAt(_loc22_,3);
+         menu.addItemAt(_loc24_,3);
+         menu.addItemAt(_loc23_,3);
+         menu.addItemAt(_loc25_,3);
+         var _loc35_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1111,LanguageMgr.GetTranslation("BrowseLeftMenuView.wuqisp")));
+         var _loc37_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1112,LanguageMgr.GetTranslation("BrowseLeftMenuView.fuwuqisp")));
+         var _loc32_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1121,LanguageMgr.GetTranslation("BrowseLeftMenuView.xiangliansp")));
          menu.addItemAt(_loc32_,5);
-         var _loc34_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1113,LanguageMgr.GetTranslation("BrowseLeftMenuView.freakCard")));
-         var _loc35_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1114,LanguageMgr.GetTranslation("BrowseLeftMenuView.equipCard")));
-         menu.addItemAt(_loc34_,6);
-         menu.addItemAt(_loc35_,6);
+         menu.addItemAt(_loc35_,5);
+         menu.addItemAt(_loc37_,5);
+         var _loc39_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1113,LanguageMgr.GetTranslation("BrowseLeftMenuView.freakCard")));
+         var _loc40_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1114,LanguageMgr.GetTranslation("BrowseLeftMenuView.equipCard")));
+         menu.addItemAt(_loc39_,6);
+         menu.addItemAt(_loc40_,6);
          var _loc14_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(37,LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.PetTxt1")));
          var _loc13_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(38,LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.PetTxt2")));
          var _loc12_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(39,LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.PetTxt3")));
          menu.addItemAt(_loc14_,8);
          menu.addItemAt(_loc13_,8);
          menu.addItemAt(_loc12_,8);
-         var _loc49_:CateCoryInfo = new CateCoryInfo();
-         _loc49_.ID = 27;
-         _loc49_.Name = LanguageMgr.GetTranslation("tank.auctionHouse.view.triangle");
-         var _loc4_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),_loc49_);
+         var _loc55_:CateCoryInfo = new CateCoryInfo();
+         _loc55_.ID = 27;
+         _loc55_.Name = LanguageMgr.GetTranslation("tank.auctionHouse.view.triangle");
+         var _loc4_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),_loc55_);
          menu.addItemAt(_loc4_,4);
          var _loc9_:CateCoryInfo = new CateCoryInfo();
          _loc9_.ID = 28;
          _loc9_.Name = LanguageMgr.GetTranslation("tank.auctionHouse.view.round");
-         var _loc23_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),_loc9_);
-         menu.addItemAt(_loc23_,4);
-         var _loc55_:CateCoryInfo = new CateCoryInfo();
-         _loc55_.ID = 29;
-         _loc55_.Name = LanguageMgr.GetTranslation("tank.auctionHouse.view.square");
-         var _loc18_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),_loc55_);
-         menu.addItemAt(_loc18_,4);
-         var _loc54_:CateCoryInfo = new CateCoryInfo();
-         _loc54_.ID = 35;
-         _loc54_.Name = LanguageMgr.GetTranslation("tank.auctionHouse.view.wishBead");
-         var _loc38_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),_loc54_);
-         menu.addItemAt(_loc38_,4);
-         var _loc36_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1116,LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.drillnote",1116 - 1115)));
-         var _loc37_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1117,LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.drillnote",1117 - 1115)));
-         var _loc24_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1118,LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.drillnote",1118 - 1115)));
-         var _loc25_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1119,LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.drillnote",1119 - 1115)));
-         var _loc26_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1120,LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.drillnote",1120 - 1115)));
-         menu.addItemAt(_loc36_,4);
-         menu.addItemAt(_loc37_,4);
-         menu.addItemAt(_loc24_,4);
-         menu.addItemAt(_loc25_,4);
-         menu.addItemAt(_loc26_,4);
+         var _loc27_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),_loc9_);
+         menu.addItemAt(_loc27_,4);
+         var _loc61_:CateCoryInfo = new CateCoryInfo();
+         _loc61_.ID = 29;
+         _loc61_.Name = LanguageMgr.GetTranslation("tank.auctionHouse.view.square");
+         var _loc21_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),_loc61_);
+         menu.addItemAt(_loc21_,4);
+         var _loc60_:CateCoryInfo = new CateCoryInfo();
+         _loc60_.ID = 35;
+         _loc60_.Name = LanguageMgr.GetTranslation("tank.auctionHouse.view.wishBead");
+         var _loc43_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),_loc60_);
+         menu.addItemAt(_loc43_,4);
+         var _loc41_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1116,LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.drillnote",1116 - 1115)));
+         var _loc42_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1117,LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.drillnote",1117 - 1115)));
+         var _loc29_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1118,LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.drillnote",1118 - 1115)));
+         var _loc30_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1119,LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.drillnote",1119 - 1115)));
+         var _loc31_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(1120,LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.drillnote",1120 - 1115)));
+         menu.addItemAt(_loc41_,4);
+         menu.addItemAt(_loc42_,4);
+         menu.addItemAt(_loc29_,4);
+         menu.addItemAt(_loc30_,4);
+         menu.addItemAt(_loc31_,4);
+         var _loc18_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(40,LanguageMgr.GetTranslation("mark.type3")));
+         var _loc16_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(41,LanguageMgr.GetTranslation("mark.type4")));
+         var _loc17_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(42,LanguageMgr.GetTranslation("mark.type1")));
+         var _loc20_:BrowseLeftMenuItem = new BrowseLeftMenuItem(new BrowserLeftSubStripAsset(),getMainCateInfo(43,LanguageMgr.GetTranslation("mark.type2")));
+         menu.addItemAt(_loc18_,9);
+         menu.addItemAt(_loc16_,9);
+         menu.addItemAt(_loc17_,9);
+         menu.addItemAt(_loc20_,9);
          list.invalidateViewport();
       }
       

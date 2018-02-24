@@ -95,7 +95,7 @@ package auctionHouse.view
          _mouthfulTxt.x = 522;
          _tableline = ComponentFactory.Instance.creatBitmap("asset.ddtauction.tableLine");
          addChild(_tableline);
-         _tableline.x = 289;
+         _tableline.x = 279;
          _tableline1 = ComponentFactory.Instance.creatBitmap("asset.ddtauction.tableLine");
          addChild(_tableline1);
          _tableline1.x = 339;

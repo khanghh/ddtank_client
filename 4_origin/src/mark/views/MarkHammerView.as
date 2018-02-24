@@ -234,10 +234,8 @@ package mark.views
          var chip:MarkChipData = MarkMgr.inst.model.getChipById(MarkMgr.inst.model.chipItemID);
          var itemInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(chip.templateId);
          _item.info = itemInfo;
-         _item.tipDirctions = "7,6,2,1,5,4,0,3,6";
          _item.tipGapV = 10;
          _item.tipGapH = 10;
-         _item.tipStyle = "mark.MarkChipTip";
          _item.tipData = chip;
          var stars:Array = [clipStar1,clipStar2,clipStar3,clipStar4,clipStar5];
          var i:int = 0;

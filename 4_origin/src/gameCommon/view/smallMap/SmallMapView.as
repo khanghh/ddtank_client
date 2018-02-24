@@ -229,9 +229,6 @@ package gameCommon.view.smallMap
          _foreground = new Shape();
          addChild(_foreground);
          _titleBar = new SmallMapTitleBar(_missionInfo);
-         _titleBar.width = _w;
-         _titleBar.y = -_titleBar.height + 1;
-         _titleBar = new SmallMapTitleBar(_missionInfo);
          if(GameControl.Instance.smallMapGrid())
          {
             _skew = Math.random() * 10 + 5;

@@ -39,6 +39,7 @@ package hallIcon.view
    import ddt.manager.PolarRegionManager;
    import ddt.manager.PyramidManager;
    import ddt.manager.RouletteManager;
+   import ddt.manager.ServerConfigManager;
    import ddt.manager.SharedManager;
    import ddt.manager.SocketManager;
    import ddt.manager.SoundManager;
@@ -48,6 +49,7 @@ package hallIcon.view
    import ddt.view.bossbox.SmallBoxButton;
    import ddtKingWay.DDTKingWayManager;
    import ddtmatch.manager.DDTMatchManager;
+   import devilTurn.DevilTurnManager;
    import entertainmentMode.EntertainmentModeManager;
    import escort.EscortManager;
    import exchangeAct.ExchangeActManager;
@@ -987,7 +989,17 @@ package hallIcon.view
                                                                                                                                                                                                 {
                                                                                                                                                                                                    if("bank" !== _loc6_)
                                                                                                                                                                                                    {
-                                                                                                                                                                                                      if("stock" === _loc6_)
+                                                                                                                                                                                                      if("stock" !== _loc6_)
+                                                                                                                                                                                                      {
+                                                                                                                                                                                                         if("devilTurn" === _loc6_)
+                                                                                                                                                                                                         {
+                                                                                                                                                                                                            if(ActivityEnterGrapType.Instance.IsEnterGame(ServerConfigManager.instance.devilTurnOpenLevelLimit))
+                                                                                                                                                                                                            {
+                                                                                                                                                                                                               DevilTurnManager.instance.show();
+                                                                                                                                                                                                            }
+                                                                                                                                                                                                         }
+                                                                                                                                                                                                      }
+                                                                                                                                                                                                      else
                                                                                                                                                                                                       {
                                                                                                                                                                                                          StockMgr.inst.showMainFrame();
                                                                                                                                                                                                       }
@@ -1595,7 +1607,14 @@ package hallIcon.view
                                                                                                                                                                                                                                                                               {
                                                                                                                                                                                                                                                                                  if("mines" !== _loc3_)
                                                                                                                                                                                                                                                                                  {
-                                                                                                                                                                                                                                                                                    if("teamBattle" === _loc3_)
+                                                                                                                                                                                                                                                                                    if("teamBattle" !== _loc3_)
+                                                                                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                                                                                       if("devilTurn" === _loc3_)
+                                                                                                                                                                                                                                                                                       {
+                                                                                                                                                                                                                                                                                          _loc2_ = "assets.hallIcon.devilTurnIcon";
+                                                                                                                                                                                                                                                                                       }
+                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                    else
                                                                                                                                                                                                                                                                                     {
                                                                                                                                                                                                                                                                                        _loc2_ = "assets.hallIcon.teamBattleIcon";
                                                                                                                                                                                                                                                                                     }

@@ -191,6 +191,8 @@ package trainer.data
       
       public static const GAME_DICE:int = 333;
       
+      public static const GOURD_EXP:int = 153;
+      
       public static const MINES:int = 650;
        
       

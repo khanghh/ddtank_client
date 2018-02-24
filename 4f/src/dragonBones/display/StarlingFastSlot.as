@@ -24,7 +24,7 @@ package dragonBones.display
       override protected function getDisplayIndex() : int{return 0;}
       
       override protected function addDisplayToContainer(param1:Object, param2:int = -1) : void{}
-      
+
       override protected function removeDisplayFromContainer() : void{}
       
       override protected function updateTransform() : void{}

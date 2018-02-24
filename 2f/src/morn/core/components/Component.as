@@ -78,6 +78,8 @@ package morn.core.components
       
       protected var _disposeHandler:Handler;
       
+      protected var _stylename:String;
+      
       protected var _changeCount:int = 0;
       
       protected var _tipData:Object;
@@ -93,6 +95,10 @@ package morn.core.components
       protected var _changedPropeties:Dictionary;
       
       public function Component(){super();}
+      
+      public function get stylename() : String{return null;}
+      
+      public function set stylename(param1:String) : void{}
       
       protected function preinitialize() : void{}
       

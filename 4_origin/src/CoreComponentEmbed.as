@@ -43,6 +43,7 @@ package
    import ddtKingFloat.views.DDTKingFloatBuyConfirmView;
    import ddtKingFloat.views.DDTKingFloatMainView;
    import demonChiYou.view.DemonChiYouSence;
+   import devilTurn.view.DevilTurnMainView;
    import dice.view.DiceSystem;
    import dragonBoat.view.DragonBoatShopFrame;
    import enchant.view.EnchantTips;
@@ -330,6 +331,7 @@ package
          MarkMainFrame;
          MarkOtherView;
          MarkChipTipUI;
+         TreasureRoomView;
       }
    }
 }

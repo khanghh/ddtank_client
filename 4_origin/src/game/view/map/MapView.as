@@ -9,6 +9,7 @@ package game.view.map
    import com.pickgliss.ui.LayerManager;
    import com.pickgliss.ui.controls.alert.BaseAlerFrame;
    import com.pickgliss.utils.ClassUtils;
+   import com.pickgliss.utils.ObjectUtils;
    import ddt.data.BallInfo;
    import ddt.data.PathInfo;
    import ddt.data.map.MapInfo;
@@ -132,11 +133,13 @@ package game.view.map
       
       private var _objects:Dictionary;
       
-      private var _gamePlayerList:Vector.<GamePlayer>;
+      public var gamePlayerList:Vector.<GamePlayer>;
       
       private var expName:Vector.<String>;
       
       private var expDic:Dictionary;
+      
+      private var _backEffectView:BackEffectView;
       
       private var _currentTopLiving:GameLiving;
       
@@ -161,7 +164,7 @@ package game.view.map
       public function MapView(param1:GameInfo, param2:MapLoader)
       {
          _objects = new Dictionary();
-         _gamePlayerList = new Vector.<GamePlayer>();
+         gamePlayerList = new Vector.<GamePlayer>();
          expName = new Vector.<String>();
          expDic = new Dictionary();
          GameControl.Instance.Current.selfGamePlayer.currentMap = this;
@@ -691,10 +694,11 @@ package game.view.map
                _smallMap.addObj(_loc2_.smallView);
                _smallMap.updatePos(_loc2_.smallView,_loc2_.pos);
             }
+            addToBackEffectView(_loc2_);
          }
          if(param1 is GamePlayer)
          {
-            _gamePlayerList.push(param1);
+            gamePlayerList.push(param1);
          }
       }
       
@@ -742,17 +746,17 @@ package game.view.map
          var _loc2_:* = null;
          var _loc3_:* = null;
          var _loc1_:int = 0;
-         if(!_gamePlayerList || _gamePlayerList.length == 0)
+         if(!gamePlayerList || gamePlayerList.length == 0)
          {
             return;
          }
          _loc4_ = 0;
-         while(_loc4_ < _gamePlayerList.length)
+         while(_loc4_ < gamePlayerList.length)
          {
-            _loc2_ = _gamePlayerList[_loc4_];
+            _loc2_ = gamePlayerList[_loc4_];
             if(_loc2_ == null || !_loc2_.isLiving || _loc2_.facecontainer == null)
             {
-               _gamePlayerList.splice(_loc4_,1);
+               gamePlayerList.splice(_loc4_,1);
             }
             else if(_loc2_.facecontainer.isActingExpression)
             {
@@ -850,6 +854,7 @@ package game.view.map
             {
                _smallMap.removeObj(_loc2_.smallView);
             }
+            removeToBackEffectView(_loc2_);
          }
       }
       
@@ -866,6 +871,7 @@ package game.view.map
                _smallMap.addObj(_loc2_.smallView);
                _smallMap.updatePos(_loc2_.smallView,_loc2_.pos);
             }
+            addToBackEffectView(_loc2_);
          }
       }
       
@@ -884,7 +890,73 @@ package game.view.map
             {
                _smallMap.removeObj(_loc2_.smallView);
             }
+            removeToBackEffectView(_loc2_);
          }
+      }
+      
+      public function createBackEffectView(param1:Number = 400) : void
+      {
+         if(_backEffectView == null)
+         {
+            _backEffectView = new BackEffectView(this);
+         }
+         _backEffectView.gamePlayerRadius(param1);
+         _backEffectView.resetEffect();
+         addChild(_backEffectView);
+      }
+      
+      public function removeBackEffectView() : void
+      {
+         if(_backEffectView)
+         {
+            _backEffectView.removeBackEffectView();
+         }
+         _backEffectView = null;
+      }
+      
+      public function hideBackEffectView() : void
+      {
+         if(_backEffectView)
+         {
+            _backEffectView.visible = false;
+         }
+      }
+      
+      public function showBackEffectView() : void
+      {
+         if(_backEffectView)
+         {
+            _backEffectView.visible = true;
+         }
+      }
+      
+      private function addToBackEffectView(param1:PhysicalObj) : void
+      {
+         if(_backEffectView)
+         {
+            _backEffectView.addObject(param1);
+         }
+      }
+      
+      private function updatePosBackEffectView(param1:PhysicalObj, param2:Point) : void
+      {
+         if(_backEffectView)
+         {
+            _backEffectView.updatePos(param1,param2);
+         }
+      }
+      
+      private function removeToBackEffectView(param1:PhysicalObj) : void
+      {
+         if(_backEffectView)
+         {
+            _backEffectView.removeObj(param1);
+         }
+      }
+      
+      public function updateObjectPos(param1:PhysicalObj, param2:Point) : void
+      {
+         updatePosBackEffectView(param1,param2);
       }
       
       public function get actionCount() : int
@@ -1211,6 +1283,8 @@ package game.view.map
          _objects = null;
          _game = null;
          _info = null;
+         ObjectUtils.disposeObject(_backEffectView);
+         _backEffectView = null;
          _currentFocusedLiving = null;
          currentFocusedLiving = null;
          _currentPlayer = null;
@@ -1221,7 +1295,7 @@ package game.view.map
          _actionManager.clear();
          _actionManager = null;
          gameView = null;
-         _gamePlayerList = null;
+         gamePlayerList = null;
       }
    }
 }

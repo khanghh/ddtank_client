@@ -73,9 +73,17 @@ package mark
          _display.qualityTxt.color = QualityType.QUALITY_COLOR[chipTemplate.Character];
          _qualityTxt.text = LanguageMgr.GetTranslation("mark.chipTipName",chip.hLv,itemInfo.Name);
          _qualityTxt.textColor = QualityType.QUALITY_COLOR[chipTemplate.Character];
-         _display.lblMainPro.htmlText = LanguageMgr.GetTranslation("mark.tipBaseName",LanguageMgr.GetTranslation("mark.pro" + chip.mainPro.type));
-         _display.lblMainProValue.htmlText = LanguageMgr.GetTranslation("mark.tipValue",LanguageMgr.GetTranslation("mark.tipBaseValue",chip.mainPro.value),chip.mainPro.attachValue > 0?LanguageMgr.GetTranslation("mark.tipHammerValue",chip.mainPro.attachValue):"");
-         _display.lblMainProValue.x = _display.lblMainPro.x + _display.lblMainPro.width + 3;
+         if(chip.mainPro.value <= 0)
+         {
+            _display.lblMainPro.htmlText = LanguageMgr.GetTranslation("mark.tipProUnknown");
+            _display.lblMainProValue.htmlText = "";
+         }
+         else
+         {
+            _display.lblMainPro.htmlText = LanguageMgr.GetTranslation("mark.tipBaseName",LanguageMgr.GetTranslation("mark.pro" + chip.mainPro.type));
+            _display.lblMainProValue.htmlText = LanguageMgr.GetTranslation("mark.tipValue",LanguageMgr.GetTranslation("mark.tipBaseValue",chip.mainPro.value),chip.mainPro.attachValue > 0?LanguageMgr.GetTranslation("mark.tipHammerValue",chip.mainPro.attachValue):"");
+            _display.lblMainProValue.x = _display.lblMainPro.x + _display.lblMainPro.width + 3;
+         }
          var offsetY:int = 172;
          var pro:MarkProData = null;
          var propLbls:Array = [_display.lblPro1,_display.lblPro2,_display.lblPro3,_display.lblPro4];
@@ -89,7 +97,7 @@ package mark
          while(j < chip.props.length)
          {
             pro = chip.props[j];
-            if(!(j >= props.length || pro.type <= 0))
+            if(!(j >= props.length || pro.type <= 0 || pro.value <= 0))
             {
                propLbls[j].htmlText = LanguageMgr.GetTranslation(j + 1 < chip.bornLv?"mark.tipBaseName":"mark.tipAddName",LanguageMgr.GetTranslation("mark.pro" + pro.type));
                props[j].htmlText = LanguageMgr.GetTranslation("mark.tipValue",LanguageMgr.GetTranslation("mark.tipBaseValue",pro.value),pro.attachValue > 0?LanguageMgr.GetTranslation("mark.tipHammerValue",pro.attachValue):"");

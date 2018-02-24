@@ -30,6 +30,8 @@ package ddt.view.buff.buffButton
       
       private var _canClick:Boolean;
       
+      protected var _bg:Bitmap;
+      
       protected var _tipStyle:String;
       
       protected var _tipData:BuffTipInfo;
@@ -43,11 +45,11 @@ package ddt.view.buff.buffButton
       public function BuffButton(param1:String)
       {
          super();
-         var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap(param1);
-         var _loc3_:int = 33;
-         _loc2_.height = _loc3_;
-         _loc2_.width = _loc3_;
-         addChild(_loc2_);
+         _bg = ComponentFactory.Instance.creatBitmap(param1);
+         var _loc2_:int = 33;
+         _bg.height = _loc2_;
+         _bg.width = _loc2_;
+         addChild(_bg);
          _canClick = true;
          buttonMode = _canClick;
          _tipStyle = "core.buffTip";
@@ -200,6 +202,11 @@ package ddt.view.buff.buffButton
          removeEventListener("mouseOver",__onMouseOver);
          removeEventListener("mouseOut",__onMouseOut);
          ObjectUtils.disposeAllChildren(this);
+         if(_bg)
+         {
+            ObjectUtils.disposeObject(_bg);
+         }
+         _bg = null;
          _info = null;
          ShowTipManager.Instance.removeTip(this);
          if(parent)

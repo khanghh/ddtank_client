@@ -777,5 +777,27 @@ package ddt.manager
       public function get getEngraveVaults() : Array{return null;}
       
       public function get getEngraveVaultsFreeTimes() : int{return 0;}
+      
+      public function get devilTurnCfgBox() : Array{return null;}
+      
+      public function get devilTurnTemplateID() : int{return 0;}
+      
+      public function get devilTurnBeginDate() : String{return null;}
+      
+      public function get devilTurnEndDate() : String{return null;}
+      
+      public function get devilTurnLotteryOneCost() : int{return 0;}
+      
+      public function get devilTurnLotteryTenCost() : int{return 0;}
+      
+      public function get devilTurnTotalJackpot() : int{return 0;}
+      
+      public function get devilTurnFreeLotteryCount() : int{return 0;}
+      
+      public function get devilTurnOpenLevelLimit() : int{return 0;}
+      
+      public function get consortiaTaskPriceArr() : Array{return null;}
+      
+      public function get gameExitPunishTimes() : int{return 0;}
    }
 }

@@ -54,7 +54,11 @@ package gameCommon.view.prop
                                                 {
                                                    if(17013 !== _loc2_)
                                                    {
-                                                      return null;
+                                                      if(17015 !== _loc2_)
+                                                      {
+                                                         return null;
+                                                      }
+                                                      return ComponentFactory.Instance.creatBitmap("game.crazyTank.view.Prop17015Asset");
                                                    }
                                                    return ComponentFactory.Instance.creatBitmap("game.crazyTank.view.Prop17013Asset");
                                                 }

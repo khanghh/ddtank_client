@@ -78,6 +78,8 @@ package consortion.view.selfConsortia.consortiaTask
       
       private var _delayTimeBtn:TextButton;
       
+      private var _reSetTaskMoney:int;
+      
       public function ConsortiaMyTaskView()
       {
          super();
@@ -153,6 +155,7 @@ package consortion.view.selfConsortia.consortiaTask
          var _loc4_:int = PlayerManager.Instance.Self.Right;
          _myReseBtn.visible = ConsortiaDutyManager.GetRight(_loc4_,512);
          _delayTimeBtn.visible = ConsortiaDutyManager.GetRight(_loc4_,512);
+         ConsortionModelManager.Instance.TaskModel.lockNum = 0;
       }
       
       private function initEvents() : void
@@ -196,8 +199,25 @@ package consortion.view.selfConsortia.consortiaTask
          }
       }
       
+      private function getLockIdArr() : Array
+      {
+         var _loc2_:int = 0;
+         var _loc1_:Array = [];
+         _loc2_ = 0;
+         while(_loc2_ < _finishItemList.length)
+         {
+            if(_finishItemList[_loc2_].isLock)
+            {
+               _loc1_.push(_finishItemList[_loc2_].lockId);
+            }
+            _loc2_++;
+         }
+         return _loc1_;
+      }
+      
       private function __resetClick(param1:MouseEvent) : void
       {
+         var _loc3_:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -208,9 +228,29 @@ package consortion.view.selfConsortia.consortiaTask
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("consortia.task.stopTable"));
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("consortia.task.resetTable"),LanguageMgr.GetTranslation("consortia.task.resetContent",ConsortiaTaskView.RESET_MONEY),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2,null,"SimpleAlert",30,true,1);
-         _loc2_.moveEnable = false;
-         _loc2_.addEventListener("response",_responseI);
+         var _loc2_:Array = getLockIdArr();
+         var _loc4_:int = _loc2_.length;
+         if(_loc4_)
+         {
+            if(_loc4_ == 1)
+            {
+               _reSetTaskMoney = ConsortiaTaskView.RESET_MONEY + int(ServerConfigManager.instance.consortiaTaskPriceArr[0]);
+            }
+            else if(_loc4_ == 2)
+            {
+               _reSetTaskMoney = ConsortiaTaskView.RESET_MONEY + int(ServerConfigManager.instance.consortiaTaskPriceArr[0]) + int(ServerConfigManager.instance.consortiaTaskPriceArr[1]);
+            }
+            _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("consortia.task.resetTable"),LanguageMgr.GetTranslation("consortia.task.resetLuckContent",_loc2_.length,_reSetTaskMoney),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2,null,"SimpleAlert",30,true,1);
+            _loc3_.moveEnable = false;
+            _loc3_.addEventListener("response",_responseI);
+         }
+         else
+         {
+            _reSetTaskMoney = ConsortiaTaskView.RESET_MONEY;
+            _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("consortia.task.resetTable"),LanguageMgr.GetTranslation("consortia.task.resetContent",_reSetTaskMoney),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2,null,"SimpleAlert",30,true,1);
+            _loc3_.moveEnable = false;
+            _loc3_.addEventListener("response",_responseI);
+         }
       }
       
       private function _responseI(param1:FrameEvent) : void
@@ -225,7 +265,7 @@ package consortion.view.selfConsortia.consortiaTask
             }
             else
             {
-               CheckMoneyUtils.instance.checkMoney(param1.currentTarget.isBand,ConsortiaTaskView.RESET_MONEY,onCheckComplete);
+               CheckMoneyUtils.instance.checkMoney(param1.currentTarget.isBand,_reSetTaskMoney,onCheckComplete);
             }
          }
          ObjectUtils.disposeObject(param1.currentTarget as BaseAlerFrame);
@@ -233,7 +273,10 @@ package consortion.view.selfConsortia.consortiaTask
       
       protected function onCheckComplete() : void
       {
-         SocketManager.Instance.out.sendReleaseConsortiaTask(1,CheckMoneyUtils.instance.isBind);
+         var _loc1_:Array = getLockIdArr();
+         var _loc3_:int = !!_loc1_[0]?_loc1_[0]:0;
+         var _loc2_:int = !!_loc1_[1]?_loc1_[1]:0;
+         SocketManager.Instance.out.sendReleaseConsortiaTask(1,CheckMoneyUtils.instance.isBind,1,1,_loc3_,_loc2_);
          SocketManager.Instance.out.sendReleaseConsortiaTask(2);
       }
       
@@ -281,38 +324,73 @@ package consortion.view.selfConsortia.consortiaTask
       
       private function update() : void
       {
-         var _loc8_:int = 0;
+         var _loc11_:int = 0;
          var _loc5_:int = 0;
-         var _loc6_:int = PlayerManager.Instance.Self.Right;
-         var _loc3_:Boolean = true;
-         var _loc4_:int = _taskInfo.itemList.length;
-         _loc8_ = 0;
-         while(_loc8_ < _loc4_)
+         var _loc10_:int = 0;
+         var _loc8_:int = PlayerManager.Instance.Self.Right;
+         var _loc4_:Boolean = true;
+         var _loc6_:int = _taskInfo.itemList.length;
+         _loc11_ = 0;
+         while(_loc11_ < _loc6_)
          {
-            if(_taskInfo.itemList[_loc8_].currenValue - _taskInfo.itemList[_loc8_].targetValue < 0)
+            if(_taskInfo.itemList[_loc11_].currenValue - _taskInfo.itemList[_loc11_].targetValue < 0)
             {
-               _loc3_ = false;
+               _loc4_ = false;
                break;
             }
-            _loc8_++;
+            _loc11_++;
          }
-         PositionUtils.setPos(_contributionRankBtn,!!_loc3_?"taskRank.taskRankBtn.posFisished":"taskRank.taskRankBtn.posNotFisished");
-         _myReseBtn.visible = ConsortiaDutyManager.GetRight(_loc6_,512) && !_loc3_;
-         _delayTimeBtn.visible = ConsortiaDutyManager.GetRight(_loc6_,512);
+         PositionUtils.setPos(_contributionRankBtn,!!_loc4_?"taskRank.taskRankBtn.posFisished":"taskRank.taskRankBtn.posNotFisished");
+         _myReseBtn.visible = ConsortiaDutyManager.GetRight(_loc8_,512) && !_loc4_;
+         _delayTimeBtn.visible = ConsortiaDutyManager.GetRight(_loc8_,512);
+         var _loc7_:int = 0;
+         var _loc3_:Array = getLockIdArr();
          _loc5_ = 0;
          while(_loc5_ < _finishItemList.length)
          {
-            _finishItemList[_loc5_].update(_taskInfo.itemList[_loc5_]["taskType"],_taskInfo.itemList[_loc5_]["content"],_taskInfo.itemList[_loc5_]["currenValue"],_taskInfo.itemList[_loc5_]["targetValue"]);
+            if(_loc3_.length)
+            {
+               if(_finishItemList[_loc5_].isLock)
+               {
+                  _loc10_ = 0;
+                  while(_loc10_ < _taskInfo.itemList.length)
+                  {
+                     if(_finishItemList[_loc5_].taskId == _taskInfo.itemList[_loc10_]["id"])
+                     {
+                        _finishItemList[_loc5_].updateFinishTxt(_taskInfo.itemList[_loc10_]["currenValue"]);
+                     }
+                     _loc10_++;
+                  }
+               }
+               else
+               {
+                  _loc7_;
+                  while(_loc7_ < _taskInfo.itemList.length)
+                  {
+                     if(_loc3_.indexOf(_taskInfo.itemList[_loc7_]["id"]) == -1)
+                     {
+                        _finishItemList[_loc5_].update(_taskInfo.itemList[_loc7_]["taskType"],_taskInfo.itemList[_loc7_]["content"],_taskInfo.itemList[_loc7_]["currenValue"],_taskInfo.itemList[_loc7_]["targetValue"],_taskInfo.itemList[_loc7_]["id"]);
+                        _loc7_++;
+                        break;
+                     }
+                     _loc7_++;
+                  }
+               }
+            }
+            else
+            {
+               _finishItemList[_loc5_].update(_taskInfo.itemList[_loc5_]["taskType"],_taskInfo.itemList[_loc5_]["content"],_taskInfo.itemList[_loc5_]["currenValue"],_taskInfo.itemList[_loc5_]["targetValue"],_taskInfo.itemList[_loc5_]["id"]);
+            }
             _loc5_++;
          }
          _expTxt.text = _taskInfo.exp.toString();
          _offerTxt.text = _taskInfo.offer.toString();
          _richesTxt.text = _taskInfo.riches.toString();
          _contributionTxt.text = _taskInfo.contribution.toString();
-         var _loc7_:ConsortionSkillInfo = ConsortionModelManager.Instance.model.getSkillInfoByID(_taskInfo.buffID);
-         if(_loc7_ != null)
+         var _loc9_:ConsortionSkillInfo = ConsortionModelManager.Instance.model.getSkillInfoByID(_taskInfo.buffID);
+         if(_loc9_ != null)
          {
-            _skillNameTxt.text = _loc7_.name + "*1天";
+            _skillNameTxt.text = _loc9_.name + "*1天";
          }
          _contentTxt1.text = "1. " + _taskInfo.itemList[0]["content"];
          _contentTxt2.text = "2. " + _taskInfo.itemList[1]["content"];

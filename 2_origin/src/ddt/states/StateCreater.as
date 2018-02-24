@@ -1,10 +1,12 @@
 package ddt.states
 {
    import com.pickgliss.events.UIModuleEvent;
+   import com.pickgliss.loader.QueueLoader;
    import com.pickgliss.loader.UIModuleLoader;
    import com.pickgliss.utils.StringUtils;
    import ddt.loader.LoaderCreate;
    import ddt.manager.PlayerManager;
+   import ddt.manager.SoundManager;
    import ddt.manager.StateManager;
    import ddt.utils.AssetModuleLoader;
    import ddt.view.UIModuleSmallLoading;
@@ -613,19 +615,20 @@ package ddt.states
       
       public function createAsync(param1:String, param2:Function) : void
       {
-         var _loc4_:* = null;
          var _loc3_:* = null;
-         var _loc5_:int = 0;
+         var _loc5_:* = null;
+         var _loc4_:* = null;
+         var _loc6_:int = 0;
          _loadCall = param2;
          _currentStateType = param1;
          if(!StateManager.RecordFlag || param1 != "main")
          {
-            var _loc6_:* = param1;
-            if("consortia" !== _loc6_)
+            var _loc7_:* = param1;
+            if("consortia" !== _loc7_)
             {
-               if("farm" !== _loc6_)
+               if("farm" !== _loc7_)
                {
-                  if("pyramid" === _loc6_)
+                  if("pyramid" === _loc7_)
                   {
                      AssetModuleLoader.addRequestLoader(LoaderCreate.Instance.creatPyramidLoader());
                   }
@@ -640,15 +643,29 @@ package ddt.states
                AssetModuleLoader.addRequestLoader(LoaderCreate.Instance.creatBadgeInfoLoader());
                AssetModuleLoader.addRequestLoader(LoaderCreate.Instance.creatConsortiaWeekRewardLoader());
             }
-            _loc4_ = getNeededUIModuleByType(param1);
-            if(_loc4_ != "")
+            if(param1 == "fighting" || param1 == "fighting3d" || param1 == "trainer1" || param1 == "trainer2")
             {
-               _loc3_ = _loc4_.split(",");
-               _loc5_ = 0;
-               while(_loc5_ < _loc3_.length)
+               _loc3_ = new QueueLoader();
+               if(!SoundManager.instance.audioBattleComplete)
                {
-                  AssetModuleLoader.addModelLoader(_loc3_[_loc5_],6);
-                  _loc5_++;
+                  _loc3_.addLoader(LoaderCreate.Instance.createAudioBattleLoader());
+                  _loc3_.addEventListener("complete",__onAudioLoadComplete);
+                  _loc3_.start();
+               }
+            }
+            _loc5_ = getNeededUIModuleByType(param1);
+            if(_loc5_ != "")
+            {
+               _loc4_ = _loc5_.split(",");
+               _loc6_ = 0;
+               while(_loc6_ < _loc4_.length)
+               {
+                  AssetModuleLoader.addModelLoader(_loc4_[_loc6_],6);
+                  _loc6_++;
+               }
+               if(param1 == "auction")
+               {
+                  AssetModuleLoader.addModelLoader("mark",7);
                }
             }
          }
@@ -660,6 +677,12 @@ package ddt.states
          {
             AssetModuleLoader.startLoader(loadComplete);
          }
+      }
+      
+      private function __onAudioLoadComplete(param1:Event) : void
+      {
+         param1.currentTarget.removeEventListener("complete",__onAudioLoadComplete);
+         SoundManager.instance.setupAudioResource(["audiobattle"]);
       }
       
       private function loadComplete() : void

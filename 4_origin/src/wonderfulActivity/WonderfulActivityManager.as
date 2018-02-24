@@ -727,6 +727,7 @@ package wonderfulActivity
       {
          AssetModuleLoader.addModelLoader("ddtcalendar",6);
          AssetModuleLoader.addModelLoader("wonderfulactivity",6);
+         AssetModuleLoader.addModelLoader("mark",7);
          AssetModuleLoader.startCodeLoader(loadComplete);
       }
       

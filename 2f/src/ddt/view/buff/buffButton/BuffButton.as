@@ -30,6 +30,8 @@ package ddt.view.buff.buffButton
       
       private var _canClick:Boolean;
       
+      protected var _bg:Bitmap;
+      
       protected var _tipStyle:String;
       
       protected var _tipData:BuffTipInfo;

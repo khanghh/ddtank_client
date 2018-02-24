@@ -33,6 +33,8 @@ package consortion.view.selfConsortia.consortiaTask
       
       public var isHaveTask_noRelease:Boolean = false;
       
+      public var lockNum:int = 0;
+      
       public function ConsortiaTaskModel(param1:IEventDispatcher = null)
       {
          super(param1);

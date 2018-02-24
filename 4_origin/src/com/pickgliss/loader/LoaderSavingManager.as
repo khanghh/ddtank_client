@@ -261,7 +261,6 @@ package com.pickgliss.loader
                   _files[_loc5_.p] = true;
                   _so.flush();
                   _save.shift();
-                  trace("save local data spend:",getTimer() - _loc2_,"  left:",_save.length,"  file:",_loc5_.p);
                }
                if(_save.length == 0)
                {

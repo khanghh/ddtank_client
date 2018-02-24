@@ -25,6 +25,8 @@ package ddt.data
       
       public static const DOUBLE_PRESTIGE:int = 26;
       
+      public static const GOURD_EXP:int = 27;
+      
       public static const Caddy_Good:int = 70;
       
       public static const Save_Life:int = 51;
@@ -227,33 +229,33 @@ package ddt.data
                                              {
                                                 if(14 !== _loc1_)
                                                 {
-                                                   if(17 !== _loc1_)
+                                                   if(27 !== _loc1_)
                                                    {
-                                                      if(110 !== _loc1_)
+                                                      if(17 !== _loc1_)
                                                       {
-                                                         if(18 !== _loc1_)
+                                                         if(110 !== _loc1_)
                                                          {
-                                                            _buffItem = ItemManager.Instance.getTemplateById(TemplateID);
+                                                            if(18 !== _loc1_)
+                                                            {
+                                                               _buffItem = ItemManager.Instance.getTemplateById(TemplateID);
+                                                            }
+                                                            else
+                                                            {
+                                                               _buffItem = ItemManager.Instance.getTemplateById(11966);
+                                                            }
                                                          }
                                                          else
                                                          {
-                                                            _buffItem = ItemManager.Instance.getTemplateById(11966);
+                                                            _buffItem = ItemManager.Instance.getTemplateById(11956);
                                                          }
                                                       }
                                                       else
                                                       {
-                                                         _buffItem = ItemManager.Instance.getTemplateById(11956);
+                                                         _buffItem = new ItemTemplateInfo();
                                                       }
                                                    }
-                                                   else
-                                                   {
-                                                      _buffItem = new ItemTemplateInfo();
-                                                   }
                                                 }
-                                                else
-                                                {
-                                                   _buffItem = new ItemTemplateInfo();
-                                                }
+                                                _buffItem = new ItemTemplateInfo();
                                              }
                                              else
                                              {

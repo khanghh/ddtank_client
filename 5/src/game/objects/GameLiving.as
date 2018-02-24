@@ -2036,18 +2036,6 @@ public class GameLiving extends PhysicalObj
 //        }
     }
 
-    public function setFightPower(param1:int) : void
-    {
-//        if(param1 > 0 && param1 <= 100)
-//        {
-        fightPowerVisible = true;
-        _fightPower.text = LanguageMgr.GetTranslation("ddt.games.powerText",param1);
-//        }
-//        else
-//        {
-//            _fightPower.text = "";
-//        }
-    }
 
     public function set fightPowerVisible(param1:Boolean) : void
     {

@@ -55,8 +55,8 @@ package dragonBones.core
        protected function setArmature(param1:Armature) : void{}
       
       public function get parent() : Bone{return null;}
-      
-      function setParent(param1:Bone) : void{}
+
+       protected function setParent(param1:Bone) : void{}
       
       public function dispose() : void{}
       

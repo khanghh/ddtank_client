@@ -13,6 +13,8 @@ package ddt.events
       
       public static const FORZEN_CHANGED:String = "forzenChanged";
       
+      public static const BACK_EFFECT_CHANGE:String = "backEffectChange";
+      
       public static const SOLIDICE_STATECHANGED:String = "solidiceStateChanged";
       
       public static const TARGET_STEALTH_STATECHANGED:String = "targetStealthStateChanged";

@@ -15,7 +15,6 @@ package gameCommon.view.smallMap
    import com.pickgliss.ui.core.Disposeable;
    import com.pickgliss.ui.text.FilterFrameText;
    import com.pickgliss.utils.ObjectUtils;
-   import ddt.data.PathInfo;
    import ddt.data.map.MissionInfo;
    import ddt.events.DungeonInfoEvent;
    import ddt.events.RoomEvent;
@@ -23,6 +22,7 @@ package gameCommon.view.smallMap
    import ddt.manager.LanguageMgr;
    import ddt.manager.MessageTipManager;
    import ddt.manager.PathManager;
+   import ddt.manager.ServerConfigManager;
    import ddt.manager.SocketManager;
    import ddt.manager.SoundManager;
    import ddt.manager.StateManager;
@@ -32,6 +32,8 @@ package gameCommon.view.smallMap
    import flash.display.Sprite;
    import flash.events.KeyboardEvent;
    import flash.events.MouseEvent;
+   import flash.events.TimerEvent;
+   import flash.utils.Timer;
    import gameCommon.GameControl;
    import gameCommon.view.DungeonHelpView;
    import room.RoomManager;
@@ -48,6 +50,12 @@ package gameCommon.view.smallMap
       private var _h:int = 23;
       
       private var _hardTxt:FilterFrameText;
+      
+      private var _timeTxt:FilterFrameText;
+      
+      private var _timer:Timer;
+      
+      private var _punishTimes:int;
       
       private var _back:BackBar;
       
@@ -71,7 +79,7 @@ package gameCommon.view.smallMap
       
       private var alert2:BaseAlerFrame;
       
-      private var _startDate:Date;
+      private var _endTime:Number;
       
       public function SmallMapTitleBar(param1:MissionInfo){super();}
       
@@ -100,6 +108,10 @@ package gameCommon.view.smallMap
       private function __set(param1:MouseEvent) : void{}
       
       private function __exit(param1:MouseEvent) : void{}
+      
+      private function __onTimerDown(param1:TimerEvent) : void{}
+      
+      private function updateTime() : void{}
       
       private function __responseChristmasHandler(param1:FrameEvent) : void{}
       

@@ -27,6 +27,8 @@ package bagAndInfo.cell
    import flash.events.MouseEvent;
    import flash.geom.Point;
    import magicStone.MagicStoneManager;
+   import mark.data.MarkChipData;
+   import mark.data.MarkModel;
    
    [Event(name="change",type="flash.events.Event")]
    public class BaseCell extends Sprite implements ICell, ITipedDisplay, Disposeable
@@ -74,6 +76,8 @@ package bagAndInfo.cell
       private var _grayFlag:Boolean;
       
       protected var _markStarContainer:HBox;
+      
+      protected var _markChip:MarkChipData;
       
       public var showStarContainer:Boolean = true;
       
@@ -183,7 +187,7 @@ package bagAndInfo.cell
       
       protected function clearLoading() : void{}
       
-      private function updateCellStar() : void{}
+      public function updateCellStar() : void{}
       
       private function updateLockState() : void{}
       

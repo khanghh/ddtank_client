@@ -105,7 +105,7 @@ package gameCommon
                   _loc8_ = _loc3_.pos;
                   _loc3_.route = null;
                   selfPlayer.direction = _loc5_.x > _loc8_.x?-1:1;
-                  selfPlayer.manuallySetGunAngle(25 - selfPlayer.playerAngle * -1 * selfPlayer.direction);
+                  selfPlayer.manuallySetGunAngle(45 - selfPlayer.playerAngle * -1 * selfPlayer.direction);
                   _loc4_ = selfPlayer.calcBombAngle();
                   _arf = map.airResistance;
                   _gf = map.gravity * _mass * _gravityFactor;
@@ -211,7 +211,7 @@ package gameCommon
                   _loc8_ = _loc3_.pos;
                   _loc3_.route = null;
                   selfPlayer.direction = _loc5_.x > _loc8_.x?-1:1;
-                  selfPlayer.manuallySetGunAngle(25 - selfPlayer.playerAngle * -1 * selfPlayer.direction);
+                  selfPlayer.manuallySetGunAngle(45 - selfPlayer.playerAngle * -1 * selfPlayer.direction);
                   _loc4_ = selfPlayer.calcBombAngle();
                   _arf = map.airResistance;
                   _gf = map.gravity * _mass * _gravityFactor;

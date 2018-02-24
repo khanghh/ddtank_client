@@ -89,10 +89,10 @@ package dragonBones.fast
       public function get displayIndex() : int{return 0;}
       
       public function get colorChanged() : Boolean{return false;}
-      
-      protected function updateDisplay(param1:Object) : void{}
-      
-      protected function getDisplayIndex() : int{return 0;}
+
+       protected function updateDisplay(param1:Object) : void{}
+
+       protected function getDisplayIndex() : int{return 0;}
 
        protected function addDisplayToContainer(param1:Object, param2:int = -1) : void{}
 

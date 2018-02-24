@@ -77,6 +77,8 @@ package bagAndInfo.cell
       
       private var _sellFrame:SellGoodsFrame;
       
+      private var _markId:int = 0;
+      
       public function BagCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:DisplayObject = null, param5:Boolean = true)
       {
          placeArr = [0,1,2];
@@ -556,7 +558,7 @@ package bagAndInfo.cell
          var _loc3_:* = null;
          SoundManager.instance.play("008");
          dispatchEvent(new CellEvent("dragStop",null,true));
-         var _loc4_:InventoryItemInfo = param1.data as InventoryItemInfo;
+         var _loc4_:ItemTemplateInfo = param1.data as ItemTemplateInfo;
          if(param1.action == "none" && param1.target != null)
          {
             if(_loc4_.CategoryID == 50 || _loc4_.CategoryID == 51 || _loc4_.CategoryID == 52)
@@ -566,20 +568,20 @@ package bagAndInfo.cell
                   _loc3_ = param1.target as BagCell;
                   if(_loc4_.CategoryID == _loc3_.info.CategoryID)
                   {
-                     if(placeArr.indexOf(_loc4_.Place) != -1)
+                     if(placeArr.indexOf((_loc4_ as InventoryItemInfo).Place) != -1)
                      {
                         _loc2_ = _loc3_.itemInfo.Place;
                      }
                      else
                      {
-                        _loc2_ = _loc4_.Place;
+                        _loc2_ = (_loc4_ as InventoryItemInfo).Place;
                      }
                      SocketManager.Instance.out.addPetEquip(_loc2_,PetsBagManager.instance().petModel.currentPetInfo.Place,0);
                   }
                }
-               else if(_loc4_.getRemainDate() > 0)
+               else if((_loc4_ as InventoryItemInfo).getRemainDate() > 0)
                {
-                  SocketManager.Instance.out.addPetEquip(_loc4_.Place,PetsBagManager.instance().petModel.currentPetInfo.Place,0);
+                  SocketManager.Instance.out.addPetEquip((_loc4_ as InventoryItemInfo).Place,PetsBagManager.instance().petModel.currentPetInfo.Place,0);
                }
             }
          }
@@ -599,16 +601,20 @@ package bagAndInfo.cell
                param1.action = "none";
                super.dragStop(param1);
             }
-            else if(_loc4_ && _loc4_.BagType == 11)
+            else if(_loc4_ && (_loc4_ as InventoryItemInfo).BagType == 11)
             {
                param1.action = "none";
                super.dragStop(param1);
             }
-            else if(_loc4_ && _loc4_.BagType == 12)
+            else if(_loc4_ && (_loc4_ as InventoryItemInfo).BagType == 12)
             {
                locked = false;
             }
-            else if(_loc4_ && _loc4_.BagType == 21)
+            else if(_loc4_ && (_loc4_ as InventoryItemInfo).BagType == 21)
+            {
+               locked = false;
+            }
+            else if(_loc4_ && _loc4_.CategoryID == 74)
             {
                locked = false;
             }
@@ -621,7 +627,7 @@ package bagAndInfo.cell
             else
             {
                locked = false;
-               sellItem(_loc4_);
+               sellItem(_loc4_ as InventoryItemInfo);
             }
          }
          else if(param1.action == "split" && param1.target == null)
@@ -916,6 +922,16 @@ package bagAndInfo.cell
          }
          _cellMouseOverFormer = null;
          super.dispose();
+      }
+      
+      public function get markId() : int
+      {
+         return _markId;
+      }
+      
+      public function set markId(param1:int) : void
+      {
+         _markId = param1;
       }
       
       public function get tbxCount() : FilterFrameText

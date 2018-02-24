@@ -92,6 +92,7 @@ package ddt
    import ddtmatch.manager.DDTMatchManager;
    import defendisland.DefendislandManager;
    import demonChiYou.DemonChiYouManager;
+   import devilTurn.DevilTurnManager;
    import dice.DiceManager;
    import dragonBoat.DragonBoatManager;
    import drgnBoat.DrgnBoatManager;
@@ -489,6 +490,7 @@ package ddt
             TeamManager.instance.setup();
             DDTKingWayManager.instance.setup();
             MarkMgr.inst.setup();
+            DevilTurnManager.instance.setup();
          }
       }
       

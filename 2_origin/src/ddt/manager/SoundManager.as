@@ -23,6 +23,8 @@ package ddt.manager
       
       public static const AUDIOII:String = "audioii";
       
+      public static const AUDIOBATTLE:String = "audiobattle";
+      
       private static const MusicFailedTryTime:int = 3;
       
       private static var _instance:SoundManager;
@@ -53,6 +55,8 @@ package ddt.manager
       private var _musicVolume:Number;
       
       private var soundVolumn:Number;
+      
+      public var audioBattleComplete:Boolean;
       
       public var audioLiteComplete:Boolean;
       
@@ -191,6 +195,13 @@ package ddt.manager
                   initLite();
                }
             }
+            else if(param1[_loc2_] == "audiobattle")
+            {
+               if(!audioBattleComplete)
+               {
+                  initBattle();
+               }
+            }
             _loc2_++;
          }
       }
@@ -201,17 +212,9 @@ package ddt.manager
          _dic["006"] = ModuleLoader.getDefinition("Sound006");
          _dic["007"] = ModuleLoader.getDefinition("Sound007");
          _dic["009"] = ModuleLoader.getDefinition("Sound009");
-         _dic["010"] = ModuleLoader.getDefinition("Sound010");
          _dic["012"] = ModuleLoader.getDefinition("Sound012");
          _dic["015"] = ModuleLoader.getDefinition("Sound015");
          _dic["017"] = ModuleLoader.getDefinition("Sound017");
-         _dic["021"] = ModuleLoader.getDefinition("Sound021");
-         _dic["023"] = ModuleLoader.getDefinition("Sound023");
-         _dic["025"] = ModuleLoader.getDefinition("Sound025");
-         _dic["027"] = ModuleLoader.getDefinition("Sound027");
-         _dic["031"] = ModuleLoader.getDefinition("Sound031");
-         _dic["033"] = ModuleLoader.getDefinition("Sound033");
-         _dic["035"] = ModuleLoader.getDefinition("Sound035");
          _dic["041"] = ModuleLoader.getDefinition("Sound041");
          _dic["042"] = ModuleLoader.getDefinition("Sound042");
          _dic["043"] = ModuleLoader.getDefinition("Sound043");
@@ -225,47 +228,13 @@ package ddt.manager
          _dic["058"] = ModuleLoader.getDefinition("Sound058");
          _dic["063"] = ModuleLoader.getDefinition("Sound063");
          _dic["064"] = ModuleLoader.getDefinition("Sound064");
-         _dic["069"] = ModuleLoader.getDefinition("Sound069");
-         _dic["071"] = ModuleLoader.getDefinition("Sound071");
-         _dic["073"] = ModuleLoader.getDefinition("Sound073");
-         _dic["075"] = ModuleLoader.getDefinition("Sound075");
          _dic["078"] = ModuleLoader.getDefinition("Sound078");
-         _dic["081"] = ModuleLoader.getDefinition("Sound081");
-         _dic["083"] = ModuleLoader.getDefinition("Sound083");
-         _dic["087"] = ModuleLoader.getDefinition("Sound087");
-         _dic["088"] = ModuleLoader.getDefinition("Sound088");
-         _dic["091"] = ModuleLoader.getDefinition("Sound091");
-         _dic["092"] = ModuleLoader.getDefinition("Sound092");
-         _dic["093"] = ModuleLoader.getDefinition("Sound093");
-         _dic["094"] = ModuleLoader.getDefinition("Sound094");
-         _dic["095"] = ModuleLoader.getDefinition("Sound095");
          _dic["096"] = ModuleLoader.getDefinition("Sound096");
-         _dic["098"] = ModuleLoader.getDefinition("Sound098");
-         _dic["099"] = ModuleLoader.getDefinition("Sound099");
-         _dic["100"] = ModuleLoader.getDefinition("Sound100");
-         _dic["101"] = ModuleLoader.getDefinition("Sound101");
-         _dic["102"] = ModuleLoader.getDefinition("Sound102");
-         _dic["103"] = ModuleLoader.getDefinition("Sound103");
-         _dic["104"] = ModuleLoader.getDefinition("Sound104");
-         _dic["105"] = ModuleLoader.getDefinition("Sound105");
-         _dic["106"] = ModuleLoader.getDefinition("Sound106");
-         _dic["107"] = ModuleLoader.getDefinition("Sound107");
-         _dic["108"] = ModuleLoader.getDefinition("Sound108");
-         _dic["109"] = ModuleLoader.getDefinition("Sound109");
-         _dic["110"] = ModuleLoader.getDefinition("Sound110");
-         _dic["111"] = ModuleLoader.getDefinition("Sound111");
-         _dic["112"] = ModuleLoader.getDefinition("Sound112");
-         _dic["113"] = ModuleLoader.getDefinition("Sound113");
-         _dic["114"] = ModuleLoader.getDefinition("Sound114");
-         _dic["115"] = ModuleLoader.getDefinition("Sound115");
-         _dic["116"] = ModuleLoader.getDefinition("Sound116");
          _dic["117"] = ModuleLoader.getDefinition("Sound117");
          _dic["118"] = ModuleLoader.getDefinition("Sound118");
          _dic["119"] = ModuleLoader.getDefinition("Sound119");
          _dic["120"] = ModuleLoader.getDefinition("Sound120");
          _dic["121"] = ModuleLoader.getDefinition("Sound121");
-         _dic["122"] = ModuleLoader.getDefinition("Sound122");
-         _dic["123"] = ModuleLoader.getDefinition("Sound123");
          _dic["124"] = ModuleLoader.getDefinition("Sound124");
          _dic["125"] = ModuleLoader.getDefinition("Sound125");
          _dic["126"] = ModuleLoader.getDefinition("Sound126");
@@ -291,10 +260,6 @@ package ddt.manager
          _dic["147"] = ModuleLoader.getDefinition("Sound147");
          _dic["148"] = ModuleLoader.getDefinition("Sound148");
          _dic["149"] = ModuleLoader.getDefinition("Sound149");
-         _dic["150"] = ModuleLoader.getDefinition("Sound150");
-         _dic["151"] = ModuleLoader.getDefinition("Sound151");
-         _dic["152"] = ModuleLoader.getDefinition("Sound152");
-         _dic["153"] = ModuleLoader.getDefinition("Sound153");
          _dic["155"] = ModuleLoader.getDefinition("Sound155");
          _dic["156"] = ModuleLoader.getDefinition("Sound156");
          _dic["158"] = ModuleLoader.getDefinition("Sound158");
@@ -305,8 +270,6 @@ package ddt.manager
          _dic["163"] = ModuleLoader.getDefinition("Sound163");
          _dic["164"] = ModuleLoader.getDefinition("Sound164");
          _dic["165"] = ModuleLoader.getDefinition("Sound165");
-         _dic["166"] = ModuleLoader.getDefinition("Sound166");
-         _dic["167"] = ModuleLoader.getDefinition("Sound167");
          _dic["200"] = ModuleLoader.getDefinition("Sound200");
          _dic["201"] = ModuleLoader.getDefinition("Sound201");
          _dic["202"] = ModuleLoader.getDefinition("Sound202");
@@ -314,6 +277,11 @@ package ddt.manager
          _dic["169"] = ModuleLoader.getDefinition("Sound169");
          _dic["170"] = ModuleLoader.getDefinition("Sound170");
          _dic["171"] = ModuleLoader.getDefinition("Sound171");
+         _dic["172"] = ModuleLoader.getDefinition("Sound172");
+         _dic["173"] = ModuleLoader.getDefinition("Sound173");
+         _dic["174"] = ModuleLoader.getDefinition("Sound174");
+         _dic["175"] = ModuleLoader.getDefinition("Sound175");
+         _dic["176"] = ModuleLoader.getDefinition("Sound176");
          _dic["1001"] = ModuleLoader.getDefinition("Sound1001");
          _dic["203"] = ModuleLoader.getDefinition("Sound203");
          _dic["204"] = ModuleLoader.getDefinition("Sound204");
@@ -324,8 +292,6 @@ package ddt.manager
          _dic["217"] = ModuleLoader.getDefinition("Sound217");
          _dic["218"] = ModuleLoader.getDefinition("Sound218");
          _dic["219"] = ModuleLoader.getDefinition("Sound219");
-         _dic["220"] = ModuleLoader.getDefinition("Sound220");
-         _dic["BattleSound01"] = ModuleLoader.getDefinition("BattleSound01");
          audioComplete = true;
       }
       
@@ -333,16 +299,12 @@ package ddt.manager
       {
          _dic["003"] = ModuleLoader.getDefinition("Sound003");
          _dic["013"] = ModuleLoader.getDefinition("Sound013");
-         _dic["016"] = ModuleLoader.getDefinition("Sound016");
          _dic["019"] = ModuleLoader.getDefinition("Sound019");
-         _dic["020"] = ModuleLoader.getDefinition("Sound020");
-         _dic["029"] = ModuleLoader.getDefinition("Sound029");
          _dic["038"] = ModuleLoader.getDefinition("Sound038");
          _dic["079"] = ModuleLoader.getDefinition("Sound079");
-         _dic["089"] = ModuleLoader.getDefinition("Sound089");
          _dic["090"] = ModuleLoader.getDefinition("Sound090");
          _dic["097"] = ModuleLoader.getDefinition("Sound097");
-         _dic["157"] = ModuleLoader.getDefinition("Sound157");
+         _dic["220"] = ModuleLoader.getDefinition("Sound220");
          audioiiComplete = true;
       }
       
@@ -360,6 +322,64 @@ package ddt.manager
          _dic["040"] = ModuleLoader.getDefinition("Sound040");
          _dic["014"] = ModuleLoader.getDefinition("Sound014");
          audioLiteComplete = true;
+      }
+      
+      private function initBattle() : void
+      {
+         _dic["167"] = ModuleLoader.getDefinition("Sound167");
+         _dic["BattleSound01"] = ModuleLoader.getDefinition("BattleSound01");
+         _dic["150"] = ModuleLoader.getDefinition("Sound150");
+         _dic["151"] = ModuleLoader.getDefinition("Sound151");
+         _dic["152"] = ModuleLoader.getDefinition("Sound152");
+         _dic["153"] = ModuleLoader.getDefinition("Sound153");
+         _dic["122"] = ModuleLoader.getDefinition("Sound122");
+         _dic["123"] = ModuleLoader.getDefinition("Sound123");
+         _dic["010"] = ModuleLoader.getDefinition("Sound010");
+         _dic["108"] = ModuleLoader.getDefinition("Sound108");
+         _dic["109"] = ModuleLoader.getDefinition("Sound109");
+         _dic["110"] = ModuleLoader.getDefinition("Sound110");
+         _dic["111"] = ModuleLoader.getDefinition("Sound111");
+         _dic["112"] = ModuleLoader.getDefinition("Sound112");
+         _dic["113"] = ModuleLoader.getDefinition("Sound113");
+         _dic["114"] = ModuleLoader.getDefinition("Sound114");
+         _dic["115"] = ModuleLoader.getDefinition("Sound115");
+         _dic["116"] = ModuleLoader.getDefinition("Sound116");
+         _dic["166"] = ModuleLoader.getDefinition("Sound166");
+         _dic["094"] = ModuleLoader.getDefinition("Sound094");
+         _dic["095"] = ModuleLoader.getDefinition("Sound095");
+         _dic["091"] = ModuleLoader.getDefinition("Sound091");
+         _dic["087"] = ModuleLoader.getDefinition("Sound087");
+         _dic["093"] = ModuleLoader.getDefinition("Sound093");
+         _dic["088"] = ModuleLoader.getDefinition("Sound088");
+         _dic["092"] = ModuleLoader.getDefinition("Sound092");
+         _dic["098"] = ModuleLoader.getDefinition("Sound098");
+         _dic["099"] = ModuleLoader.getDefinition("Sound099");
+         _dic["100"] = ModuleLoader.getDefinition("Sound100");
+         _dic["101"] = ModuleLoader.getDefinition("Sound101");
+         _dic["102"] = ModuleLoader.getDefinition("Sound102");
+         _dic["103"] = ModuleLoader.getDefinition("Sound103");
+         _dic["104"] = ModuleLoader.getDefinition("Sound104");
+         _dic["105"] = ModuleLoader.getDefinition("Sound105");
+         _dic["106"] = ModuleLoader.getDefinition("Sound106");
+         _dic["107"] = ModuleLoader.getDefinition("Sound107");
+         _dic["035"] = ModuleLoader.getDefinition("Sound035");
+         _dic["081"] = ModuleLoader.getDefinition("Sound081");
+         _dic["033"] = ModuleLoader.getDefinition("Sound033");
+         _dic["075"] = ModuleLoader.getDefinition("Sound075");
+         _dic["031"] = ModuleLoader.getDefinition("Sound031");
+         _dic["071"] = ModuleLoader.getDefinition("Sound071");
+         _dic["025"] = ModuleLoader.getDefinition("Sound025");
+         _dic["027"] = ModuleLoader.getDefinition("Sound027");
+         _dic["083"] = ModuleLoader.getDefinition("Sound083");
+         _dic["023"] = ModuleLoader.getDefinition("Sound023");
+         _dic["069"] = ModuleLoader.getDefinition("Sound069");
+         _dic["021"] = ModuleLoader.getDefinition("Sound021");
+         _dic["073"] = ModuleLoader.getDefinition("Sound073");
+         _dic["177"] = ModuleLoader.getDefinition("Sound177");
+         _dic["178"] = ModuleLoader.getDefinition("Sound178");
+         _dic["179"] = ModuleLoader.getDefinition("Sound179");
+         _dic["180"] = ModuleLoader.getDefinition("Sound180");
+         audioBattleComplete = true;
       }
       
       public function get audioAllComplete() : Boolean

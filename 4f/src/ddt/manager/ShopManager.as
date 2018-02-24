@@ -66,6 +66,8 @@ package ddt.manager
       
       public function getValidGoodByType(param1:int) : Vector.<ShopItemInfo>{return null;}
       
+      public function getValidGoodsArrayByType(param1:int) : Array{return null;}
+      
       public function consortiaShopLevelTemplates(param1:int) : Vector.<ShopItemInfo>{return null;}
       
       public function canAddPrice(param1:int) : Boolean{return false;}

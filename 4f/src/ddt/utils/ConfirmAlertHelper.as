@@ -3,6 +3,7 @@ package ddt.utils
    import com.pickgliss.events.FrameEvent;
    import com.pickgliss.ui.AlertManager;
    import com.pickgliss.ui.controls.alert.BaseAlerFrame;
+   import com.pickgliss.ui.controls.alert.SimpleAlertWithNotShowAgain;
    import ddt.events.CEvent;
    import flash.events.EventDispatcher;
    

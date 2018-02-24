@@ -158,6 +158,10 @@ package gameCommon.model
       
       private var _isFog:Boolean;
       
+      private var _backEffFog:Boolean;
+      
+      private var _backEffRadius:Number = -1;
+      
       private var _isRedSkull:Boolean;
       
       private var _isNoNole:Boolean;
@@ -946,6 +950,26 @@ package gameCommon.model
          }
          _isFog = param1;
          dispatchEvent(new LivingEvent("hiddenChanged"));
+      }
+      
+      public function get backEffFog() : Boolean
+      {
+         return _backEffRadius > 0;
+      }
+      
+      public function set updateBackFog(param1:Number) : void
+      {
+         if(_backEffRadius == param1)
+         {
+            return;
+         }
+         _backEffRadius = param1;
+         dispatchEvent(new LivingEvent("backEffectChange",_backEffRadius));
+      }
+      
+      public function get backEffRadius() : Number
+      {
+         return _backEffRadius;
       }
       
       public function get isRedSkull() : Boolean

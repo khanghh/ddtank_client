@@ -36,7 +36,7 @@ package ddt.utils
          return _instance;
       }
       
-      public function simpleHelpButton(param1:Sprite, param2:String, param3:Object = null, param4:String = "", param5:Object = null, param6:Number = 0, param7:Number = 0, param8:Boolean = true, param9:Boolean = true, param10:Object = null, param11:int = 3) : *
+      public function simpleHelpButton(param1:Sprite, param2:String, param3:Object = null, param4:String = "", param5:Object = null, param6:Number = 0, param7:Number = 0, param8:Boolean = true, param9:Boolean = true, param10:Object = null, param11:int = 2) : *
       {
          var _loc14_:* = null;
          var _loc13_:* = ComponentFactory.Instance.creat(param2);
@@ -185,7 +185,7 @@ package ddt.utils
          }
          if(param6)
          {
-            LayerManager.Instance.addToLayer(_loc13_,2,true,2);
+            LayerManager.Instance.addToLayer(_loc13_,param8,true,2);
          }
          return _loc13_;
       }
