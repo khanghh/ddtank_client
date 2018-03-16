@@ -10,10 +10,8 @@ package ddt.manager
     import gotopage.view.GotoPageController;
     import horse.HorseManager;
     import org.aswing.KeyStroke;
-import org.aswing.KeyboardManager;
-
-import petsBag.PetsBagManager;
-    import petsBag.petsAdvanced.PetsAdvancedManager;
+    import org.aswing.KeyboardManager;
+    import petsBag.PetsBagManager;
     import quest.TaskManager;
     import setting.controll.SettingController;
 
@@ -105,18 +103,9 @@ import petsBag.PetsBagManager;
 
         public function prohibitNewHandPetsBag(param1:Boolean) : void{}
 
-        private function __onKeyDown(event:flash.events.KeyboardEvent):void {
+        private function __onKeyDown(event:flash.events.KeyboardEvent):void
+        {
             var _loc2_:* = event.keyCode;
-            if (192 === _loc2_)
-            {
-                SoundManager.instance.play("003");
-                DDTManager.Instance.ddtConsole.toggle();
-                KeyboardManager.getInstance().isStopDispatching = DDTManager.Instance.ddtConsole.isOpen();
-            }
-            if (DDTManager.Instance.ddtConsole.isOpen())
-            {
-                return;
-            }
             if(isFullForbid)
             {
                 return;
@@ -129,104 +118,109 @@ import petsBag.PetsBagManager;
             {
                 return;
             }
+            if (192 === _loc2_)
+            {
+                DDTManager.Instance.ddtConsole.toggle();
+                KeyboardManager.getInstance().isStopDispatching = DDTManager.Instance.ddtConsole.isOpen();
+                return;
+            }
             if(LayerManager.Instance.backGroundInParent)
             {
                 closeCurrentFrame(event.keyCode);
                 return;
             }
-            var _loc2_:* = event.keyCode;
-            if(KeyStroke.VK_M.getCode() !== _loc2_)
+            if(KeyStroke.VK_M.getCode() === _loc2_)
             {
-                if(KeyStroke.VK_B.getCode() !== _loc2_)
+                if(isProhibit_M && isProhibitNewHand_M)
                 {
-                    if(KeyStroke.VK_Q.getCode() !== _loc2_)
-                    {
-                        if(KeyStroke.VK_F.getCode() !== _loc2_)
-                        {
-                            if(KeyStroke.VK_G.getCode() !== _loc2_)
-                            {
-                                if(KeyStroke.VK_H.getCode() !== _loc2_)
-                                {
-                                    if(KeyStroke.VK_T.getCode() !== _loc2_)
-                                    {
-                                        if(KeyStroke.VK_R.getCode() !== _loc2_)
-                                        {
-                                            if(KeyStroke.VK_S.getCode() !== _loc2_)
-                                            {
-                                                if(KeyStroke.VK_P.getCode() === _loc2_)
-                                                {
-                                                    if(isProhibit_P && isProhibitNewHand_P)
-                                                    {
-                                                        if(PlayerManager.Instance.Self.Grade >= 25)
-                                                        {
-                                                            SoundManager.instance.play("003");
-                                                            PetsBagManager.instance().show();
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        else if(isProhibit_R && isProhibitNewHand_R)
-                                        {
-                                            if(PlayerManager.Instance.Self.Grade >= 11)
-                                            {
-                                                SoundManager.instance.play("003");
-                                                MailManager.Instance.switchVisible();
-                                            }
-                                        }
-                                    }
-                                    else if(isProhibit_T && isProhibitNewHand_T)
-                                    {
-                                        SoundManager.instance.play("003");
-                                        GotoPageController.Instance.switchVisible();
-                                    }
-                                }
-                                else if(isProhibit_H && isProhibitNewHand_H)
-                                {
-                                    SoundManager.instance.play("003");
-                                    SettingController.Instance.switchVisible();
-                                }
-                            }
-                            else if(isProhibit_G)
-                            {
-                                if(StateManager.currentStateType == "main" || StateManager.currentStateType == "dungeon" || StateManager.currentStateType == "roomlist")
-                                {
-                                    if(PlayerManager.Instance.Self.Grade >= 17)
-                                    {
-                                        SoundManager.instance.play("003");
-                                        StateManager.setState("consortia");
-                                    }
-                                }
-                            }
-                        }
-                        else if(isProhibit_F && isProhibitNewHand_F)
-                        {
-                            if(PlayerManager.Instance.Self.Grade >= 11)
-                            {
-                                SoundManager.instance.play("003");
-                                IMManager.Instance.show();
-                            }
-                        }
-                    }
-                    else if(isProhibit_Q)
-                    {
-                        SoundManager.instance.play("003");
-                        TaskManager.instance.switchVisible();
-                    }
+                    SoundManager.instance.play("003");
+                    HorseManager.instance.show();
                 }
-                else if(isProhibit_B && isProhibitNewHand_B)
+            }
+            else if(KeyStroke.VK_B.getCode() === _loc2_)
+            {
+                if(isProhibit_B && isProhibitNewHand_B)
                 {
                     SoundManager.instance.play("003");
                     StageReferance.stage.dispatchEvent(new MouseEvent("mouseDown"));
                     BagAndInfoManager.Instance.showBagAndInfo();
                 }
             }
-            else if(isProhibit_M && isProhibitNewHand_M)
+            else if(KeyStroke.VK_Q.getCode() === _loc2_)
             {
-                SoundManager.instance.play("003");
-                HorseManager.instance.show();
+                if(isProhibit_Q)
+                {
+                    SoundManager.instance.play("003");
+                    TaskManager.instance.switchVisible();
+                }
+            }
+            else if(KeyStroke.VK_F.getCode() === _loc2_)
+            {
+                if(isProhibit_F && isProhibitNewHand_F)
+                {
+                    if(PlayerManager.Instance.Self.Grade >= 11)
+                    {
+                        SoundManager.instance.play("003");
+                        IMManager.Instance.show();
+                    }
+                }
+            }
+            else if(KeyStroke.VK_G.getCode() === _loc2_)
+            {
+                if(isProhibit_G)
+                {
+                    if(StateManager.currentStateType == "main" || StateManager.currentStateType == "dungeon" || StateManager.currentStateType == "roomlist")
+                    {
+                        if(PlayerManager.Instance.Self.Grade >= 17)
+                        {
+                            SoundManager.instance.play("003");
+                            StateManager.setState("consortia");
+                        }
+                    }
+                }
+            }
+            else if(KeyStroke.VK_H.getCode() === _loc2_)
+            {
+                if(isProhibit_H && isProhibitNewHand_H)
+                {
+                    SoundManager.instance.play("003");
+                    SettingController.Instance.switchVisible();
+                }
+            }
+            else if(KeyStroke.VK_T.getCode() === _loc2_)
+            {
+                if(isProhibit_T && isProhibitNewHand_T)
+                {
+                    SoundManager.instance.play("003");
+                    GotoPageController.Instance.switchVisible();
+                }
+            }
+            else
+            if(KeyStroke.VK_R.getCode() === _loc2_)
+            {
+                if(isProhibit_R && isProhibitNewHand_R)
+                {
+                    if(PlayerManager.Instance.Self.Grade >= 11)
+                    {
+                        SoundManager.instance.play("003");
+                        MailManager.Instance.switchVisible();
+                    }
+                }
+            }
+            else if(KeyStroke.VK_S.getCode() === _loc2_)
+            {
+            }
+            else if(KeyStroke.VK_P.getCode() === _loc2_)
+            {
+                if(isProhibit_P && isProhibitNewHand_P)
+                {
+                    if(PlayerManager.Instance.Self.Grade >= 25)
+                    {
+                        SoundManager.instance.play("003");
+                        PetsBagManager.instance().show();
+                    }
+                }
             }
         }
-
     }
 }

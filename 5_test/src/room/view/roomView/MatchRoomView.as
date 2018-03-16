@@ -536,7 +536,6 @@ public class MatchRoomView extends BaseRoomView
     {
         if (param1.keyCode == KeyStroke.VK_K.getCode())
         {
-
             SoundManager.instance.play("008");
             if (roomInfo.selfRoomPlayer.isHost || roomInfo.selfRoomPlayer.isFirstIn)
             {
