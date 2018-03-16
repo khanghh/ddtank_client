@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a91af42e-0561-47f3-a455-601895aac745" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/2_mod/src/ddt/manager/KeyboardShortcutsManager.as" afterPath="$PROJECT_DIR$/2_mod/src/ddt/manager/KeyboardShortcutsManager.as" />
-      <change beforePath="$PROJECT_DIR$/5/src/ddt/manager/KeyboardShortcutsManager.as" afterPath="$PROJECT_DIR$/5/src/ddt/manager/KeyboardShortcutsManager.as" />
-      <change beforePath="$PROJECT_DIR$/5_test/src/ddt/manager/KeyboardShortcutsManager.as" afterPath="$PROJECT_DIR$/5_test/src/ddt/manager/KeyboardShortcutsManager.as" />
-      <change beforePath="$PROJECT_DIR$/5_test/src/room/view/roomView/MatchRoomView.as" afterPath="$PROJECT_DIR$/5_test/src/room/view/roomView/MatchRoomView.as" />
-      <change beforePath="$PROJECT_DIR$/out/2_mod/2_mod.swc" afterPath="$PROJECT_DIR$/out/2_mod/2_mod.swc" />
-      <change beforePath="$PROJECT_DIR$/out/5_test/5_test.swc" afterPath="$PROJECT_DIR$/out/5_test/5_test.swc" />
-      <change beforePath="$PROJECT_DIR$/png/2.png" afterPath="$PROJECT_DIR$/png/2.png" />
-      <change beforePath="$PROJECT_DIR$/png/2.swf" afterPath="$PROJECT_DIR$/png/2.swf" />
-      <change beforePath="$PROJECT_DIR$/png/2_mod.swf" afterPath="$PROJECT_DIR$/png/2_mod.swf" />
-      <change beforePath="$PROJECT_DIR$/png/5.png" afterPath="$PROJECT_DIR$/png/5.png" />
-      <change beforePath="$PROJECT_DIR$/png/5.swf" afterPath="$PROJECT_DIR$/png/5.swf" />
-    </list>
+    <list default="true" id="a91af42e-0561-47f3-a455-601895aac745" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -26,12 +12,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="KeyboardShortcutsManager.as" pinned="false" current-in-tab="true">
+      <file leaf-file-name="KeyboardShortcutsManager.as" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/2_mod/src/ddt/manager/KeyboardShortcutsManager.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2811">
-              <caret line="9" column="43" lean-forward="false" selection-start-line="9" selection-start-column="43" selection-end-line="9" selection-end-column="43" />
-              <folding />
+            <state relative-caret-position="313">
+              <caret line="121" column="12" lean-forward="false" selection-start-line="121" selection-start-column="12" selection-end-line="121" selection-end-column="12" />
+              <folding>
+                <element signature="e#26#62#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -39,8 +27,8 @@
       <file leaf-file-name="DebugManager.as" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/2_mod/src/ddt/manager/DebugManager.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="352">
-              <caret line="35" column="26" lean-forward="false" selection-start-line="35" selection-start-column="26" selection-end-line="35" selection-end-column="26" />
+            <state relative-caret-position="0">
+              <caret line="0" column="18" lean-forward="false" selection-start-line="0" selection-start-column="18" selection-end-line="0" selection-end-column="18" />
               <folding />
             </state>
           </provider>
@@ -49,7 +37,7 @@
       <file leaf-file-name="MatchRoomView.as" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/5_test/src/room/view/roomView/MatchRoomView.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="645">
+            <state relative-caret-position="2439">
               <caret line="558" column="0" lean-forward="false" selection-start-line="558" selection-start-column="0" selection-end-line="558" selection-end-column="0" />
               <folding />
             </state>
@@ -59,7 +47,7 @@
       <file leaf-file-name="DDTConsole.as" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/5_test/src/ddt/manager/view/DDTConsole.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6944">
+            <state relative-caret-position="725">
               <caret line="444" column="27" lean-forward="false" selection-start-line="444" selection-start-column="27" selection-end-line="444" selection-end-column="27" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
@@ -68,11 +56,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="KeyboardShortcutsManager.as" pinned="false" current-in-tab="false">
+      <file leaf-file-name="KeyboardShortcutsManager.as" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/5/src/ddt/manager/KeyboardShortcutsManager.as">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2368">
-              <caret line="161" column="20" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="226" selection-end-column="0" />
+            <state relative-caret-position="-795">
+              <caret line="135" column="53" lean-forward="false" selection-start-line="135" selection-start-column="53" selection-end-line="135" selection-end-column="53" />
               <folding>
                 <element signature="e#26#62#0" expanded="true" />
               </folding>
@@ -277,10 +265,6 @@
           <expand>
             <path>
               <item name="ddtank_client" type="b2602c69:ProjectViewProjectNode" />
-              <item name="2_mod" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ddtank_client" type="b2602c69:ProjectViewProjectNode" />
               <item name="5_test" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -480,10 +464,11 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="104473000" />
+    <option name="totallyTimeSpent" value="104504000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1600" height="900" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -497,7 +482,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28112966" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28112966" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Learn" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -806,16 +791,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/5_test/src/ddt/manager/view/DDTConsole.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6944">
-          <caret line="444" column="27" lean-forward="false" selection-start-line="444" selection-start-column="27" selection-end-line="444" selection-end-column="27" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/5_test/src/ddt/manager/DebugManager.as">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -842,24 +817,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/5/src/ddt/manager/KeyboardShortcutsManager.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2368">
-          <caret line="161" column="20" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="226" selection-end-column="0" />
-          <folding>
-            <element signature="e#26#62#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/2_mod/src/ddt/manager/DebugManager.as">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="352">
-          <caret line="35" column="26" lean-forward="false" selection-start-line="35" selection-start-column="26" selection-end-line="35" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/5_test/src/ddt/manager/KeyboardShortcutsManager.as">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="736">
@@ -870,19 +827,49 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/2_mod/src/ddt/manager/KeyboardShortcutsManager.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="313">
+          <caret line="121" column="12" lean-forward="false" selection-start-line="121" selection-start-column="12" selection-end-line="121" selection-end-column="12" />
+          <folding>
+            <element signature="e#26#62#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/2_mod/src/ddt/manager/DebugManager.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="18" lean-forward="false" selection-start-line="0" selection-start-column="18" selection-end-line="0" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/5_test/src/room/view/roomView/MatchRoomView.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="645">
+        <state relative-caret-position="2439">
           <caret line="558" column="0" lean-forward="false" selection-start-line="558" selection-start-column="0" selection-end-line="558" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/2_mod/src/ddt/manager/KeyboardShortcutsManager.as">
+    <entry file="file://$PROJECT_DIR$/5_test/src/ddt/manager/view/DDTConsole.as">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2811">
-          <caret line="9" column="43" lean-forward="false" selection-start-line="9" selection-start-column="43" selection-end-line="9" selection-end-column="43" />
-          <folding />
+        <state relative-caret-position="725">
+          <caret line="444" column="27" lean-forward="false" selection-start-line="444" selection-start-column="27" selection-end-line="444" selection-end-column="27" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/5/src/ddt/manager/KeyboardShortcutsManager.as">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-795">
+          <caret line="135" column="53" lean-forward="false" selection-start-line="135" selection-start-column="53" selection-end-line="135" selection-end-column="53" />
+          <folding>
+            <element signature="e#26#62#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
