@@ -53,7 +53,7 @@ package ddt.manager.ddtcmd
             {
                 if (!_isDig)
                 {
-                    if (param.length > 0)
+                    if (param.length > 1)
                     {
                         _depth = parseInt(param[1]);
                     }
@@ -64,10 +64,17 @@ package ddt.manager.ddtcmd
                 }
                 else
                 {
-                    _digTimer.stop();
-                    _digTimer.removeEventListener("timer", __onTimer);
-                    _isDig = false;
-                    ChatManager.Instance.sysChatYellow("Đã dừng đào khoáng.")
+                    if (param.length > 1)
+                    {
+                        _depth = parseInt(param[1]);
+                        ChatManager.Instance.sysChatYellow("Bắt đầu đào khoáng ở tầng " + _depth.toString())
+                    }
+                    else {
+                        _digTimer.stop();
+                        _digTimer.removeEventListener("timer", __onTimer);
+                        _isDig = false;
+                        ChatManager.Instance.sysChatYellow("Đã dừng đào khoáng.")
+                    }
                 }
             }
             catch (e:Error) {
