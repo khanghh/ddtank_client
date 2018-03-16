@@ -4,7 +4,8 @@ import com.pickgliss.ui.ComponentFactory;
 import com.pickgliss.ui.LayerManager;
 
 import ddt.manager.ddtcmd.GameSocketOutHandler;
-import ddt.manager.ddtcmd.PackageCommandHandler;
+    import ddt.manager.ddtcmd.MineHandler;
+    import ddt.manager.ddtcmd.PackageCommandHandler;
 import ddt.manager.ddtcmd.RetrieveHandler;
 import ddt.manager.ddtcmd.RutExpHandler;
 import ddt.manager.ddtcmd.SendPackageHandler;
@@ -65,6 +66,7 @@ import test.abc;
             RegisterCommandHandler(new RetrieveHandler());
             RegisterCommandHandler(new GameSocketOutHandler());
             RegisterCommandHandler(new RutExpHandler());
+            RegisterCommandHandler(new MineHandler());
             RegisterUI();
         }
 
