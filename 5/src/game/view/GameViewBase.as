@@ -1,1729 +1,2024 @@
 package game.view
 {
-import bagAndInfo.BagAndInfoManager;
-import bagAndInfo.bag.ring.data.RingSystemData;
-import bagAndInfo.info.PlayerInfoViewControl;
-import bombKing.BombKingManager;
-import com.pickgliss.manager.NoviceDataManager;
-import com.pickgliss.toplevel.StageReferance;
-import com.pickgliss.ui.ComponentFactory;
-import com.pickgliss.ui.LayerManager;
-import com.pickgliss.ui.controls.BaseButton;
-import com.pickgliss.ui.controls.container.HBox;
-import com.pickgliss.ui.image.Image;
-import com.pickgliss.ui.text.FilterFrameText;
-import com.pickgliss.utils.ClassUtils;
-import com.pickgliss.utils.ObjectUtils;
-import consortion.ConsortionModelManager;
-import consortion.data.ConsortionSkillInfo;
-import ddt.data.map.MissionInfo;
-import ddt.events.CEvent;
-import ddt.events.CrazyTankSocketEvent;
-import ddt.events.DungeonInfoEvent;
-import ddt.events.GameEvent;
-import ddt.events.LivingEvent;
-import ddt.manager.BallManager;
-import ddt.manager.BitmapManager;
-import ddt.manager.ChatManager;
-import ddt.manager.IMEManager;
-import ddt.manager.LanguageMgr;
-import ddt.manager.PathManager;
-import ddt.manager.PlayerManager;
-import ddt.manager.PolarRegionManager;
-import ddt.manager.ServerConfigManager;
-import ddt.manager.SharedManager;
-import ddt.manager.SocketManager;
-import ddt.manager.SoundManager;
-import ddt.manager.StateManager;
-import ddt.manager.TimeManager;
-import ddt.states.BaseStateView;
-import ddt.utils.Helpers;
-import ddt.utils.MenoryUtil;
-import ddt.utils.PositionUtils;
-import ddt.view.MainToolBar;
-import ddt.view.character.CharactoryFactory;
-import ddt.view.character.GameCharacter;
-import ddt.view.character.ICharacter;
-import ddt.view.character.ShowCharacter;
-import ddt.view.chat.ChatBugleView;
-import ddt.view.chat.chatBall.ChatBallBoss;
-import ddt.view.rescue.RescueRoomItemView;
-import ddt.view.rescue.RescueScoreAlertView;
-import flash.display.Bitmap;
-import flash.display.Graphics;
-import flash.display.Sprite;
-import flash.events.Event;
-import flash.events.KeyboardEvent;
-import flash.events.MouseEvent;
-import flash.geom.Point;
-import flash.geom.Rectangle;
-import flash.media.SoundTransform;
-import flash.utils.Dictionary;
-import flash.utils.setTimeout;
-import game.GameDecorateManager;
-import game.actions.ViewEachPlayerAction;
-import game.objects.GameLiving;
-import game.objects.GameLocalPlayer;
-import game.objects.GamePlayer;
-import game.view.heroAuto.HeroAutoView;
-import game.view.map.MapView;
-import game.view.matchGameAuto.MatchGameAutoView;
-
-import gameAuto.AutoGameManager;
-
-import gameCommon.BloodNumberCreater;
-import gameCommon.BuffManager;
-import gameCommon.GameControl;
-import gameCommon.GameMessageTipManager;
-import gameCommon.model.GameInfo;
-import gameCommon.model.Living;
-import gameCommon.model.LocalPlayer;
-import gameCommon.model.Player;
-import gameCommon.model.SmallEnemy;
-import gameCommon.model.TurnedLiving;
-import gameCommon.view.AthleticsHelpView;
-import gameCommon.view.DamageView;
-import gameCommon.view.DungeonHelpView;
-import gameCommon.view.DungeonInfoView;
-import gameCommon.view.FightAchievBar;
-import gameCommon.view.GameCountDownView;
-import gameCommon.view.GameTrusteeshipView;
-import gameCommon.view.LeftPlayerCartoonView;
-import gameCommon.view.SelfMarkBar;
-import gameCommon.view.VaneView;
-import gameCommon.view.buff.SelfBuffBar;
-import gameCommon.view.control.ControlState;
-import gameCommon.view.control.FightControlBar;
-import gameCommon.view.control.LiveState;
-import gameCommon.view.playerThumbnail.PlayerThumbnailController;
-import gameCommon.view.propContainer.PlayerStateContainer;
-import kingBless.KingBlessManager;
-import org.aswing.KeyStroke;
-import org.aswing.KeyboardManager;
-import phy.math.EulerVector;
-import pvePowerBuff.PvePowerBuffManager;
-import rescue.data.RescueRoomInfo;
-import road7th.comm.PackageIn;
-import road7th.data.DictionaryData;
-import road7th.data.DictionaryEvent;
-import road7th.data.StringObject;
-import road7th.utils.MovieClipWrapper;
-import room.RoomManager;
-import room.model.RoomPlayer;
-import trainer.controller.NewHandGuideManager;
-import trainer.controller.WeakGuildManager;
-import worldboss.WorldBossManager;
+    import bagAndInfo.BagAndInfoManager;
+    import bagAndInfo.bag.ring.data.RingSystemData;
+    import bagAndInfo.info.PlayerInfoViewControl;
+
+    import bombKing.BombKingManager;
+
+    import com.pickgliss.manager.NoviceDataManager;
+    import com.pickgliss.toplevel.StageReferance;
+    import com.pickgliss.ui.ComponentFactory;
+    import com.pickgliss.ui.LayerManager;
+    import com.pickgliss.ui.controls.BaseButton;
+    import com.pickgliss.ui.controls.container.HBox;
+    import com.pickgliss.ui.image.Image;
+    import com.pickgliss.ui.text.FilterFrameText;
+    import com.pickgliss.utils.ClassUtils;
+    import com.pickgliss.utils.ObjectUtils;
+
+    import consortion.ConsortionModelManager;
+    import consortion.data.ConsortionSkillInfo;
+
+    import ddt.data.map.MissionInfo;
+    import ddt.events.CEvent;
+    import ddt.events.CrazyTankSocketEvent;
+    import ddt.events.DungeonInfoEvent;
+    import ddt.events.GameEvent;
+    import ddt.events.LivingEvent;
+    import ddt.manager.BallManager;
+    import ddt.manager.BitmapManager;
+    import ddt.manager.ChatManager;
+    import ddt.manager.IMEManager;
+    import ddt.manager.LanguageMgr;
+    import ddt.manager.PathManager;
+    import ddt.manager.PlayerManager;
+    import ddt.manager.PolarRegionManager;
+    import ddt.manager.ServerConfigManager;
+    import ddt.manager.SharedManager;
+    import ddt.manager.SocketManager;
+    import ddt.manager.SoundManager;
+    import ddt.manager.StateManager;
+    import ddt.manager.TimeManager;
+    import ddt.states.BaseStateView;
+    import ddt.utils.Helpers;
+    import ddt.utils.MenoryUtil;
+    import ddt.utils.PositionUtils;
+    import ddt.view.MainToolBar;
+    import ddt.view.character.CharactoryFactory;
+    import ddt.view.character.GameCharacter;
+    import ddt.view.character.ICharacter;
+    import ddt.view.character.ShowCharacter;
+    import ddt.view.chat.ChatBugleView;
+    import ddt.view.chat.chatBall.ChatBallBoss;
+    import ddt.view.rescue.RescueRoomItemView;
+    import ddt.view.rescue.RescueScoreAlertView;
+
+    import flash.display.Bitmap;
+    import flash.display.Graphics;
+    import flash.display.Sprite;
+    import flash.events.Event;
+    import flash.events.KeyboardEvent;
+    import flash.events.MouseEvent;
+    import flash.geom.Point;
+    import flash.geom.Rectangle;
+    import flash.media.SoundTransform;
+    import flash.utils.Dictionary;
+    import flash.utils.setTimeout;
+
+    import game.GameDecorateManager;
+    import game.actions.ViewEachPlayerAction;
+    import game.objects.GameLiving;
+    import game.objects.GameLocalPlayer;
+    import game.objects.GamePlayer;
+    import game.view.heroAuto.HeroAutoView;
+    import game.view.map.MapView;
+    import game.view.matchGameAuto.MatchGameAutoView;
+
+    import gameAuto.AutoGameManager;
+
+    import gameCommon.BloodNumberCreater;
+    import gameCommon.BuffManager;
+    import gameCommon.GameControl;
+    import gameCommon.GameMessageTipManager;
+    import gameCommon.model.GameInfo;
+    import gameCommon.model.Living;
+    import gameCommon.model.LocalPlayer;
+    import gameCommon.model.Player;
+    import gameCommon.model.SmallEnemy;
+    import gameCommon.model.TurnedLiving;
+    import gameCommon.view.AthleticsHelpView;
+    import gameCommon.view.DamageView;
+    import gameCommon.view.DreamLandDamageLogView;
+    import gameCommon.view.DungeonHelpView;
+    import gameCommon.view.DungeonInfoView;
+    import gameCommon.view.FightAchievBar;
+    import gameCommon.view.GameCountDownView;
+    import gameCommon.view.GameTrusteeshipView;
+    import gameCommon.view.LeftPlayerCartoonView;
+    import gameCommon.view.SelfMarkBar;
+    import gameCommon.view.VaneView;
+    import gameCommon.view.buff.SelfBuffBar;
+    import gameCommon.view.control.ControlState;
+    import gameCommon.view.control.FightControlBar;
+    import gameCommon.view.control.LiveState;
+    import gameCommon.view.playerThumbnail.PlayerThumbnailController;
+    import gameCommon.view.propContainer.PlayerStateContainer;
 
-public class GameViewBase extends BaseStateView
-{
+    import kingBless.KingBlessManager;
 
+    import org.aswing.KeyStroke;
+    import org.aswing.KeyboardManager;
 
-    protected var _arrowLeft:SpringArrowView;
+    import phy.math.EulerVector;
 
-    protected var _arrowRight:SpringArrowView;
+    import pvePowerBuff.PvePowerBuffManager;
 
-    protected var _arrowUp:SpringArrowView;
+    import rescue.data.RescueRoomInfo;
 
-    protected var _arrowDown:SpringArrowView;
+    import road7th.comm.PackageIn;
+    import road7th.data.DictionaryData;
+    import road7th.data.DictionaryEvent;
+    import road7th.data.StringObject;
+    import road7th.utils.MovieClipWrapper;
 
-    protected var _selfUsedProp:PlayerStateContainer;
+    import room.RoomManager;
+    import room.model.RoomPlayer;
 
-    protected var _leftPlayerView:LeftPlayerCartoonView;
+    import trainer.controller.NewHandGuideManager;
+    import trainer.controller.WeakGuildManager;
 
-    protected var _missionHelp:DungeonHelpView;
+    import worldboss.WorldBossManager;
 
-    protected var _fightControlBar:FightControlBar;
-
-    protected var _cs:ControlState;
-
-    protected var _vane:VaneView;
-
-    protected var _playerThumbnailLController:PlayerThumbnailController;
-
-    protected var _map:MapView;
-
-    protected var _smallMapBorderBg:Bitmap;
-
-    protected var _players:Dictionary;
-
-    protected var _gameInfo:GameInfo;
-
-    protected var _selfGamePlayer:GameLocalPlayer;
-
-    protected var _selfBuffBar:SelfBuffBar;
-
-    protected var _selfMarkBar:SelfMarkBar;
-
-    protected var _achievBar:FightAchievBar;
-
-    protected var _bitmapMgr:BitmapManager;
-
-    private var _buffIconBox:HBox;
-
-    protected var _kingblessIcon:Image;
-
-    protected var _trialBuffIcon:Image;
-
-    protected var _ringSkillIcon:Image;
-
-    protected var _guardCoreIcon:Image;
-
-    protected var _gameTrusteeshipView:GameTrusteeshipView;
-
-    protected var _heroAutoView:HeroAutoView;
-
-    protected var _gameCountDownView:GameCountDownView;
-
-    private var _damageView:DamageView;
-
-    private var _rescueRoomItemView:RescueRoomItemView;
-
-    protected var _rescueScoreView:RescueScoreAlertView;
-
-    protected var _sceneEffectsBar:SceneEffectsBar;
-
-    private var _messageBtn:BaseButton;
-
-    private var _pirateBall:ChatBallBoss;
-
-    public var explorersLiving:Living;
-
-    private var buffIcon:Image;
-
-    private var buffTxt:FilterFrameText;
-
-    protected var _weatherView:GameWeatherView;
-
-    protected var _barrier:DungeonInfoView;
-
-    private const GUIDEID:int = 10029;
-
-    protected var _barrierVisible:Boolean = true;
-
-    private var _self:LocalPlayer;
-
-    private var _level:int;
-
-    private var _gameLiving:GameLiving;
-
-    private var _selfGameLiving:GamePlayer;
-
-    private var _allLivings:DictionaryData;
-
-    private var _mass:Number = 10;
-
-    private var _gravityFactor:Number = 70;
-
-    protected var _windFactor:Number = 240;
-
-    private var _powerRef:Number = 1;
-
-    private var _reangle:Number = 0;
-
-    private var _dt:Number = 0.04;
-
-    private var _arf:Number;
-
-    private var _gf:Number;
-
-    private var _ga:Number;
-
-    private var _mapWind:Number = 0;
-
-    private var _wa:Number;
-
-    private var _ef:Point;
-
-    private var _shootAngle:Number;
-
-    private var _state:Boolean = false;
-
-    private var _useAble:Boolean = false;
-
-    private var _stateFlag:int;
-
-    private var _currentLivID:int;
-
-    private var _collideRect:Rectangle;
-
-    private var _drawRoute:Sprite;
-
-    public function GameViewBase()
+    public class GameViewBase extends BaseStateView
     {
-        _ef = new Point(0,0);
-        _collideRect = new Rectangle(-45,-30,100,80);
-        super();
-    }
 
-    override public function prepare() : void
-    {
-        super.prepare();
-    }
 
-    override public function fadingComplete() : void
-    {
-        super.fadingComplete();
-        if(_barrierVisible && !PolarRegionManager.Instance.ShowFlag)
+        protected var _arrowLeft:SpringArrowView;
+
+        protected var _arrowRight:SpringArrowView;
+
+        protected var _arrowUp:SpringArrowView;
+
+        protected var _arrowDown:SpringArrowView;
+
+        protected var _selfUsedProp:PlayerStateContainer;
+
+        protected var _leftPlayerView:LeftPlayerCartoonView;
+
+        protected var _missionHelp:DungeonHelpView;
+
+        protected var _fightControlBar:FightControlBar;
+
+        protected var _cs:ControlState;
+
+        protected var _vane:VaneView;
+
+        protected var _playerThumbnailLController:PlayerThumbnailController;
+
+        protected var _map:MapView;
+
+        protected var _smallMapBorderBg:Bitmap;
+
+        protected var _players:Dictionary;
+
+        protected var _gameInfo:GameInfo;
+
+        protected var _selfGamePlayer:GameLocalPlayer;
+
+        protected var _selfBuffBar:SelfBuffBar;
+
+        protected var _selfMarkBar:SelfMarkBar;
+
+        protected var _achievBar:FightAchievBar;
+
+        protected var _bitmapMgr:BitmapManager;
+
+        private var _buffIconBox:HBox;
+
+        protected var _kingblessIcon:Image;
+
+        protected var _trialBuffIcon:Image;
+
+        protected var _ringSkillIcon:Image;
+
+        protected var _guardCoreIcon:Image;
+
+        protected var _gameTrusteeshipView:GameTrusteeshipView;
+
+        protected var _heroAutoView:HeroAutoView;
+
+        protected var _gameCountDownView:GameCountDownView;
+
+        protected var _damageView:DamageView;
+
+        protected var _combatGainsView:DreamLandDamageLogView;
+
+        private var _rescueRoomItemView:RescueRoomItemView;
+
+        protected var _rescueScoreView:RescueScoreAlertView;
+
+        protected var _sceneEffectsBar:SceneEffectsBar;
+
+        private var _messageBtn:BaseButton;
+
+        private var _pirateBall:ChatBallBoss;
+
+        public var explorersLiving:Living;
+
+        private var buffIcon:Image;
+
+        private var buffTxt:FilterFrameText;
+
+        protected var _weatherView:GameWeatherView;
+
+        protected var _barrier:DungeonInfoView;
+
+        private const GUIDEID:int = 10029;
+
+        protected var _barrierVisible:Boolean = true;
+
+        private var _self:LocalPlayer;
+
+        private var _level:int;
+
+        private var _gameLiving:GameLiving;
+
+        private var _selfGameLiving:GamePlayer;
+
+        private var _allLivings:DictionaryData;
+
+        private var _mass:Number = 10;
+
+        private var _gravityFactor:Number = 70;
+
+        protected var _windFactor:Number = 240;
+
+        private var _powerRef:Number = 1;
+
+        private var _reangle:Number = 0;
+
+        private var _dt:Number = 0.04;
+
+        private var _arf:Number;
+
+        private var _gf:Number;
+
+        private var _ga:Number;
+
+        private var _mapWind:Number = 0;
+
+        private var _wa:Number;
+
+        private var _ef:Point;
+
+        private var _shootAngle:Number;
+
+        private var _state:Boolean = false;
+
+        private var _useAble:Boolean = false;
+
+        private var _stateFlag:int;
+
+        private var _currentLivID:int;
+
+        private var _collideRect:Rectangle;
+
+        private var _drawRoute:Sprite;
+
+        private var _isLockedForce:Boolean = false;
+
+        private var _currentLivIndex:int = 0;
+
+        private var _isAutoPass:Boolean = false;
+
+        private var _isShowThreeKill:Boolean = false;
+
+        public var _matchGameAutoView:MatchGameAutoView = null;
+
+        private var _tempSprite:Sprite;
+
+        public function GameViewBase()
         {
-            drawMissionInfo();
+            _ef = new Point(0, 0);
+            _collideRect = new Rectangle(-45, -30, 100, 80);
+            super();
         }
-    }
 
-    override public function enter(param1:BaseStateView, param2:Object = null) : void
-    {
-        var _loc6_:* = null;
-        var _loc3_:* = null;
-        super.enter(param1,param2);
-        BloodNumberCreater.setup();
-        _bitmapMgr = BitmapManager.getBitmapMgr("GameView");
-        SharedManager.Instance.propTransparent = false;
-        _gameInfo = GameControl.Instance.Current;
-        MainToolBar.Instance.hide();
-        LayerManager.Instance.clearnStageDynamic();
-        ChatBugleView.instance.hide();
-        PlayerManager.Instance.Self.TempBag.clearnAll();
-        GameControl.Instance.Current.selfGamePlayer.petSkillEnabled = true;
-        var _loc10_:int = 0;
-        var _loc9_:* = _gameInfo.livings;
-        for each(var _loc5_ in _gameInfo.livings)
+        override public function prepare():void
         {
-            if(_loc5_ is Player)
+            super.prepare();
+        }
+
+        override public function fadingComplete():void
+        {
+            super.fadingComplete();
+            if (_barrierVisible && !PolarRegionManager.Instance.ShowFlag)
             {
-                Player(_loc5_).isUpGrade = false;
-                Player(_loc5_).LockState = false;
+                drawMissionInfo();
             }
         }
-        _map = newMap();
-        _map.gameView = this;
-        _loc10_ = 0;
-        _map.y = _loc10_;
-        _map.x = _loc10_;
-        addChild(_map);
-        _map.smallMap.x = StageReferance.stageWidth - _map.smallMap.width - 1;
-        var _loc8_:Boolean = GameControl.EXIT_ROOM_TYPE_ARRAY.indexOf(_gameInfo.roomType) == -1 && GameControl.EXTI_GAME_MODE_ARRAY.indexOf(_gameInfo.gameMode) == -1;
-        _map.smallMap.enableExit = !!BombKingManager.instance.Recording?false:Boolean(_loc8_);
-        creatWeatherView();
-        _smallMapBorderBg = addSmallMapBg();
-        if(_smallMapBorderBg)
+
+        override public function enter(prev:BaseStateView, data:Object = null):void
         {
-            _smallMapBorderBg.visible = !GameControl.Instance.smallMapEnable();
-        }
-        _map.smallMap.visible = !GameControl.Instance.smallMapEnable();
-        if(GameControl.Instance.smallMapAlpha())
-        {
-            _map.smallMap.alpha = 0.8;
-        }
-        addChild(_map.smallMap);
-        _map.smallMap.hideSpliter();
-        _selfMarkBar = new SelfMarkBar(GameControl.Instance.Current.selfGamePlayer,this);
-        _selfMarkBar.x = 500;
-        _selfMarkBar.y = 79;
-        _fightControlBar = new FightControlBar(_gameInfo.selfGamePlayer,this);
-        GameControl.Instance.Current.selfGamePlayer.addEventListener("die",__selfDie);
-        _leftPlayerView = new LeftPlayerCartoonView();
-        _vane = new VaneView();
-        _vane.setUpCenter(446,0);
-        addChild(_vane);
-        SoundManager.instance.playGameBackMusic(_map.info.BackMusic);
-        if(RoomManager.Instance.current.type == 120)
-        {
-            _sceneEffectsBar = new SceneEffectsBar(_map);
-            PositionUtils.setPos(_sceneEffectsBar,"asset.gameBattle.sceneEffectsBarPos");
-            addChild(_sceneEffectsBar);
-        }
-        _arrowUp = new SpringArrowView("up",_map);
-        _arrowDown = new SpringArrowView("down",_map);
-        _arrowLeft = new SpringArrowView("right",_map);
-        _arrowRight = new SpringArrowView("left",_map);
-        addChild(_arrowUp);
-        addChild(_arrowDown);
-        addChild(_arrowLeft);
-        addChild(_arrowRight);
-        _selfBuffBar = ComponentFactory.Instance.creatCustomObject("SelfBuffBar",[this,_arrowDown]);
-        if(!GameControl.Instance.Current.missionInfo || !(GameControl.Instance.Current.missionInfo && GameControl.Instance.Current.missionInfo.isWorldCupI))
-        {
-            if(GameControl.Instance.isShowSelfBuffBar)
+            var pstr:* = null;
+            var getD:* = null;
+            super.enter(prev, data);
+            BloodNumberCreater.setup();
+            _bitmapMgr = BitmapManager.getBitmapMgr("GameView");
+            SharedManager.Instance.propTransparent = false;
+            _gameInfo = GameControl.Instance.Current;
+            MainToolBar.Instance.hide();
+            LayerManager.Instance.clearnStageDynamic();
+            ChatBugleView.instance.hide();
+            PlayerManager.Instance.Self.TempBag.clearnAll();
+            GameControl.Instance.Current.selfGamePlayer.petSkillEnabled = true;
+            var _loc10_:int = 0;
+            var _loc9_:* = _gameInfo.livings;
+            for each(var player in _gameInfo.livings)
             {
-                addChildAt(_selfBuffBar,this.numChildren - 1);
-            }
-        }
-        if(NoviceDataManager.instance.firstEnterGame && PlayerManager.Instance.Self.Grade < 11)
-        {
-            NoviceDataManager.instance.saveNoviceData(530,PathManager.userName(),PathManager.solveRequestPath());
-        }
-        _players = new Dictionary();
-        SharedManager.Instance.addEventListener("change",__soundChange);
-        __soundChange(null);
-        var _loc7_:LocalPlayer = _gameInfo.selfGamePlayer;
-        if(!BombKingManager.instance.Recording && !RoomManager.Instance.current.selfRoomPlayer.isViewer && _loc7_.isLiving)
-        {
-            _cs = _fightControlBar.setState(0);
-            GameDecorateManager.Instance.createBitmapUI(_cs,"asset.gameDecorate.pow");
-        }
-        setupGameData();
-        _playerThumbnailLController = new PlayerThumbnailController(_gameInfo);
-        var _loc4_:Point = ComponentFactory.Instance.creatCustomObject("asset.game.ThumbnailLPos");
-        _playerThumbnailLController.x = _loc4_.x;
-        _playerThumbnailLController.y = _loc4_.y;
-        addChildAt(_playerThumbnailLController,getChildIndex(_map.smallMap));
-        if(RoomManager.Instance.current.type == 121)
-        {
-            _vane.x = 564;
-        }
-        ChatManager.Instance.state = 1;
-        ChatManager.Instance.view.visible = true;
-        addChild(ChatManager.Instance.view);
-        if(WeakGuildManager.Instance.switchUserGuide)
-        {
-            loadWeakGuild();
-        }
-        defaultForbidDragFocus();
-        initEvent();
-        wishInit();
-        _buffIconBox = ComponentFactory.Instance.creat("game.buff.iconHbox");
-        _buffIconBox.visible = false;
-        addChild(_buffIconBox);
-        kingBlessIconInit();
-        trialBuffIconInit();
-        addRingSkillIcon();
-        initGameCountDownView();
-        resetPlayerCharacters();
-        if(isShowTrusteeship())
-        {
-            _gameTrusteeshipView = ComponentFactory.Instance.creatCustomObject("game.view.gameTrusteeshipView");
-            GameDecorateManager.Instance.createBitmapUI(_gameTrusteeshipView,"asset.gameDecorate.trusteeship");
-        }
-        initDiePlayer();
-        if(RoomManager.Instance.current.type == 4 || RoomManager.Instance.current.type == 0)
-        {
-            buffIcon = ComponentFactory.Instance.creatComponentByStylename("game.buffTips.icon");
-            addChild(buffIcon);
-            _loc6_ = "00:00";
-            if(PvePowerBuffManager.instance.getBuffCount > 0 && PvePowerBuffManager.instance.getBuffDate != null)
-            {
-                _loc3_ = new Date(PvePowerBuffManager.instance.getBuffDate.getTime() + 60000 * 30);
-                _loc6_ = _loc3_.getMonth() + 1 + " - " + _loc3_.getDate() + " " + _loc3_.getHours() + " : " + _loc3_.getMinutes();
-            }
-            buffIcon.tipData = LanguageMgr.GetTranslation("ddt.game.signBuff.tips",PlayerManager.Instance.Self.experience_Rate,PlayerManager.Instance.Self.offer_Rate) + "\n" + LanguageMgr.GetTranslation("ddt.pvePowerBuff.buff.timelimit.text",_loc6_);
-            buffTxt = ComponentFactory.Instance.creatComponentByStylename("game.buffTips.levelTxt");
-            addChild(buffTxt);
-            buffTxt.text = String(Math.ceil(PlayerManager.Instance.Self.experience_Rate));
-        }
-        if(RoomManager.Instance.current.type == 21)
-        {
-            _damageView = new DamageView();
-            addChild(_damageView);
-            PositionUtils.setPos(_damageView,"asset.game.damageViewPos");
-        }
-        else if(RoomManager.Instance.current.type == 49)
-        {
-            _heroAutoView = ComponentFactory.Instance.creatCustomObject("game.view.heroAuto.heroAutoView");
-            _heroAutoView.autoState = true;
-            addChild(_heroAutoView);
-        }
-        else if(RoomManager.Instance.current.type == 29)
-        {
-            _rescueRoomItemView = new RescueRoomItemView();
-            addChild(_rescueRoomItemView);
-            PositionUtils.setPos(_rescueRoomItemView,"rescue.roomInfo.viewPos");
-            SocketManager.Instance.addEventListener("RescueItemInfo",__updateRescueItemInfo);
-            SocketManager.Instance.addEventListener("addScore",__addRescueScore);
-        }
-    }
-
-    private function addSmallMapBg() : Bitmap
-    {
-        var _loc1_:Bitmap = GameDecorateManager.Instance.createBitmapUI(this,"asset.gameDecorate.smallMapBorder");
-        if(_loc1_)
-        {
-            _loc1_.x = _map.smallMap.x - 36;
-            _loc1_.y = _map.smallMap.y + (_map.smallMap.height - _loc1_.height) + 7;
-            if(GameDecorateManager.Instance.isGameBattle)
-            {
-                _loc1_.x = _loc1_.x - 2;
-                _loc1_.y = _loc1_.y - 6;
-            }
-        }
-        return _loc1_;
-    }
-
-    protected function creatWeatherView() : void
-    {
-        if(GameControl.Instance.Current.isWeather)
-        {
-            setBarrierVisible(false);
-            _weatherView = new GameWeatherView();
-            addChild(_weatherView);
-        }
-    }
-
-    protected function __addRescueScore(param1:CrazyTankSocketEvent) : void
-    {
-        var _loc4_:PackageIn = param1.pkg;
-        var _loc2_:int = _loc4_.readInt();
-        var _loc5_:int = _loc4_.readInt();
-        var _loc3_:int = _loc4_.readInt();
-        if(!_rescueScoreView)
-        {
-            _rescueScoreView = new RescueScoreAlertView();
-            _map.addChild(_rescueScoreView);
-        }
-        _rescueScoreView.x = _loc2_;
-        _rescueScoreView.y = _loc5_ - 50;
-        _rescueScoreView.setData(_loc3_);
-        _rescueScoreView.visible = true;
-    }
-
-    private function setScoreViewInvisible() : void
-    {
-        _rescueScoreView.visible = false;
-    }
-
-    protected function __updateRescueItemInfo(param1:CrazyTankSocketEvent) : void
-    {
-        var _loc3_:PackageIn = param1.pkg;
-        var _loc4_:RescueRoomInfo = new RescueRoomInfo();
-        _loc4_.sceneId = _loc3_.readInt();
-        _loc4_.score = _loc3_.readInt();
-        _loc4_.defaultArrow = _loc3_.readInt();
-        _loc4_.arrow = _loc3_.readInt();
-        _loc4_.bloodBag = _loc3_.readInt();
-        _loc4_.kingBless = _loc3_.readInt();
-        if(_rescueRoomItemView)
-        {
-            _rescueRoomItemView.update(_loc4_);
-        }
-        if(_barrier)
-        {
-            _barrier.setRescueArrow(_loc4_.defaultArrow + _loc4_.arrow);
-        }
-        var _loc2_:LiveState = _cs as LiveState;
-        if(_loc2_)
-        {
-            _loc2_.rescuePropBar.setKingBlessCount(_loc4_.kingBless);
-        }
-    }
-
-    public function addMessageBtn() : void
-    {
-        if(!_messageBtn)
-        {
-            _messageBtn = ComponentFactory.Instance.creatComponentByStylename("game.view.activityDungeonView.messageBtn");
-            _messageBtn.addEventListener("click",__onMessageClick);
-            _map.addChild(_messageBtn);
-        }
-    }
-
-    protected function __onMessageClick(param1:MouseEvent) : void
-    {
-        _messageBtn.visible = false;
-        if(explorersLiving)
-        {
-            explorersLiving.say(LanguageMgr.GetTranslation("activity.dungeonView.pirateSay" + GameControl.Instance.currentNum));
-        }
-    }
-
-    private function initGameCountDownView() : void
-    {
-        var _loc2_:int = 0;
-        var _loc1_:int = RoomManager.Instance.current.type;
-        if(_loc1_ == 19)
-        {
-            _loc2_ = 300 - int((TimeManager.Instance.Now().getTime() - GameControl.Instance.Current.startTime.getTime()) / 1000);
-            _gameCountDownView = new GameCountDownView(_loc2_);
-            _gameCountDownView.x = _map.smallMap.x - _gameCountDownView.width - 1;
-            _gameCountDownView.y = 2;
-            addChild(_gameCountDownView);
-        }
-    }
-
-    private function isShowTrusteeship() : Boolean
-    {
-        var _loc2_:int = GameControl.Instance.Current.roomType;
-        var _loc1_:int = GameControl.Instance.Current.gameMode;
-        if(_loc2_ == 4 || _loc2_ == 12 || _loc2_ == 13 || _loc2_ == 12 || _loc2_ == 25 || _loc2_ == 0 || _loc2_ == 1 || _loc2_ == 11 || _loc2_ == 123 || _loc2_ == 58)
-        {
-            if(_loc1_ == 56 || _loc1_ == 57)
-            {
-                return false;
-            }
-            return true;
-        }
-        return false;
-    }
-
-    public function updateDamageView() : void
-    {
-        if(_damageView)
-        {
-            _damageView.updateView();
-        }
-    }
-
-    protected function kingBlessIconInit() : void
-    {
-        var _loc1_:int = 0;
-        if(KingBlessManager.instance.openType > 0)
-        {
-            _loc1_ = RoomManager.Instance.current.type;
-            if(_loc1_ == 4 || _loc1_ == 11 || _loc1_ == 15 || _loc1_ == 123)
-            {
-                _kingblessIcon = ComponentFactory.Instance.creatComponentByStylename("game.kingbless.addPropertyBuffIcon");
-                _kingblessIcon.tipData = KingBlessManager.instance.getOneBuffData(1);
-                _buffIconBox.addChild(_kingblessIcon);
-            }
-        }
-    }
-
-    private function trialBuffIconInit() : void
-    {
-        var _loc1_:int = RoomManager.Instance.current.type;
-        if(_loc1_ == 120)
-        {
-            _trialBuffIcon = ComponentFactory.Instance.creatComponentByStylename("game.trial.addTrialBuffIcon");
-            _trialBuffIcon.tipData = ServerConfigManager.instance.trialBuffTipPropertyValue;
-            _buffIconBox.addChild(_trialBuffIcon);
-        }
-    }
-
-    private function addRingSkillIcon() : void
-    {
-        if(_self.ringFlag && _self.loveBuffLevel > 0)
-        {
-            _ringSkillIcon = ComponentFactory.Instance.creatComponentByStylename("game.ringSkill.BuffIcon");
-            setSkillTipData(_ringSkillIcon);
-            _buffIconBox.addChild(_ringSkillIcon);
-            _buffIconBox.arrange();
-        }
-    }
-
-    protected function updateGuardCoreIcon() : void
-    {
-        var _loc1_:* = null;
-        if(GameControl.Instance.Current.guardCoreEnable)
-        {
-            _loc1_ = GameControl.Instance.Current.getGuardCoreBuffList();
-            if(_loc1_.length > 0)
-            {
-                if(_guardCoreIcon == null)
+                if (player is Player)
                 {
-                    _guardCoreIcon = ComponentFactory.Instance.creatComponentByStylename("game.guardCore.tipsIcon");
+                    Player(player).isUpGrade = false;
+                    Player(player).LockState = false;
                 }
-                _guardCoreIcon.tipData = _loc1_;
-                _buffIconBox.addChild(_guardCoreIcon);
-                _buffIconBox.arrange();
             }
-            else
+            _map = newMap();
+            _map.gameView = this;
+            _loc10_ = 0;
+            _map.y = _loc10_;
+            _map.x = _loc10_;
+            addChild(_map);
+            _map.smallMap.x = StageReferance.stageWidth - _map.smallMap.width - 1;
+            var exitBool:Boolean = GameControl.EXIT_ROOM_TYPE_ARRAY.indexOf(_gameInfo.roomType) == -1 && GameControl.EXTI_GAME_MODE_ARRAY.indexOf(_gameInfo.gameMode) == -1;
+            _map.smallMap.enableExit = !!BombKingManager.instance.Recording ? false : Boolean(exitBool);
+            creatWeatherView();
+            _smallMapBorderBg = addSmallMapBg();
+            if (_smallMapBorderBg)
             {
-                ObjectUtils.disposeObject(_guardCoreIcon);
-                _guardCoreIcon = null;
+                _smallMapBorderBg.visible = !GameControl.Instance.smallMapEnable();
             }
-        }
-    }
-
-    private function setSkillTipData(param1:Image) : void
-    {
-        var _loc3_:* = null;
-        var _loc5_:* = null;
-        var _loc4_:* = null;
-        var _loc2_:int = BagAndInfoManager.Instance.getCurrentRingData().Level / 10;
-        if(_loc2_ > 0)
-        {
-            _loc3_ = ConsortionModelManager.Instance.model.getskillInfoWithTypeAndLevel(0,_loc2_)[0];
-            _loc5_ = {};
-            _loc5_["name"] = _loc3_.name + "Lv" + _loc2_;
-            _loc5_["content"] = _loc3_.descript.replace("{0}",_loc3_.value);
-            if(_loc2_ < RingSystemData.TotalLevel * 0.1)
+            _map.smallMap.visible = !GameControl.Instance.smallMapEnable();
+            if (GameControl.Instance.smallMapAlpha())
             {
-                _loc4_ = ConsortionModelManager.Instance.model.getskillInfoWithTypeAndLevel(0,_loc2_ + 1)[0];
-                _loc5_["nextLevel"] = LanguageMgr.GetTranslation("tank.bagAndInfo.ringSkill.nextLevel",_loc4_.name,_loc2_ + 1,_loc4_.descript.replace("{0}",_loc4_.value));
-                _loc5_["limitLevel"] = LanguageMgr.GetTranslation("tank.bagAndInfo.ringSkill.nextUnLock",(_loc2_ + 1) * 10);
+                _map.smallMap.alpha = 0.8;
             }
-            else
+            addChild(_map.smallMap);
+            _map.smallMap.hideSpliter();
+            _selfMarkBar = new SelfMarkBar(GameControl.Instance.Current.selfGamePlayer, this);
+            _selfMarkBar.x = 500;
+            _selfMarkBar.y = 79;
+            _fightControlBar = new FightControlBar(_gameInfo.selfGamePlayer, this);
+            GameControl.Instance.Current.selfGamePlayer.addEventListener("die", __selfDie);
+            _leftPlayerView = new LeftPlayerCartoonView();
+            _vane = new VaneView();
+            _vane.setUpCenter(446, 0);
+            addChild(_vane);
+            SoundManager.instance.playGameBackMusic(_map.info.BackMusic);
+            if (RoomManager.Instance.current.type == 120)
             {
-                _loc5_["nextLevel"] = "";
-                _loc5_["limitLevel"] = "";
+                _sceneEffectsBar = new SceneEffectsBar(_map);
+                PositionUtils.setPos(_sceneEffectsBar, "asset.gameBattle.sceneEffectsBarPos");
+                addChild(_sceneEffectsBar);
             }
-            param1.tipData = _loc5_;
-            Helpers.colorful(param1);
-            param1.mouseEnabled = true;
-        }
-        else
-        {
-            Helpers.grey(param1);
-            param1.mouseEnabled = false;
-        }
-    }
-
-    private function resetPlayerCharacters() : void
-    {
-        var _loc3_:int = 0;
-        var _loc2_:* = _players;
-        for each(var _loc1_ in _players)
-        {
-            if(_loc1_.info.character)
+            _arrowUp = new SpringArrowView("up", _map);
+            _arrowDown = new SpringArrowView("down", _map);
+            _arrowLeft = new SpringArrowView("right", _map);
+            _arrowRight = new SpringArrowView("left", _map);
+            addChild(_arrowUp);
+            addChild(_arrowDown);
+            addChild(_arrowLeft);
+            addChild(_arrowRight);
+            _selfBuffBar = ComponentFactory.Instance.creatCustomObject("SelfBuffBar", [this, _arrowDown]);
+            if (!GameControl.Instance.Current.missionInfo || !(GameControl.Instance.Current.missionInfo && GameControl.Instance.Current.missionInfo.isWorldCupI))
             {
-                _loc1_.info.character.resetShowBitmapBig();
-                _loc1_.info.character.showWing = true;
-                _loc1_.info.character.show();
-            }
-        }
-    }
-
-    protected function __wishClick(param1:Event) : void
-    {
-        _selfUsedProp.info.addState(0);
-    }
-
-    protected function __selfDie(param1:LivingEvent) : void
-    {
-        var _loc2_:Living = param1.currentTarget as Living;
-        var _loc3_:DictionaryData = _gameInfo.findTeam(_loc2_.team);
-        var _loc6_:int = 0;
-        var _loc5_:* = _loc3_;
-        for each(var _loc4_ in _loc3_)
-        {
-            if(_loc4_.isLiving)
-            {
-                _fightControlBar.setState(1);
-                return;
-            }
-        }
-        if(_selfBuffBar)
-        {
-            _selfBuffBar.removeEventListener(SelfBuffBar.UPDATECELL,__selfBuffBarUpdateCellHandler);
-        }
-        ObjectUtils.disposeObject(_selfBuffBar);
-        _selfBuffBar = null;
-        ObjectUtils.disposeObject(_kingblessIcon);
-        _kingblessIcon = null;
-        ObjectUtils.disposeObject(_trialBuffIcon);
-        _trialBuffIcon = null;
-        ObjectUtils.disposeObject(_ringSkillIcon);
-        _ringSkillIcon = null;
-        ObjectUtils.disposeObject(_buffIconBox);
-        _buffIconBox = null;
-    }
-
-    protected function drawMissionInfo() : void
-    {
-        if(_gameInfo.roomType >= 2 && _gameInfo.roomType != 5 && _gameInfo.roomType != 16 && _gameInfo.roomType != 18 && _gameInfo.roomType != 19 && _gameInfo.roomType != 24 && _gameInfo.roomType != 25 && _gameInfo.roomType != 27 && _gameInfo.roomType != 121 && _gameInfo.roomType != 120 && _gameInfo.roomType != 58 && _gameInfo.gameMode != 56 && _gameInfo.gameMode != 57 && _gameInfo.gameMode != 23)
-        {
-            _map.smallMap.titleBar.addEventListener("DungeonHelpChanged",__dungeonVisibleChanged);
-            if(!_barrier)
-            {
-                _barrier = new DungeonInfoView(_map.smallMap.titleBar.turnButton,this);
-                _barrier.addEventListener("DungeonHelpVisibleChanged",__dungeonHelpChanged);
-                _barrier.addEventListener("updateSmallMapView",__updateSmallMapView);
-            }
-            if(!_missionHelp)
-            {
-                _missionHelp = new DungeonHelpView(_map.smallMap.titleBar.turnButton,_barrier,this);
-                addChild(_missionHelp);
-            }
-            _barrier.open();
-        }
-        else if(_gameInfo.gameMode == 56 || _gameInfo.gameMode == 57)
-        {
-            _map.smallMap.titleBar.addEventListener("DungeonHelpChanged",__dungeonVisibleChanged);
-            _missionHelp = new AthleticsHelpView(_map.smallMap.titleBar.turnButton,null,this);
-            addChild(_missionHelp);
-        }
-    }
-
-    public function testHelpOpen() : void
-    {
-        _missionHelp.open();
-    }
-
-    public function testHelpClose(param1:Rectangle) : void
-    {
-        _missionHelp.close(param1);
-    }
-
-    protected function __updateSmallMapView(param1:GameEvent) : void
-    {
-        var _loc2_:MissionInfo = GameControl.Instance.Current.missionInfo;
-        if(_loc2_.currentValue1 != -1 && _loc2_.totalValue1 > 0)
-        {
-            _map.smallMap.setBarrier(_loc2_.currentValue1,_loc2_.totalValue1);
-        }
-    }
-
-    protected function __dungeonHelpChanged(param1:GameEvent) : void
-    {
-        var _loc2_:* = null;
-        if(_missionHelp)
-        {
-            if(param1.data)
-            {
-                if(_missionHelp.opened)
+                if (GameControl.Instance.isShowSelfBuffBar)
                 {
-                    _loc2_ = _barrier.getBounds(this);
-                    var _loc3_:int = 1;
-                    _loc2_.height = _loc3_;
-                    _loc2_.width = _loc3_;
-                    _missionHelp.close(_loc2_);
+                    addChildAt(_selfBuffBar, this.numChildren - 1);
+                }
+            }
+            if (NoviceDataManager.instance.firstEnterGame && PlayerManager.Instance.Self.Grade < 11)
+            {
+                NoviceDataManager.instance.saveNoviceData(530, PathManager.userName(), PathManager.solveRequestPath());
+            }
+            _players = new Dictionary();
+            SharedManager.Instance.addEventListener("change", __soundChange);
+            __soundChange(null);
+            var self:LocalPlayer = _gameInfo.selfGamePlayer;
+            if (!BombKingManager.instance.Recording && !RoomManager.Instance.current.selfRoomPlayer.isViewer && self.isLiving)
+            {
+                _cs = _fightControlBar.setState(0);
+                GameDecorateManager.Instance.createBitmapUI(_cs, "asset.gameDecorate.pow");
+            }
+            setupGameData();
+            _playerThumbnailLController = new PlayerThumbnailController(_gameInfo);
+            var thumbnailPos:Point = ComponentFactory.Instance.creatCustomObject("asset.game.ThumbnailLPos");
+            _playerThumbnailLController.x = thumbnailPos.x;
+            _playerThumbnailLController.y = thumbnailPos.y;
+            addChildAt(_playerThumbnailLController, getChildIndex(_map.smallMap));
+            if (RoomManager.Instance.current.type == 121)
+            {
+                _vane.x = 564;
+            }
+            ChatManager.Instance.state = 1;
+            ChatManager.Instance.view.visible = true;
+            addChild(ChatManager.Instance.view);
+            if (WeakGuildManager.Instance.switchUserGuide)
+            {
+                loadWeakGuild();
+            }
+            defaultForbidDragFocus();
+            initEvent();
+            wishInit();
+            _buffIconBox = ComponentFactory.Instance.creat("game.buff.iconHbox");
+            _buffIconBox.visible = false;
+            addChild(_buffIconBox);
+            kingBlessIconInit();
+            trialBuffIconInit();
+            addRingSkillIcon();
+            initGameCountDownView();
+            resetPlayerCharacters();
+            if (isShowTrusteeship())
+            {
+                _gameTrusteeshipView = ComponentFactory.Instance.creatCustomObject("game.view.gameTrusteeshipView");
+                GameDecorateManager.Instance.createBitmapUI(_gameTrusteeshipView, "asset.gameDecorate.trusteeship");
+            }
+            initDiePlayer();
+            if (RoomManager.Instance.current.type == 4 || RoomManager.Instance.current.type == 0)
+            {
+                buffIcon = ComponentFactory.Instance.creatComponentByStylename("game.buffTips.icon");
+                addChild(buffIcon);
+                pstr = "00:00";
+                if (PvePowerBuffManager.instance.getBuffCount > 0 && PvePowerBuffManager.instance.getBuffDate != null)
+                {
+                    getD = new Date(PvePowerBuffManager.instance.getBuffDate.getTime() + 60000 * 30);
+                    pstr = getD.getMonth() + 1 + " - " + getD.getDate() + " " + getD.getHours() + " : " + getD.getMinutes();
+                }
+                buffIcon.tipData = LanguageMgr.GetTranslation("ddt.game.signBuff.tips", PlayerManager.Instance.Self.experience_Rate, PlayerManager.Instance.Self.offer_Rate) + "\n" + LanguageMgr.GetTranslation("ddt.pvePowerBuff.buff.timelimit.text", pstr);
+                buffTxt = ComponentFactory.Instance.creatComponentByStylename("game.buffTips.levelTxt");
+                addChild(buffTxt);
+                buffTxt.text = String(Math.ceil(PlayerManager.Instance.Self.experience_Rate));
+            }
+            if (RoomManager.Instance.current.type == 21)
+            {
+                _damageView = new DamageView();
+                addChild(_damageView);
+                PositionUtils.setPos(_damageView, "asset.game.damageViewPos");
+            }
+            else if (RoomManager.Instance.current.type == 49)
+            {
+                _heroAutoView = ComponentFactory.Instance.creatCustomObject("game.view.heroAuto.heroAutoView");
+                _heroAutoView.autoState = true;
+                addChild(_heroAutoView);
+            }
+            else if (RoomManager.Instance.current.type == 29)
+            {
+                _rescueRoomItemView = new RescueRoomItemView();
+                addChild(_rescueRoomItemView);
+                PositionUtils.setPos(_rescueRoomItemView, "rescue.roomInfo.viewPos");
+                SocketManager.Instance.addEventListener("RescueItemInfo", __updateRescueItemInfo);
+                SocketManager.Instance.addEventListener("addScore", __addRescueScore);
+            }
+            else if (RoomManager.Instance.current.type == 70)
+            {
+                _combatGainsView = new DreamLandDamageLogView();
+                addChild(_combatGainsView);
+                PositionUtils.setPos(_combatGainsView, "asset.game.damageViewPos");
+            }
+        }
+
+        public function updateCombatGainsView(hurts:Array):void
+        {
+            if (_combatGainsView)
+            {
+                _combatGainsView.updateView(hurts);
+            }
+        }
+
+        private function addSmallMapBg():Bitmap
+        {
+            var smallMapBorder:Bitmap = GameDecorateManager.Instance.createBitmapUI(this, "asset.gameDecorate.smallMapBorder");
+            if (smallMapBorder)
+            {
+                smallMapBorder.x = _map.smallMap.x - 36;
+                smallMapBorder.y = _map.smallMap.y + (_map.smallMap.height - smallMapBorder.height) + 7;
+                if (GameDecorateManager.Instance.isGameBattle)
+                {
+                    smallMapBorder.x = smallMapBorder.x - 2;
+                    smallMapBorder.y = smallMapBorder.y - 6;
+                }
+            }
+            return smallMapBorder;
+        }
+
+        protected function creatWeatherView():void
+        {
+            if (GameControl.Instance.Current.isWeather)
+            {
+                setBarrierVisible(false);
+                _weatherView = new GameWeatherView();
+                addChild(_weatherView);
+            }
+        }
+
+        protected function __addRescueScore(event:CrazyTankSocketEvent):void
+        {
+            var pkg:PackageIn = event.pkg;
+            var npcX:int = pkg.readInt();
+            var npcY:int = pkg.readInt();
+            var value:int = pkg.readInt();
+            if (!_rescueScoreView)
+            {
+                _rescueScoreView = new RescueScoreAlertView();
+                _map.addChild(_rescueScoreView);
+            }
+            _rescueScoreView.x = npcX;
+            _rescueScoreView.y = npcY - 50;
+            _rescueScoreView.setData(value);
+            _rescueScoreView.visible = true;
+        }
+
+        private function setScoreViewInvisible():void
+        {
+            _rescueScoreView.visible = false;
+        }
+
+        protected function __updateRescueItemInfo(event:CrazyTankSocketEvent):void
+        {
+            var pkg:PackageIn = event.pkg;
+            var info:RescueRoomInfo = new RescueRoomInfo();
+            info.sceneId = pkg.readInt();
+            info.score = pkg.readInt();
+            info.defaultArrow = pkg.readInt();
+            info.arrow = pkg.readInt();
+            info.bloodBag = pkg.readInt();
+            info.kingBless = pkg.readInt();
+            if (_rescueRoomItemView)
+            {
+                _rescueRoomItemView.update(info);
+            }
+            if (_barrier)
+            {
+                _barrier.setRescueArrow(info.defaultArrow + info.arrow);
+            }
+            var ls:LiveState = _cs as LiveState;
+            if (ls)
+            {
+                ls.rescuePropBar.setKingBlessCount(info.kingBless);
+            }
+        }
+
+        public function addMessageBtn():void
+        {
+            if (!_messageBtn)
+            {
+                _messageBtn = ComponentFactory.Instance.creatComponentByStylename("game.view.activityDungeonView.messageBtn");
+                _messageBtn.addEventListener("click", __onMessageClick);
+                _map.addChild(_messageBtn);
+            }
+        }
+
+        protected function __onMessageClick(event:MouseEvent):void
+        {
+            _messageBtn.visible = false;
+            if (explorersLiving)
+            {
+                explorersLiving.say(LanguageMgr.GetTranslation("activity.dungeonView.pirateSay" + GameControl.Instance.currentNum));
+            }
+        }
+
+        private function initGameCountDownView():void
+        {
+            var totalTime:int = 0;
+            var roomType:int = RoomManager.Instance.current.type;
+            if (roomType == 19)
+            {
+                totalTime = 300 - int((TimeManager.Instance.Now().getTime() - GameControl.Instance.Current.startTime.getTime()) / 1000);
+                _gameCountDownView = new GameCountDownView(totalTime);
+                _gameCountDownView.x = _map.smallMap.x - _gameCountDownView.width - 1;
+                _gameCountDownView.y = 2;
+                addChild(_gameCountDownView);
+            }
+        }
+
+        private function isShowTrusteeship():Boolean
+        {
+            var gameType:int = GameControl.Instance.Current.roomType;
+            var gameMode:int = GameControl.Instance.Current.gameMode;
+            if (gameType == 4 || gameType == 12 || gameType == 13 || gameType == 12 || gameType == 25 || gameType == 0 || gameType == 1 || gameType == 11 || gameType == 123 || gameType == 58)
+            {
+                if (gameMode == 56 || gameMode == 57)
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public function updateDamageView():void
+        {
+            if (_damageView)
+            {
+                _damageView.updateView();
+            }
+        }
+
+        protected function kingBlessIconInit():void
+        {
+            var roomType:int = 0;
+            if (KingBlessManager.instance.openType > 0)
+            {
+                roomType = RoomManager.Instance.current.type;
+                if (roomType == 4 || roomType == 11 || roomType == 15 || roomType == 123)
+                {
+                    _kingblessIcon = ComponentFactory.Instance.creatComponentByStylename("game.kingbless.addPropertyBuffIcon");
+                    _kingblessIcon.tipData = KingBlessManager.instance.getOneBuffData(1);
+                    _buffIconBox.addChild(_kingblessIcon);
+                }
+            }
+        }
+
+        private function trialBuffIconInit():void
+        {
+            var roomType:int = RoomManager.Instance.current.type;
+            if (roomType == 120)
+            {
+                _trialBuffIcon = ComponentFactory.Instance.creatComponentByStylename("game.trial.addTrialBuffIcon");
+                _trialBuffIcon.tipData = ServerConfigManager.instance.trialBuffTipPropertyValue;
+                _buffIconBox.addChild(_trialBuffIcon);
+            }
+        }
+
+        private function addRingSkillIcon():void
+        {
+            var roomType:int = RoomManager.Instance.current.type;
+            if (roomType != 70)
+            {
+                if (_self.ringFlag && _self.loveBuffLevel > 0)
+                {
+                    _ringSkillIcon = ComponentFactory.Instance.creatComponentByStylename("game.ringSkill.BuffIcon");
+                    setSkillTipData(_ringSkillIcon);
+                    _buffIconBox.addChild(_ringSkillIcon);
+                    _buffIconBox.arrange();
+                }
+            }
+        }
+
+        protected function updateGuardCoreIcon():void
+        {
+            var list:* = null;
+            if (GameControl.Instance.Current.guardCoreEnable)
+            {
+                list = GameControl.Instance.Current.getGuardCoreBuffList();
+                if (list.length > 0)
+                {
+                    if (_guardCoreIcon == null)
+                    {
+                        _guardCoreIcon = ComponentFactory.Instance.creatComponentByStylename("game.guardCore.tipsIcon");
+                    }
+                    _guardCoreIcon.tipData = list;
+                    _buffIconBox.addChild(_guardCoreIcon);
+                    _buffIconBox.arrange();
                 }
                 else
                 {
-                    _missionHelp.open();
+                    ObjectUtils.disposeObject(_guardCoreIcon);
+                    _guardCoreIcon = null;
                 }
             }
-            else if(_missionHelp.opened)
-            {
-                _loc2_ = _map.smallMap.titleBar.turnButton.getBounds(this);
-                _missionHelp.close(_loc2_);
-            }
         }
-    }
 
-    protected function __dungeonVisibleChanged(param1:DungeonInfoEvent) : void
-    {
-        if(_gameInfo.gameMode == 56 || _gameInfo.gameMode == 57)
+        private function setSkillTipData($target:Image):void
         {
-            if(_missionHelp)
+            var level:* = null;
+            var obj:* = null;
+            var nextLevel:* = null;
+            var skillLevel:int = BagAndInfoManager.Instance.getCurrentRingData().Level / 10;
+            if (skillLevel > 0)
             {
-                !!_missionHelp.parent?_missionHelp.defaultClose():_missionHelp.open();
-            }
-        }
-        else if(_barrier && _barrierVisible)
-        {
-            if(_barrier.parent)
-            {
-                _barrier.close();
+                level = ConsortionModelManager.Instance.model.getskillInfoWithTypeAndLevel(0, skillLevel)[0];
+                obj = {};
+                obj["name"] = level.name + "Lv" + skillLevel;
+                obj["content"] = level.descript.replace("{0}", level.value);
+                if (skillLevel < RingSystemData.TotalLevel * 0.1)
+                {
+                    nextLevel = ConsortionModelManager.Instance.model.getskillInfoWithTypeAndLevel(0, skillLevel + 1)[0];
+                    obj["nextLevel"] = LanguageMgr.GetTranslation("tank.bagAndInfo.ringSkill.nextLevel", nextLevel.name, skillLevel + 1, nextLevel.descript.replace("{0}", nextLevel.value));
+                    obj["limitLevel"] = LanguageMgr.GetTranslation("tank.bagAndInfo.ringSkill.nextUnLock", (skillLevel + 1) * 10);
+                }
+                else
+                {
+                    obj["nextLevel"] = "";
+                    obj["limitLevel"] = "";
+                }
+                $target.tipData = obj;
+                Helpers.colorful($target);
+                $target.mouseEnabled = true;
             }
             else
             {
+                Helpers.grey($target);
+                $target.mouseEnabled = false;
+            }
+        }
+
+        private function resetPlayerCharacters():void
+        {
+            var _loc3_:int = 0;
+            var _loc2_:* = _players;
+            for each(var p in _players)
+            {
+                if (p.info.character)
+                {
+                    p.info.character.resetShowBitmapBig();
+                    p.info.character.showWing = true;
+                    p.info.character.show();
+                }
+            }
+        }
+
+        protected function __wishClick(pEvent:Event):void
+        {
+            _selfUsedProp.info.addState(0);
+        }
+
+        protected function __selfDie(event:LivingEvent):void
+        {
+            var self:Living = event.currentTarget as Living;
+            var team:DictionaryData = _gameInfo.findTeam(self.team);
+            var _loc6_:int = 0;
+            var _loc5_:* = team;
+            for each(var living in team)
+            {
+                if (living.isLiving)
+                {
+                    _cs = _fightControlBar.setState(1);
+                    return;
+                }
+            }
+            if (_selfBuffBar)
+            {
+                _selfBuffBar.removeEventListener(SelfBuffBar.UPDATECELL, __selfBuffBarUpdateCellHandler);
+            }
+            ObjectUtils.disposeObject(_selfBuffBar);
+            _selfBuffBar = null;
+            ObjectUtils.disposeObject(_kingblessIcon);
+            _kingblessIcon = null;
+            ObjectUtils.disposeObject(_trialBuffIcon);
+            _trialBuffIcon = null;
+            ObjectUtils.disposeObject(_ringSkillIcon);
+            _ringSkillIcon = null;
+            ObjectUtils.disposeObject(_buffIconBox);
+            _buffIconBox = null;
+        }
+
+        protected function drawMissionInfo():void
+        {
+            if (_gameInfo.roomType >= 2 && _gameInfo.roomType != 5 && _gameInfo.roomType != 16 && _gameInfo.roomType != 18 && _gameInfo.roomType != 19 && _gameInfo.roomType != 24 && _gameInfo.roomType != 25 && _gameInfo.roomType != 27 && _gameInfo.roomType != 121 && _gameInfo.roomType != 120 && _gameInfo.roomType != 58 && _gameInfo.gameMode != 56 && _gameInfo.gameMode != 57 && _gameInfo.gameMode != 23)
+            {
+                _map.smallMap.titleBar.addEventListener("DungeonHelpChanged", __dungeonVisibleChanged);
+                if (!_barrier)
+                {
+                    _barrier = new DungeonInfoView(_map.smallMap.titleBar.turnButton, this);
+                    _barrier.addEventListener("DungeonHelpVisibleChanged", __dungeonHelpChanged);
+                    _barrier.addEventListener("updateSmallMapView", __updateSmallMapView);
+                }
+                if (!_missionHelp)
+                {
+                    _missionHelp = new DungeonHelpView(_map.smallMap.titleBar.turnButton, _barrier, this);
+                    addChild(_missionHelp);
+                }
                 _barrier.open();
             }
-        }
-    }
-
-    private function __onMissonHelpClick(param1:MouseEvent) : void
-    {
-        StageReferance.stage.focus = _map;
-    }
-
-    protected function initEvent() : void
-    {
-        _playerThumbnailLController.addEventListener("wishSelect",__thumbnailControlHandle);
-        GameControl.Instance.addEventListener("addringanamition",__onAddRingAnimation);
-        GameControl.Instance.addEventListener("addguardcoreeffect",__onAddGuardCoreAnimation);
-        _selfBuffBar.addEventListener(SelfBuffBar.UPDATECELL,__selfBuffBarUpdateCellHandler);
-    }
-
-    private function __selfBuffBarUpdateCellHandler(param1:CEvent) : void
-    {
-        updateBuffIconBoxPos();
-    }
-
-    private function addPlayerHander(param1:DictionaryEvent) : void
-    {
-        var _loc3_:* = null;
-        var _loc4_:* = null;
-        var _loc2_:* = null;
-        var _loc5_:* = param1.data;
-        if(_loc5_ is Player && (_loc5_ as Player).typeLiving != 18)
-        {
-            if(!_loc5_.movie)
+            else if (_gameInfo.gameMode == 56 || _gameInfo.gameMode == 57)
             {
-                _loc3_ = CharactoryFactory.createCharacter(_loc5_.playerInfo,"game");
-                _loc3_.show();
-                _loc5_.movie = GameCharacter(_loc3_);
+                _map.smallMap.titleBar.addEventListener("DungeonHelpChanged", __dungeonVisibleChanged);
+                _missionHelp = new AthleticsHelpView(_map.smallMap.titleBar.turnButton, null, this);
+                addChild(_missionHelp);
             }
-            if(!_loc5_.character)
+        }
+
+        public function testHelpOpen():void
+        {
+            _missionHelp.open();
+        }
+
+        public function testHelpClose(to:Rectangle):void
+        {
+            _missionHelp.close(to);
+        }
+
+        protected function __updateSmallMapView(event:GameEvent):void
+        {
+            var mission:MissionInfo = GameControl.Instance.Current.missionInfo;
+            if (mission.currentValue1 != -1 && mission.totalValue1 > 0)
             {
-                _loc4_ = CharactoryFactory.createCharacter(_loc5_.playerInfo,"show");
-                ShowCharacter(_loc4_).show();
-                _loc5_.character = ShowCharacter(_loc4_);
+                _map.smallMap.setBarrier(mission.currentValue1, mission.totalValue1);
             }
-            _loc2_ = new GamePlayer(_loc5_,_loc5_.character,GameCharacter(_loc3_));
-            _map.addPhysical(_loc2_);
-            _players[_loc5_] = _loc2_;
-            _playerThumbnailLController.addNewLiving(_loc5_);
         }
-    }
 
-    protected function loadWeakGuild() : void
-    {
-        _vane.visible = !!StateManager.RecordFlag?true:Boolean(PlayerManager.Instance.Self.IsWeakGuildFinish(9));
-        if(PlayerManager.Instance.Self.IsWeakGuildFinish(9) && !PlayerManager.Instance.Self.IsWeakGuildFinish(74))
+        protected function __dungeonHelpChanged(event:GameEvent):void
         {
-            setTimeout(propOpenShow,2000,"asset.trainer.openVane");
-            SocketManager.Instance.out.syncWeakStep(74);
-        }
-    }
-
-    private function isWishGuideLoad() : Boolean
-    {
-        return true;
-    }
-
-    private function propOpenShow(param1:String) : void
-    {
-        var _loc2_:MovieClipWrapper = new MovieClipWrapper(ClassUtils.CreatInstance(param1),true,true);
-        LayerManager.Instance.addToLayer(_loc2_.movie,4,false);
-    }
-
-    protected function newMap() : MapView
-    {
-        if(_map)
-        {
-            throw new Error(LanguageMgr.GetTranslation("tank.game.mapGenerated"));
-        }
-        return new MapView(_gameInfo,_gameInfo.loaderMap);
-    }
-
-    private function __soundChange(param1:Event) : void
-    {
-        var _loc2_:SoundTransform = new SoundTransform();
-        if(SharedManager.Instance.allowSound)
-        {
-            _loc2_.volume = SharedManager.Instance.soundVolumn / 100;
-            this.soundTransform = _loc2_;
-        }
-        else
-        {
-            _loc2_.volume = 0;
-            this.soundTransform = _loc2_;
-        }
-    }
-
-    public function restoreSmallMap() : void
-    {
-        _map.smallMap.restore();
-    }
-
-    protected function disposeUI() : void
-    {
-        GameDecorateManager.Instance.disposeBitmapUI();
-        if(_missionHelp)
-        {
-            _missionHelp.removeEventListener("click",__onMissonHelpClick);
-            ObjectUtils.disposeObject(_missionHelp);
-            _missionHelp = null;
-        }
-        if(_arrowDown)
-        {
-            _arrowDown.dispose();
-        }
-        if(_arrowUp)
-        {
-            _arrowUp.dispose();
-        }
-        if(_arrowLeft)
-        {
-            _arrowLeft.dispose();
-        }
-        if(_arrowRight)
-        {
-            _arrowRight.dispose();
-        }
-        _arrowDown = null;
-        _arrowLeft = null;
-        _arrowRight = null;
-        _arrowUp = null;
-        ObjectUtils.disposeObject(_achievBar);
-        _achievBar = null;
-        if(_playerThumbnailLController)
-        {
-            _playerThumbnailLController.dispose();
-        }
-        _playerThumbnailLController = null;
-        ObjectUtils.disposeObject(_selfUsedProp);
-        _selfUsedProp = null;
-        if(_leftPlayerView)
-        {
-            _leftPlayerView.dispose();
-        }
-        _leftPlayerView = null;
-        if(_cs)
-        {
-            _cs.leaving();
-        }
-        _cs = null;
-        ObjectUtils.disposeObject(_fightControlBar);
-        _fightControlBar = null;
-        ObjectUtils.disposeObject(_selfMarkBar);
-        _selfMarkBar = null;
-        if(_selfBuffBar)
-        {
-            _selfBuffBar.removeEventListener(SelfBuffBar.UPDATECELL,__selfBuffBarUpdateCellHandler);
-        }
-        ObjectUtils.disposeObject(_selfBuffBar);
-        _selfBuffBar = null;
-        if(_vane)
-        {
-            _vane.dispose();
-            _vane = null;
-        }
-        ObjectUtils.disposeObject(_kingblessIcon);
-        _kingblessIcon = null;
-        ObjectUtils.disposeObject(_trialBuffIcon);
-        _trialBuffIcon = null;
-        ObjectUtils.disposeObject(_ringSkillIcon);
-        _ringSkillIcon = null;
-        ObjectUtils.disposeObject(_guardCoreIcon);
-        _guardCoreIcon = null;
-        ObjectUtils.disposeObject(_buffIconBox);
-        _buffIconBox = null;
-        ObjectUtils.disposeObject(_gameCountDownView);
-        _gameCountDownView = null;
-        if(_damageView)
-        {
-            _damageView.dispose();
-            _damageView = null;
-        }
-        ObjectUtils.disposeObject(_rescueRoomItemView);
-        _rescueRoomItemView = null;
-        ObjectUtils.disposeObject(_rescueScoreView);
-        _rescueScoreView = null;
-        ObjectUtils.disposeObject(_weatherView);
-        _weatherView = null;
-        if(_messageBtn)
-        {
-            _messageBtn.removeEventListener("click",__onMessageClick);
-            _messageBtn.dispose();
-            _messageBtn = null;
-        }
-        ObjectUtils.disposeObject(_sceneEffectsBar);
-        _sceneEffectsBar = null;
-        if(map)
-        {
-            map.clearSceneEffectLayer();
-        }
-        BallManager.clearSceneEffectMovie();
-    }
-
-    override public function leaving(param1:BaseStateView) : void
-    {
-        super.leaving(param1);
-        dispose();
-        BloodNumberCreater.dispose();
-    }
-
-    override public function dispose() : void
-    {
-        disposeUI();
-        wishRemoveEvent();
-        removeGameData();
-        ObjectUtils.disposeObject(_bitmapMgr);
-        _bitmapMgr = null;
-        if(_map != null)
-        {
-            _map.smallMap.titleBar.removeEventListener("DungeonHelpChanged",__dungeonVisibleChanged);
-            removeChild(_map);
-            _map.dispose();
-            _map = null;
-        }
-        PlayerInfoViewControl.clearView();
-        LayerManager.Instance.clearnGameDynamic();
-        SharedManager.Instance.removeEventListener("change",__soundChange);
-        ObjectUtils.disposeObject(_missionHelp);
-        _missionHelp = null;
-        if(GameControl.Instance.Current != null)
-        {
-            GameControl.Instance.Current.selfGamePlayer.removeEventListener("die",__selfDie);
-        }
-        IMEManager.enable();
-        while(numChildren > 0)
-        {
-            removeChildAt(0);
-        }
-        MenoryUtil.clearMenory();
-        if(_barrier)
-        {
-            _barrier.removeEventListener("DungeonHelpVisibleChanged",__dungeonHelpChanged);
-            _barrier.removeEventListener("updateSmallMapView",__updateSmallMapView);
-            ObjectUtils.disposeObject(_barrier);
-            _barrier = null;
-        }
-        ObjectUtils.disposeObject(_drawRoute);
-        _drawRoute = null;
-        _self = null;
-        _selfGameLiving = null;
-        _allLivings = null;
-        _gameLiving = null;
-        ObjectUtils.disposeObject(_gameTrusteeshipView);
-        _gameTrusteeshipView = null;
-        if(_heroAutoView)
-        {
-            ObjectUtils.disposeObject(_heroAutoView);
-        }
-        _heroAutoView = null;
-        WorldBossManager.Instance.isLoadingState = false;
-        SocketManager.Instance.removeEventListener("RescueItemInfo",__updateRescueItemInfo);
-        SocketManager.Instance.removeEventListener("addScore",__addRescueScore);
-        GameControl.Instance.removeEventListener("addringanamition",__onAddRingAnimation);
-        GameControl.Instance.removeEventListener("addguardcoreeffect",__onAddGuardCoreAnimation);
-        if(_selfBuffBar)
-        {
-            _selfBuffBar.removeEventListener(SelfBuffBar.UPDATECELL,__selfBuffBarUpdateCellHandler);
-        }
-    }
-
-    protected function setupGameData() : void
-    {
-        var _loc6_:* = null;
-        var _loc2_:* = null;
-        var _loc1_:* = null;
-        var _loc3_:* = null;
-        var _loc8_:* = null;
-        var _loc4_:Array = [];
-        var _loc7_:Boolean = false;
-        var _loc13_:int = 0;
-        var _loc12_:* = _gameInfo.livings;
-        for each(var _loc9_ in _gameInfo.livings)
-        {
-            if(_loc9_ is Player)
+            var bounds:* = null;
+            if (_missionHelp)
             {
-                _loc2_ = _loc9_ as Player;
-                _loc1_ = RoomManager.Instance.current.findPlayerByID(_loc2_.playerInfo.ID);
-                if(!_loc2_.movie)
+                if (event.data)
                 {
-                    _loc3_ = CharactoryFactory.createCharacter(_loc2_.playerInfo,"game");
-                    _loc3_.show();
-                    _loc2_.movie = GameCharacter(_loc3_);
+                    if (_missionHelp.opened)
+                    {
+                        bounds = _barrier.getBounds(this);
+                        var _loc3_:int = 1;
+                        bounds.height = _loc3_;
+                        bounds.width = _loc3_;
+                        _missionHelp.close(bounds);
+                    }
+                    else
+                    {
+                        _missionHelp.open();
+                    }
                 }
-                if(!_loc2_.character)
+                else if (_missionHelp.opened)
                 {
-                    _loc8_ = CharactoryFactory.createCharacter(_loc2_.playerInfo,"show");
-                    ShowCharacter(_loc8_).show();
-                    _loc2_.character = ShowCharacter(_loc8_);
+                    bounds = _map.smallMap.titleBar.turnButton.getBounds(this);
+                    _missionHelp.close(bounds);
                 }
-                if(_loc2_.isSelf)
+            }
+        }
+
+        protected function __dungeonVisibleChanged(evt:DungeonInfoEvent):void
+        {
+            if (_gameInfo.gameMode == 56 || _gameInfo.gameMode == 57)
+            {
+                if (_missionHelp)
                 {
-                    _loc6_ = new GameLocalPlayer(_gameInfo.selfGamePlayer,_loc2_.character as ShowCharacter,_loc2_.movie as GameCharacter,_loc2_.templeId);
-                    _selfGamePlayer = _loc6_ as GameLocalPlayer;
+                    !!_missionHelp.parent ? _missionHelp.defaultClose() : _missionHelp.open();
+                }
+            }
+            else if (_barrier && _barrierVisible)
+            {
+                if (_barrier.parent)
+                {
+                    _barrier.close();
                 }
                 else
                 {
-                    _loc6_ = new GamePlayer(_loc2_,_loc2_.character as ShowCharacter,_loc2_.movie as GameCharacter,_loc2_.templeId);
-                }
-                if(_loc2_.movie)
-                {
-                    _loc2_.movie.setDefaultAction(_loc2_.movie.standAction);
-                    _loc2_.movie.doAction(_loc2_.movie.standAction);
-                }
-                var _loc11_:int = 0;
-                var _loc10_:* = _loc2_.outProperty;
-                for(var _loc5_ in _loc2_.outProperty)
-                {
-                    setProperty(_loc6_,_loc5_,_loc2_.outProperty[_loc5_]);
-                }
-                _loc4_.push(_loc6_);
-                _map.addPhysical(_loc6_);
-                _players[_loc9_] = _loc6_;
-                if(!_loc7_)
-                {
-                    _loc7_ = _loc2_.ringFlag;
+                    _barrier.open();
                 }
             }
         }
-        _map.wind = GameControl.Instance.Current.wind;
-        _map.currentTurn = 1;
-        _vane.initialize();
-        _vane.update(_map.wind);
-        _map.act(new ViewEachPlayerAction(_map,_loc4_,!!_loc7_?2000:Number(1500)));
-    }
 
-    protected function __onAddRingAnimation(param1:GameEvent) : void
-    {
-        var _loc2_:GamePlayer = param1.data as GamePlayer;
-        _loc2_.playRingSkill();
-    }
-
-    protected function __onAddGuardCoreAnimation(param1:GameEvent) : void
-    {
-        var _loc2_:GamePlayer = param1.data as GamePlayer;
-        _loc2_.playGuardCoreEffect();
-    }
-
-    protected function setProperty(param1:GameLiving, param2:String, param3:String) : void
-    {
-        var _loc4_:int = 0;
-        var _loc5_:Boolean = false;
-        var _loc6_:* = null;
-        var _loc7_:StringObject = new StringObject(param3);
-        var _loc8_:* = param2;
-        if("system" !== _loc8_)
+        private function __onMissonHelpClick(event:MouseEvent):void
         {
-            if("systemII" !== _loc8_)
+            StageReferance.stage.focus = _map;
+        }
+
+        protected function initEvent():void
+        {
+            _playerThumbnailLController.addEventListener("wishSelect", __thumbnailControlHandle);
+            GameControl.Instance.addEventListener("addringanamition", __onAddRingAnimation);
+            GameControl.Instance.addEventListener("addguardcoreeffect", __onAddGuardCoreAnimation);
+            _selfBuffBar.addEventListener(SelfBuffBar.UPDATECELL, __selfBuffBarUpdateCellHandler);
+        }
+
+        private function __selfBuffBarUpdateCellHandler(event:CEvent):void
+        {
+            updateBuffIconBoxPos();
+        }
+
+        private function addPlayerHander(e:DictionaryEvent):void
+        {
+            var movie:* = null;
+            var character:* = null;
+            var player:* = null;
+            var info:* = e.data;
+            if (info is Player && (info as Player).typeLiving != 18)
             {
-                if("propzxc" !== _loc8_)
+                if (!info.movie)
                 {
-                    if("zxc" !== _loc8_)
+                    movie = CharactoryFactory.createCharacter(info.playerInfo, "game");
+                    movie.show();
+                    info.movie = GameCharacter(movie);
+                }
+                if (!info.character)
+                {
+                    character = CharactoryFactory.createCharacter(info.playerInfo, "show");
+                    ShowCharacter(character).show();
+                    info.character = ShowCharacter(character);
+                }
+                player = new GamePlayer(info, info.character, GameCharacter(movie));
+                _map.addPhysical(player);
+                _players[info] = player;
+                _playerThumbnailLController.addNewLiving(info);
+            }
+        }
+
+        protected function loadWeakGuild():void
+        {
+            _vane.visible = !!StateManager.RecordFlag ? true : Boolean(PlayerManager.Instance.Self.IsWeakGuildFinish(9));
+            if (PlayerManager.Instance.Self.IsWeakGuildFinish(9) && !PlayerManager.Instance.Self.IsWeakGuildFinish(74))
+            {
+                setTimeout(propOpenShow, 2000, "asset.trainer.openVane");
+                SocketManager.Instance.out.syncWeakStep(74);
+            }
+        }
+
+        private function isWishGuideLoad():Boolean
+        {
+            return true;
+        }
+
+        private function propOpenShow(mcStr:String):void
+        {
+            var mc:MovieClipWrapper = new MovieClipWrapper(ClassUtils.CreatInstance(mcStr), true, true);
+            LayerManager.Instance.addToLayer(mc.movie, 4, false);
+        }
+
+        protected function newMap():MapView
+        {
+            if (_map)
+            {
+                throw new Error(LanguageMgr.GetTranslation("tank.game.mapGenerated"));
+            }
+            return new MapView(_gameInfo, _gameInfo.loaderMap);
+        }
+
+        private function __soundChange(evt:Event):void
+        {
+            var mapSound:SoundTransform = new SoundTransform();
+            if (SharedManager.Instance.allowSound)
+            {
+                mapSound.volume = SharedManager.Instance.soundVolumn / 100;
+                this.soundTransform = mapSound;
+            }
+            else
+            {
+                mapSound.volume = 0;
+                this.soundTransform = mapSound;
+            }
+        }
+
+        public function restoreSmallMap():void
+        {
+            _map.smallMap.restore();
+        }
+
+        protected function disposeUI():void
+        {
+            GameDecorateManager.Instance.disposeBitmapUI();
+            if (_missionHelp)
+            {
+                _missionHelp.removeEventListener("click", __onMissonHelpClick);
+                ObjectUtils.disposeObject(_missionHelp);
+                _missionHelp = null;
+            }
+            if (_arrowDown)
+            {
+                _arrowDown.dispose();
+            }
+            if (_arrowUp)
+            {
+                _arrowUp.dispose();
+            }
+            if (_arrowLeft)
+            {
+                _arrowLeft.dispose();
+            }
+            if (_arrowRight)
+            {
+                _arrowRight.dispose();
+            }
+            _arrowDown = null;
+            _arrowLeft = null;
+            _arrowRight = null;
+            _arrowUp = null;
+            ObjectUtils.disposeObject(_achievBar);
+            _achievBar = null;
+            if (_playerThumbnailLController)
+            {
+                _playerThumbnailLController.dispose();
+            }
+            _playerThumbnailLController = null;
+            ObjectUtils.disposeObject(_selfUsedProp);
+            _selfUsedProp = null;
+            if (_leftPlayerView)
+            {
+                _leftPlayerView.dispose();
+            }
+            _leftPlayerView = null;
+            if (_cs)
+            {
+                _cs.leaving();
+            }
+            _cs = null;
+            ObjectUtils.disposeObject(_fightControlBar);
+            _fightControlBar = null;
+            ObjectUtils.disposeObject(_selfMarkBar);
+            _selfMarkBar = null;
+            if (_selfBuffBar)
+            {
+                _selfBuffBar.removeEventListener(SelfBuffBar.UPDATECELL, __selfBuffBarUpdateCellHandler);
+            }
+            ObjectUtils.disposeObject(_selfBuffBar);
+            _selfBuffBar = null;
+            if (_vane)
+            {
+                _vane.dispose();
+                _vane = null;
+            }
+            ObjectUtils.disposeObject(_kingblessIcon);
+            _kingblessIcon = null;
+            ObjectUtils.disposeObject(_trialBuffIcon);
+            _trialBuffIcon = null;
+            ObjectUtils.disposeObject(_ringSkillIcon);
+            _ringSkillIcon = null;
+            ObjectUtils.disposeObject(_guardCoreIcon);
+            _guardCoreIcon = null;
+            ObjectUtils.disposeObject(_buffIconBox);
+            _buffIconBox = null;
+            ObjectUtils.disposeObject(_gameCountDownView);
+            _gameCountDownView = null;
+            if (_damageView)
+            {
+                _damageView.dispose();
+                _damageView = null;
+            }
+            ObjectUtils.disposeObject(_combatGainsView);
+            _combatGainsView = null;
+            ObjectUtils.disposeObject(_rescueRoomItemView);
+            _rescueRoomItemView = null;
+            ObjectUtils.disposeObject(_rescueScoreView);
+            _rescueScoreView = null;
+            ObjectUtils.disposeObject(_weatherView);
+            _weatherView = null;
+            if (_messageBtn)
+            {
+                _messageBtn.removeEventListener("click", __onMessageClick);
+                _messageBtn.dispose();
+                _messageBtn = null;
+            }
+            ObjectUtils.disposeObject(_sceneEffectsBar);
+            _sceneEffectsBar = null;
+            if (map)
+            {
+                map.clearSceneEffectLayer();
+            }
+            BallManager.clearSceneEffectMovie();
+        }
+
+        override public function leaving(next:BaseStateView):void
+        {
+            super.leaving(next);
+            dispose();
+            BloodNumberCreater.dispose();
+        }
+
+        override public function dispose():void
+        {
+            disposeUI();
+            wishRemoveEvent();
+            removeGameData();
+            ObjectUtils.disposeObject(_bitmapMgr);
+            _bitmapMgr = null;
+            if (_map != null)
+            {
+                _map.smallMap.titleBar.removeEventListener("DungeonHelpChanged", __dungeonVisibleChanged);
+                removeChild(_map);
+                _map.dispose();
+                _map = null;
+            }
+            PlayerInfoViewControl.clearView();
+            LayerManager.Instance.clearnGameDynamic();
+            SharedManager.Instance.removeEventListener("change", __soundChange);
+            ObjectUtils.disposeObject(_missionHelp);
+            _missionHelp = null;
+            if (GameControl.Instance.Current != null)
+            {
+                GameControl.Instance.Current.selfGamePlayer.removeEventListener("die", __selfDie);
+            }
+            IMEManager.enable();
+            while (numChildren > 0)
+            {
+                removeChildAt(0);
+            }
+            MenoryUtil.clearMenory();
+            if (_barrier)
+            {
+                _barrier.removeEventListener("DungeonHelpVisibleChanged", __dungeonHelpChanged);
+                _barrier.removeEventListener("updateSmallMapView", __updateSmallMapView);
+                ObjectUtils.disposeObject(_barrier);
+                _barrier = null;
+            }
+            ObjectUtils.disposeObject(_drawRoute);
+            _drawRoute = null;
+            _self = null;
+            _selfGameLiving = null;
+            _allLivings = null;
+            _gameLiving = null;
+            ObjectUtils.disposeObject(_gameTrusteeshipView);
+            _gameTrusteeshipView = null;
+            if (_heroAutoView)
+            {
+                ObjectUtils.disposeObject(_heroAutoView);
+            }
+            _heroAutoView = null;
+            WorldBossManager.Instance.isLoadingState = false;
+            SocketManager.Instance.removeEventListener("RescueItemInfo", __updateRescueItemInfo);
+            SocketManager.Instance.removeEventListener("addScore", __addRescueScore);
+            GameControl.Instance.removeEventListener("addringanamition", __onAddRingAnimation);
+            GameControl.Instance.removeEventListener("addguardcoreeffect", __onAddGuardCoreAnimation);
+            if (_selfBuffBar)
+            {
+                _selfBuffBar.removeEventListener(SelfBuffBar.UPDATECELL, __selfBuffBarUpdateCellHandler);
+            }
+        }
+
+        protected function setupGameData():void
+        {
+            var view:* = null;
+            var p:* = null;
+            var rp:* = null;
+            var movie:* = null;
+            var character:* = null;
+            var list:Array = [];
+            var ringFlag:Boolean = false;
+            var _loc13_:int = 0;
+            var _loc12_:* = _gameInfo.livings;
+            for each(var info in _gameInfo.livings)
+            {
+                if (info is Player)
+                {
+                    p = info as Player;
+                    rp = RoomManager.Instance.current.findPlayerByID(p.playerInfo.ID);
+                    if (!p.movie)
                     {
-                        if("silencedSpecial" !== _loc8_)
+                        movie = CharactoryFactory.createCharacter(p.playerInfo, "game");
+                        movie.show();
+                        p.movie = GameCharacter(movie);
+                    }
+                    if (!p.character)
+                    {
+                        character = CharactoryFactory.createCharacter(p.playerInfo, "show");
+                        ShowCharacter(character).show();
+                        p.character = ShowCharacter(character);
+                    }
+                    if (p.isSelf)
+                    {
+                        view = new GameLocalPlayer(_gameInfo.selfGamePlayer, p.character as ShowCharacter, p.movie as GameCharacter, p.templeId);
+                        _selfGamePlayer = view as GameLocalPlayer;
+                    }
+                    else
+                    {
+                        view = new GamePlayer(p, p.character as ShowCharacter, p.movie as GameCharacter, p.templeId);
+                    }
+                    if (p.movie)
+                    {
+                        p.movie.setDefaultAction(p.movie.standAction);
+                        p.movie.doAction(p.movie.standAction);
+                    }
+                    var _loc11_:int = 0;
+                    var _loc10_:* = p.outProperty;
+                    for (var KEY in p.outProperty)
+                    {
+                        setProperty(view, KEY, p.outProperty[KEY]);
+                    }
+                    list.push(view);
+                    _map.addPhysical(view);
+                    _players[info] = view;
+                    if (!ringFlag)
+                    {
+                        ringFlag = p.ringFlag;
+                    }
+                }
+            }
+            _map.wind = GameControl.Instance.Current.wind;
+            _map.currentTurn = 1;
+            _vane.initialize();
+            _vane.update(_map.wind);
+            if (RoomManager.Instance.current.type != 70)
+            {
+                _map.act(new ViewEachPlayerAction(_map, list, !!ringFlag ? 2000 : Number(1500)));
+            }
+        }
+
+        protected function __onAddRingAnimation(event:GameEvent):void
+        {
+            var player:GamePlayer = event.data as GamePlayer;
+            player.playRingSkill();
+        }
+
+        protected function __onAddGuardCoreAnimation(e:GameEvent):void
+        {
+            var player:GamePlayer = e.data as GamePlayer;
+            player.playGuardCoreEffect();
+        }
+
+        protected function setProperty(obj:GameLiving, property:String, value:String):void
+        {
+            var LockType:int = 0;
+            var lockState:Boolean = false;
+            var info:* = null;
+            var vo:StringObject = new StringObject(value);
+            var _loc8_:* = property;
+            if ("system" !== _loc8_)
+            {
+                if ("systemII" !== _loc8_)
+                {
+                    if ("propzxc" !== _loc8_)
+                    {
+                        if ("zxc" !== _loc8_)
                         {
-                            if("silenced" !== _loc8_)
+                            if ("silencedSpecial" !== _loc8_)
                             {
-                                if("nofly" !== _loc8_)
+                                if ("silenced" !== _loc8_)
                                 {
-                                    if("silenceMany" !== _loc8_)
+                                    if ("nofly" !== _loc8_)
                                     {
-                                        if("hideBossThumbnail" !== _loc8_)
+                                        if ("silenceMany" !== _loc8_)
                                         {
-                                            if("energy" !== _loc8_)
+                                            if ("hideBossThumbnail" !== _loc8_)
                                             {
-                                                if("energy2" !== _loc8_)
+                                                if ("energy" !== _loc8_)
                                                 {
-                                                    param1.setProperty(param2,param3);
+                                                    if ("energy2" !== _loc8_)
+                                                    {
+                                                        obj.setProperty(property, value);
+                                                    }
+                                                    else if (obj)
+                                                    {
+                                                        obj.info.energy = vo.getNumber();
+                                                    }
                                                 }
-                                                else if(param1)
+                                                else if (obj)
                                                 {
-                                                    param1.info.energy = _loc7_.getNumber();
+                                                    obj.info.maxEnergy = vo.getNumber();
+                                                    obj.info.energy = vo.getNumber();
                                                 }
                                             }
-                                            else if(param1)
+                                            else if (obj)
                                             {
-                                                param1.info.maxEnergy = _loc7_.getNumber();
-                                                param1.info.energy = _loc7_.getNumber();
+                                                _playerThumbnailLController.removeThumbnailContainer();
                                             }
                                         }
-                                        else if(param1)
+                                        else
                                         {
-                                            _playerThumbnailLController.removeThumbnailContainer();
+                                            LockType = 1;
+                                            lockState = vo.getBoolean();
+                                            info = obj.info;
+                                            if (lockState)
+                                            {
+                                                info.addBuff(BuffManager.creatBuff(1000));
+                                            }
+                                            else
+                                            {
+                                                info.removeBuff(1000);
+                                            }
+                                            if (obj.info.isSelf)
+                                            {
+                                                GameControl.Instance.Current.selfGamePlayer.lockDeputyWeapon = lockState;
+                                                GameControl.Instance.Current.selfGamePlayer.lockFly = lockState;
+                                                GameControl.Instance.Current.selfGamePlayer.lockRightProp = lockState;
+                                            }
                                         }
                                     }
                                     else
                                     {
-                                        _loc4_ = 1;
-                                        _loc5_ = _loc7_.getBoolean();
-                                        _loc6_ = param1.info;
-                                        if(_loc5_)
+                                        LockType = 4;
+                                        lockState = vo.getBoolean();
+                                        info = obj.info;
+                                        info.LockType = LockType;
+                                        if (obj.info.isSelf)
                                         {
-                                            _loc6_.addBuff(BuffManager.creatBuff(1000));
-                                        }
-                                        else
-                                        {
-                                            _loc6_.removeBuff(1000);
-                                        }
-                                        if(param1.info.isSelf)
-                                        {
-                                            GameControl.Instance.Current.selfGamePlayer.lockDeputyWeapon = _loc5_;
-                                            GameControl.Instance.Current.selfGamePlayer.lockFly = _loc5_;
-                                            GameControl.Instance.Current.selfGamePlayer.lockRightProp = _loc5_;
+                                            GameControl.Instance.Current.selfGamePlayer.lockFly = lockState;
                                         }
                                     }
                                 }
-                                else
+                                else if (obj)
                                 {
-                                    _loc4_ = 4;
-                                    _loc5_ = _loc7_.getBoolean();
-                                    _loc6_ = param1.info;
-                                    _loc6_.LockType = _loc4_;
-                                    if(param1.info.isSelf)
+                                    LockType = 1;
+                                    lockState = vo.getBoolean();
+                                    info = obj.info;
+                                    info.LockType = LockType;
+                                    info.LockState = lockState;
+                                    if (obj.info.isSelf)
                                     {
-                                        GameControl.Instance.Current.selfGamePlayer.lockFly = _loc5_;
+                                        GameControl.Instance.Current.selfGamePlayer.rightPropEnabled = !lockState;
+                                        GameControl.Instance.Current.selfGamePlayer.customPropEnabled = !lockState;
+                                        GameControl.Instance.Current.selfGamePlayer.lockDeputyWeapon = lockState;
                                     }
                                 }
                             }
-                            else if(param1)
+                            else if (obj)
                             {
-                                _loc4_ = 1;
-                                _loc5_ = _loc7_.getBoolean();
-                                _loc6_ = param1.info;
-                                _loc6_.LockType = _loc4_;
-                                _loc6_.LockState = _loc5_;
-                                if(param1.info.isSelf)
+                                LockType = 3;
+                                lockState = vo.getBoolean();
+                                info = obj.info;
+                                info.LockType = LockType;
+                                info.LockState = lockState;
+                                if (obj.info.isSelf)
                                 {
-                                    GameControl.Instance.Current.selfGamePlayer.rightPropEnabled = !_loc5_;
-                                    GameControl.Instance.Current.selfGamePlayer.customPropEnabled = !_loc5_;
-                                    GameControl.Instance.Current.selfGamePlayer.lockDeputyWeapon = _loc5_;
+                                    if (RoomManager.Instance.current.type != 21)
+                                    {
+                                        GameControl.Instance.Current.selfGamePlayer.lockFly = lockState;
+                                    }
+                                    GameControl.Instance.Current.selfGamePlayer.lockDeputyWeapon = lockState;
+                                    GameControl.Instance.Current.selfGamePlayer.lockSpellKill = lockState;
+                                    GameControl.Instance.Current.selfGamePlayer.rightPropEnabled = !lockState;
+                                    GameControl.Instance.Current.selfGamePlayer.customPropEnabled = !lockState;
                                 }
                             }
                         }
-                        else if(param1)
+                        else if (obj)
                         {
-                            _loc4_ = 3;
-                            _loc5_ = _loc7_.getBoolean();
-                            _loc6_ = param1.info;
-                            _loc6_.LockType = _loc4_;
-                            _loc6_.LockState = _loc5_;
-                            if(param1.info.isSelf)
+                            LockType = 0;
+                            lockState = vo.getBoolean();
+                            info = obj.info;
+                            info.LockType = LockType;
+                            if (obj.info.isSelf)
                             {
-                                if(RoomManager.Instance.current.type != 21)
-                                {
-                                    GameControl.Instance.Current.selfGamePlayer.lockFly = _loc5_;
-                                }
-                                GameControl.Instance.Current.selfGamePlayer.lockDeputyWeapon = _loc5_;
-                                GameControl.Instance.Current.selfGamePlayer.lockSpellKill = _loc5_;
-                                GameControl.Instance.Current.selfGamePlayer.rightPropEnabled = !_loc5_;
-                                GameControl.Instance.Current.selfGamePlayer.customPropEnabled = !_loc5_;
+                                GameControl.Instance.Current.selfGamePlayer.customPropEnabled = lockState;
                             }
                         }
                     }
-                    else if(param1)
+                    else if (obj)
                     {
-                        _loc4_ = 0;
-                        _loc5_ = _loc7_.getBoolean();
-                        _loc6_ = param1.info;
-                        _loc6_.LockType = _loc4_;
-                        if(param1.info.isSelf)
+                        LockType = 3;
+                        lockState = vo.getBoolean();
+                        info = obj.info;
+                        info.LockType = LockType;
+                        info.LockState = lockState;
+                        if (obj.info.isSelf)
                         {
-                            GameControl.Instance.Current.selfGamePlayer.customPropEnabled = _loc5_;
+                            GameControl.Instance.Current.selfGamePlayer.customPropEnabled = lockState;
                         }
                     }
                 }
-                else if(param1)
+                else if (obj)
                 {
-                    _loc4_ = 3;
-                    _loc5_ = _loc7_.getBoolean();
-                    _loc6_ = param1.info;
-                    _loc6_.LockType = _loc4_;
-                    _loc6_.LockState = _loc5_;
-                    if(param1.info.isSelf)
+                    LockType = 0;
+                    lockState = vo.getBoolean();
+                    info = obj.info;
+                    if (obj.info.isSelf)
                     {
-                        GameControl.Instance.Current.selfGamePlayer.customPropEnabled = _loc5_;
+                        GameControl.Instance.Current.selfGamePlayer.lockFly = lockState;
+                        GameControl.Instance.Current.selfGamePlayer.lockDeputyWeapon = lockState;
+                        GameControl.Instance.Current.selfGamePlayer.petSkillEnabled = !lockState;
                     }
                 }
             }
-            else if(param1)
+            else if (obj)
             {
-                _loc4_ = 0;
-                _loc5_ = _loc7_.getBoolean();
-                _loc6_ = param1.info;
-                if(param1.info.isSelf)
+                LockType = 0;
+                lockState = vo.getBoolean();
+                info = obj.info;
+                info.LockType = LockType;
+                info.LockState = lockState;
+                if (obj.info.isSelf)
                 {
-                    GameControl.Instance.Current.selfGamePlayer.lockFly = _loc5_;
-                    GameControl.Instance.Current.selfGamePlayer.lockDeputyWeapon = _loc5_;
-                    GameControl.Instance.Current.selfGamePlayer.petSkillEnabled = !_loc5_;
+                    GameControl.Instance.Current.selfGamePlayer.lockDeputyWeapon = lockState;
+                    GameControl.Instance.Current.selfGamePlayer.lockFly = lockState;
+                    GameControl.Instance.Current.selfGamePlayer.lockSpellKill = lockState;
+                    GameControl.Instance.Current.selfGamePlayer.rightPropEnabled = !lockState;
+                    GameControl.Instance.Current.selfGamePlayer.customPropEnabled = !lockState;
+                    GameControl.Instance.Current.selfGamePlayer.petSkillEnabled = !lockState;
                 }
             }
         }
-        else if(param1)
-        {
-            _loc4_ = 0;
-            _loc5_ = _loc7_.getBoolean();
-            _loc6_ = param1.info;
-            _loc6_.LockType = _loc4_;
-            _loc6_.LockState = _loc5_;
-            if(param1.info.isSelf)
-            {
-                GameControl.Instance.Current.selfGamePlayer.lockDeputyWeapon = _loc5_;
-                GameControl.Instance.Current.selfGamePlayer.lockFly = _loc5_;
-                GameControl.Instance.Current.selfGamePlayer.lockSpellKill = _loc5_;
-                GameControl.Instance.Current.selfGamePlayer.rightPropEnabled = !_loc5_;
-                GameControl.Instance.Current.selfGamePlayer.customPropEnabled = !_loc5_;
-                GameControl.Instance.Current.selfGamePlayer.petSkillEnabled = !_loc5_;
-            }
-        }
-    }
 
-    private function initDiePlayer() : void
-    {
-        var _loc3_:int = 0;
-        var _loc2_:* = _gameInfo.livings;
-        for each(var _loc1_ in _gameInfo.livings)
+        private function initDiePlayer():void
         {
-            if(_loc1_.blood <= 0)
+            var _loc3_:int = 0;
+            var _loc2_:* = _gameInfo.livings;
+            for each(var info in _gameInfo.livings)
             {
-                _loc1_.reset();
-                _loc1_.die(true);
-                if(_gameTrusteeshipView)
+                if (info.blood <= 0)
                 {
-                    _gameTrusteeshipView.visible = false;
+                    info.reset();
+                    info.die(true);
+                    if (_gameTrusteeshipView)
+                    {
+                        _gameTrusteeshipView.visible = false;
+                    }
                 }
             }
         }
-    }
 
-    private function removeGameData() : void
-    {
-        var _loc3_:int = 0;
-        var _loc2_:* = _players;
-        for each(var _loc1_ in _players)
+        private function removeGameData():void
         {
-            _loc1_.dispose();
-            delete _players[_loc1_.info];
+            var _loc3_:int = 0;
+            var _loc2_:* = _players;
+            for each(var view in _players)
+            {
+                view.dispose();
+                delete _players[view.info];
+            }
+            _players = null;
+            _selfGamePlayer = null;
+            _gameInfo = null;
+            _barrierVisible = true;
         }
-        _players = null;
-        _selfGamePlayer = null;
-        _gameInfo = null;
-        _barrierVisible = true;
-    }
 
-    public function addLiving(param1:Living) : void
-    {
-    }
+        public function addLiving($living:Living):void
+        {
+        }
 
-    private function updatePlayerState(param1:Living) : void
-    {
-        if(_selfUsedProp == null)
+        private function updatePlayerState(info:Living):void
         {
-            _selfUsedProp = new PlayerStateContainer(12);
-            PositionUtils.setPos(_selfUsedProp,"asset.game.selfUsedProp");
-            addChild(_selfUsedProp);
-        }
-        if(_selfUsedProp)
-        {
-            _selfUsedProp.disposeAllChildren();
-        }
-        var _loc2_:int = 0;
-        if(_selfUsedProp)
-        {
-            if(_selfBuffBar && _selfBuffBar.visible)
+            if (_selfUsedProp == null)
             {
-                _loc2_ = _loc2_ + _selfBuffBar.right;
+                _selfUsedProp = new PlayerStateContainer(12);
+                PositionUtils.setPos(_selfUsedProp, "asset.game.selfUsedProp");
+                addChild(_selfUsedProp);
             }
-            if(_buffIconBox && _buffIconBox.visible)
+            if (_selfUsedProp)
             {
-                _loc2_ = _loc2_ + _buffIconBox.width;
+                _selfUsedProp.disposeAllChildren();
             }
-            _selfUsedProp.x = _loc2_;
+            var len:int = 0;
+            if (_selfUsedProp)
+            {
+                if (_selfBuffBar && _selfBuffBar.visible)
+                {
+                    len = len + _selfBuffBar.right;
+                }
+                if (_buffIconBox && _buffIconBox.visible)
+                {
+                    len = len + _buffIconBox.width;
+                }
+                _selfUsedProp.x = len;
+            }
+            if (info is TurnedLiving)
+            {
+                _selfUsedProp.info = TurnedLiving(info);
+            }
+            if (GameControl.Instance.Current.selfGamePlayer.isAutoGuide && GameControl.Instance.Current.currentLiving.LivingID == GameControl.Instance.Current.selfGamePlayer.LivingID)
+            {
+                GameMessageTipManager.getInstance().show(String(GameControl.Instance.Current.selfGamePlayer.LivingID), 3);
+            }
         }
-        if(param1 is TurnedLiving)
-        {
-            _selfUsedProp.info = TurnedLiving(param1);
-        }
-        if(GameControl.Instance.Current.selfGamePlayer.isAutoGuide && GameControl.Instance.Current.currentLiving.LivingID == GameControl.Instance.Current.selfGamePlayer.LivingID)
-        {
-            GameMessageTipManager.getInstance().show(String(GameControl.Instance.Current.selfGamePlayer.LivingID),3);
-        }
-    }
 
-    public function setCurrentPlayer(param1:Living) : void
-    {
-        if(param1 && param1.isSelf && param1.isLiving)
+        public function setCurrentPlayer(info:Living):void
         {
-            if(_buffIconBox)
+            if (info && info.isSelf && info.isLiving)
             {
-                _buffIconBox.visible = true;
-            }
-            if(_selfBuffBar)
-            {
-                _selfBuffBar.propertyWaterBuffBarVisible = true;
-            }
-            updateGuardCoreIcon();
-        }
-        else
-        {
-            if(_buffIconBox)
-            {
-                _buffIconBox.visible = false;
-            }
-            if(_selfBuffBar)
-            {
-                _selfBuffBar.propertyWaterBuffBarVisible = false;
-            }
-        }
-        if(!BombKingManager.instance.Recording && !RoomManager.Instance.current.selfRoomPlayer.isViewer && param1 && _selfBuffBar)
-        {
-            _selfBuffBar.drawBuff(param1);
-        }
-        updateBuffIconBoxPos();
-        if(_leftPlayerView)
-        {
-            _leftPlayerView.info = param1;
-        }
-        _map.bringToFront(param1);
-        if(_map.currentPlayer && !(param1 is TurnedLiving))
-        {
-            _map.currentPlayer.isAttacking = false;
-            _map.currentPlayer = null;
-        }
-        else
-        {
-            _map.currentPlayer = param1 as TurnedLiving;
-        }
-        updatePlayerState(param1);
-        if(_leftPlayerView)
-        {
-            addChildAt(_leftPlayerView,this.numChildren - 3);
-        }
-        var _loc2_:LocalPlayer = GameControl.Instance.Current.selfGamePlayer;
-        if(_map.currentPlayer)
-        {
-            if(_loc2_)
-            {
-                _loc2_.soulPropEnabled = !_loc2_.isLiving && _map.currentPlayer.team == _loc2_.team;
-            }
-        }
-        else if(_loc2_)
-        {
-            _loc2_.soulPropEnabled = false;
-        }
-    }
-
-    private function updateBuffIconBoxPos() : void
-    {
-        if(_buffIconBox && _buffIconBox.visible)
-        {
-            if(_selfBuffBar && _selfBuffBar.visible)
-            {
-                _buffIconBox.x = _selfBuffBar.right + 30;
+                if (_buffIconBox)
+                {
+                    _buffIconBox.visible = true;
+                }
+                if (_selfBuffBar)
+                {
+                    _selfBuffBar.propertyWaterBuffBarVisible = true;
+                }
+                updateGuardCoreIcon();
             }
             else
             {
-                PositionUtils.setPos(_buffIconBox,"game.kingbless.addPropertyBuffIconPos2");
+                if (_buffIconBox)
+                {
+                    _buffIconBox.visible = false;
+                }
+                if (_selfBuffBar)
+                {
+                    _selfBuffBar.propertyWaterBuffBarVisible = false;
+                }
+            }
+            if (!BombKingManager.instance.Recording && !RoomManager.Instance.current.selfRoomPlayer.isViewer && info && _selfBuffBar)
+            {
+                _selfBuffBar.drawBuff(info);
+            }
+            updateBuffIconBoxPos();
+            if (_leftPlayerView)
+            {
+                _leftPlayerView.info = info;
+            }
+            _map.bringToFront(info);
+            if (_map.currentPlayer && !(info is TurnedLiving))
+            {
+                _map.currentPlayer.isAttacking = false;
+                _map.currentPlayer = null;
+            }
+            else
+            {
+                _map.currentPlayer = info as TurnedLiving;
+            }
+            updatePlayerState(info);
+            if (_leftPlayerView)
+            {
+                addChildAt(_leftPlayerView, this.numChildren - 3);
+            }
+            var self:LocalPlayer = GameControl.Instance.Current.selfGamePlayer;
+            if (_map.currentPlayer)
+            {
+                if (self)
+                {
+                    self.soulPropEnabled = !self.isLiving && _map.currentPlayer.team == self.team;
+                }
+            }
+            else if (self)
+            {
+                self.soulPropEnabled = false;
             }
         }
-    }
 
-    public function updateControlBarState(param1:Living) : void
-    {
-        if(GameControl.Instance.Current == null)
+        private function updateBuffIconBoxPos():void
         {
-            return;
-        }
-        if(GameControl.Instance.Current.selfGamePlayer.LockState)
-        {
-            setPropBarClickEnable(false,true);
-            return;
-        }
-        if(param1 is TurnedLiving && param1.isLiving && GameControl.Instance.Current.selfGamePlayer.canUseProp(param1 as TurnedLiving))
-        {
-            setPropBarClickEnable(true,false);
-        }
-        else if(param1)
-        {
-            if(!(!GameControl.Instance.Current.selfGamePlayer.isLiving && param1.isSelf))
+            if (_buffIconBox && _buffIconBox.visible)
             {
-                if(!(!GameControl.Instance.Current.selfGamePlayer.isLiving && GameControl.Instance.Current.selfGamePlayer.team != param1.team))
+                if (_selfBuffBar && _selfBuffBar.visible)
                 {
-                    setPropBarClickEnable(true,false);
+                    _buffIconBox.x = _selfBuffBar.right + 30;
+                }
+                else
+                {
+                    PositionUtils.setPos(_buffIconBox, "game.kingbless.addPropertyBuffIconPos2");
                 }
             }
         }
-        else
+
+        public function updateControlBarState(info:Living):void
         {
-            setPropBarClickEnable(true,false);
+            if (GameControl.Instance.Current == null)
+            {
+                return;
+            }
+            if (GameControl.Instance.Current.selfGamePlayer.LockState)
+            {
+                setPropBarClickEnable(false, true);
+                return;
+            }
+            if (info is TurnedLiving && info.isLiving && GameControl.Instance.Current.selfGamePlayer.canUseProp(info as TurnedLiving))
+            {
+                setPropBarClickEnable(true, false);
+            }
+            else if (info)
+            {
+                if (!(!GameControl.Instance.Current.selfGamePlayer.isLiving && info.isSelf))
+                {
+                    if (!(!GameControl.Instance.Current.selfGamePlayer.isLiving && GameControl.Instance.Current.selfGamePlayer.team != info.team))
+                    {
+                        setPropBarClickEnable(true, false);
+                    }
+                }
+            }
+            else
+            {
+                setPropBarClickEnable(true, false);
+            }
         }
-    }
 
-    protected function setPropBarClickEnable(param1:Boolean, param2:Boolean) : void
-    {
-        GameControl.Instance.Current.selfGamePlayer.rightPropEnabled = param1;
-        if(RoomManager.Instance.current.type != 24)
+        protected function setPropBarClickEnable(clickAble:Boolean, isGray:Boolean):void
         {
-            GameControl.Instance.Current.selfGamePlayer.customPropEnabled = param1;
+            GameControl.Instance.Current.selfGamePlayer.rightPropEnabled = clickAble;
+            if (RoomManager.Instance.current.type != 24)
+            {
+                GameControl.Instance.Current.selfGamePlayer.customPropEnabled = clickAble;
+            }
         }
-    }
 
-    protected function gameOver() : void
-    {
-        _map.smallMap.enableExit = false;
-        if(!NewHandGuideManager.Instance.isNewHandFB())
+        protected function gameOver():void
         {
-            SoundManager.instance.stopMusic();
+            _map.smallMap.enableExit = false;
+            if (!NewHandGuideManager.Instance.isNewHandFB())
+            {
+                SoundManager.instance.stopMusic();
+            }
+            else
+            {
+                SoundManager.instance.setMusicVolumeByRatio(0.5);
+            }
+            setPropBarClickEnable(false, false);
+            _leftPlayerView.gameOver();
+            _leftPlayerView.visible = false;
+            if (_selfMarkBar)
+            {
+                _selfMarkBar.shutdown();
+            }
+            if (NoviceDataManager.instance.firstEnterGame)
+            {
+                NoviceDataManager.instance.firstEnterGame = false;
+                NoviceDataManager.instance.saveNoviceData(540, PathManager.userName(), PathManager.solveRequestPath());
+            }
         }
-        else
+
+        protected function set barrierInfo(evt:CrazyTankSocketEvent):void
         {
-            SoundManager.instance.setMusicVolumeByRatio(0.5);
+            if (_barrier)
+            {
+                _barrier.barrierInfoHandler(evt);
+            }
         }
-        setPropBarClickEnable(false,false);
-        _leftPlayerView.gameOver();
-        _leftPlayerView.visible = false;
-        if(_selfMarkBar)
+
+        protected function set arrowHammerEnable(b:Boolean):void
         {
-            _selfMarkBar.shutdown();
         }
-        if(NoviceDataManager.instance.firstEnterGame)
+
+        public function blockHammer():void
         {
-            NoviceDataManager.instance.firstEnterGame = false;
-            NoviceDataManager.instance.saveNoviceData(540,PathManager.userName(),PathManager.solveRequestPath());
         }
-    }
 
-    protected function set barrierInfo(param1:CrazyTankSocketEvent) : void
-    {
-        if(_barrier)
+        public function allowHammer():void
         {
-            _barrier.barrierInfoHandler(param1);
         }
-    }
 
-    protected function set arrowHammerEnable(param1:Boolean) : void
-    {
-    }
-
-    public function blockHammer() : void
-    {
-    }
-
-    public function allowHammer() : void
-    {
-    }
-
-    protected function defaultForbidDragFocus() : void
-    {
-    }
-
-    protected function setBarrierVisible(param1:Boolean) : void
-    {
-        _barrierVisible = param1;
-    }
-
-    protected function setVaneVisible(param1:Boolean) : void
-    {
-        _vane.visible = param1;
-    }
-
-    protected function setPlayerThumbVisible(param1:Boolean) : void
-    {
-        _playerThumbnailLController.visible = param1;
-    }
-
-    protected function setEnergyVisible(param1:Boolean) : void
-    {
-        var _loc2_:LiveState = _cs as LiveState;
-        if(_loc2_)
+        protected function defaultForbidDragFocus():void
         {
-            _loc2_.setEnergyVisible(param1);
         }
-    }
 
-    public function setRecordRotation() : void
-    {
-    }
-
-    public function get map() : *
-    {
-        return _map;
-    }
-
-    public function get currentLivID() : int
-    {
-        return _currentLivID;
-    }
-
-    public function set currentLivID(param1:int) : void
-    {
-        _currentLivID = param1;
-        showFightPower();
-        drawRouteLine(_currentLivID);
-        if(_map)
+        protected function setBarrierVisible(v:Boolean):void
         {
-            _map.smallMap.drawRouteLine(_currentLivID);
+            _barrierVisible = v;
         }
-    }
 
-    private function showFightPower() : void
-    {
-        var _loc1_:* = null;
-        if(_currentLivID != -1 && _allLivings[_currentLivID])
+        protected function setVaneVisible(v:Boolean):void
         {
-            _loc1_ = _allLivings[_currentLivID] as Living;
-            _selfGameLiving.setFightPower(_loc1_.fightPower);
-            _self.fightPower = _loc1_.fightPower;
+            _vane.visible = v;
         }
-    }
 
-    private function __useRescueKingBless(param1:CrazyTankSocketEvent) : void
-    {
-        var _loc6_:Number = NaN;
-        var _loc3_:int = 0;
-        var _loc4_:Number = NaN;
-        var _loc5_:PackageIn = param1.pkg;
-        var _loc2_:Boolean = _loc5_.readBoolean();
-        if(_loc2_)
+        protected function setPlayerThumbVisible(v:Boolean):void
         {
-            _loc6_ = _loc5_.readInt();
-            _loc3_ = _loc5_.readInt();
-            _loc4_ = _loc5_.readInt() / 100;
-            _mapWind = _loc6_ * _loc4_ / 10 * _windFactor;
-            _useAble = true;
+            _playerThumbnailLController.visible = v;
+        }
+
+        protected function setEnergyVisible(v:Boolean):void
+        {
+            var ls:LiveState = _cs as LiveState;
+            if (ls)
+            {
+                ls.setEnergyVisible(v);
+            }
+        }
+
+        public function setRecordRotation():void
+        {
+        }
+
+        public function get map():*
+        {
+            return _map;
+        }
+
+        // modified
+        protected function set mapWind(value:Number):void
+        {
+            _mapWind = value;
             showShoot();
         }
-    }
 
-    protected function judgeMaxPower(param1:Point, param2:Point, param3:Number, param4:Boolean, param5:Boolean) : Boolean
-    {
-        var _loc10_:* = null;
-        var _loc8_:* = null;
-        var _loc7_:int = 0;
-        var _loc6_:int = 0;
-        _loc7_ = 2000 * Math.cos(param3 / 180 * 3.14159265358979);
-        _loc10_ = new EulerVector(param1.x,_loc7_,_wa);
-        _loc6_ = 2000 * Math.sin(param3 / 180 * 3.14159265358979);
-        _loc8_ = new EulerVector(param1.y,_loc6_,_ga);
-        var _loc9_:Boolean = false;
-        while(true)
+        public function get currentLivID():int
         {
-            if(param4)
+            return _currentLivID;
+        }
+
+        public function set currentLivID(value:int):void
+        {
+            _currentLivID = value;
+            showFightPower();
+            drawRouteLine(_currentLivID);
+            if (_map)
             {
-                if(_loc10_.x0 > _map.bound.width)
+                _map.smallMap.drawRouteLine(_currentLivID);
+            }
+        }
+
+        private function showFightPower():void
+        {
+            var targetLiving:* = null;
+            if (_currentLivID != -1 && _allLivings[_currentLivID])
+            {
+                targetLiving = _allLivings[_currentLivID] as Living;
+                _selfGameLiving.setFightPower(targetLiving.fightPower);
+                _self.fightPower = targetLiving.fightPower;
+                _self.force = targetLiving.fightPower * 20;
+            }
+        }
+
+        // modified
+        private function wishInit():void
+        {
+            _self = GameControl.Instance.Current.selfGamePlayer;
+            _selfGameLiving = _map.getPhysical(_self.LivingID) as GamePlayer;
+            _allLivings = GameControl.Instance.Current.livings;
+            _drawRoute = new Sprite();
+            _tempSprite = new Sprite();
+            _map.addChild(_drawRoute);
+            _map.addChild(_tempSprite);
+            currentLivID = -1;
+            _gameInfo.livings.addEventListener("add", addPlayerHander);
+            _self.addEventListener("gunangleChanged", __changeAngle);
+            _self.addEventListener("posChanged", __changeAngle);
+            _self.addEventListener("dirChanged", __changeAngle);
+            _self.addEventListener("forceChanged", __forceChanged);
+            _self.addEventListener("attackingChanged", __beginSelfTurn);
+            SocketManager.Instance.addEventListener("wishofdd", __wishofdd);
+            SocketManager.Instance.addEventListener("playerChange", __playerChange);
+            RoomManager.Instance.addEventListener("PlayerRoomExit", __playerExit);
+            KeyboardManager.getInstance().addEventListener("keyDown", __KeyDown);
+            SocketManager.Instance.addEventListener("RescueKingBless", __useRescueKingBless);
+        }
+
+        // modified
+        private function wishRemoveEvent():void
+        {
+            if (_self != null)
+            {
+                _self.removeEventListener("gunangleChanged", __changeAngle);
+                _self.removeEventListener("posChanged", __changeAngle);
+                _self.removeEventListener("dirChanged", __changeAngle);
+                _self.removeEventListener("forceChanged", __forceChanged);
+                _self.removeEventListener("attackingChanged", __beginSelfTurn);
+            }
+            if (_gameInfo != null)
+            {
+                _gameInfo.livings.removeEventListener("add", addPlayerHander);
+            }
+            SocketManager.Instance.removeEventListener("wishofdd", __wishofdd);
+            SocketManager.Instance.removeEventListener("playerChange", __playerChange);
+            RoomManager.Instance.removeEventListener("PlayerRoomExit", __playerExit);
+            KeyboardManager.getInstance().removeEventListener("keyDown", __KeyDown);
+            SocketManager.Instance.removeEventListener("RescueKingBless", __useRescueKingBless);
+        }
+
+        private function __useRescueKingBless(event:CrazyTankSocketEvent):void
+        {
+            var pwind:Number = NaN;
+            var weatherLevel:int = 0;
+            var weatherRate:Number = NaN;
+            var pkg:PackageIn = event.pkg;
+            var isShoot:Boolean = pkg.readBoolean();
+            if (isShoot)
+            {
+                pwind = pkg.readInt();
+                weatherLevel = pkg.readInt();
+                weatherRate = pkg.readInt() / 100;
+                _mapWind = pwind * weatherRate / 10 * _windFactor;
+                _useAble = true;
+                showShoot();
+            }
+        }
+
+        // modified
+        protected function __KeyDown(event:KeyboardEvent):void
+        {
+            var i:int = 0;
+            var tmpArr:Array = [];
+            if (event.keyCode == KeyStroke.VK_V.getCode())
+            {
+                var _loc6_:int = 0;
+                var _loc5_:* = _allLivings;
+                for each(var liv in _allLivings)
                 {
-                    return true;
+                    if (!(liv.isHidden || liv.team == GameControl.Instance.Current.selfGamePlayer.team || !liv.isLiving || liv.LivingID == _self.LivingID))
+                    {
+                        tmpArr.push(liv);
+                    }
                 }
-                if(_loc10_.x0 < _map.bound.x || _loc8_.x0 > _map.bound.height)
+                for (i = 0; i <= tmpArr.length - 1;)
                 {
-                    return false;
+                    if ((tmpArr[i] as Living).LivingID == currentLivID)
+                    {
+                        if (i >= tmpArr.length - 1)
+                        {
+                            i = 0;
+                        }
+                        else
+                        {
+                            i++;
+                        }
+                        break;
+                    }
+                    i++;
                 }
+                if (i <= tmpArr.length - 1)
+                {
+                    currentLivID = tmpArr[i].LivingID;
+                }
+            }
+            if(event.keyCode == KeyStroke.VK_TAB.getCode())
+            {
+                currentLivID = calculateRecent();
+                ChatManager.Instance.sysChatYellow("changed to: " + currentLivID.toString());
+            }
+            else if (event.keyCode == KeyStroke.VK_N.getCode())
+            {
+                SoundManager.instance.play("008");
+                if (currentLivID != -1 && !_isLockedForce)
+                {
+                    var living:Living = _allLivings[currentLivID];
+                    var power:Number = (living.fightPower * 2000) / 100;
+                    _self.sendShootAction(power);
+                }
+                else
+                {
+                    _self.sendShootAction(_self.force);
+                }
+            }
+            else if (event.keyCode == KeyStroke.VK_O.getCode())
+            {
+                SoundManager.instance.play("008");
+                _isAutoPass = !_isAutoPass;
+                ChatManager.Instance.sysChatYellow("_isAutoPass: " + _isAutoPass.toString());
+                if (_self.isAttacking && _isAutoPass)
+                {
+                    ChatManager.Instance.sysChatYellow("skip");
+                    _self.skip();
+                }
+            }
+            else if (event.keyCode == KeyStroke.VK_K.getCode())
+            {
+                SoundManager.instance.play("008");
+                _matchGameAutoView.setAutoState(AutoGameManager.Instance.toggleAutoMatchGame());
+            }
+            else if (event.keyCode == KeyStroke.VK_L.getCode())
+            {
+                SoundManager.instance.play("008");
+                _isShowThreeKill = !_isShowThreeKill;
+                _map.smallMap.toggleShowThreeKill(_isShowThreeKill);
+                ChatManager.Instance.sysChatYellow("_isShowThreeKill: " + _isShowThreeKill.toString());
+                __forceChanged(null);
+            }
+        }
+
+        // modified
+        protected function showShoot():void
+        {
+            var enemyPos:* = null;
+            var player:* = null;
+            var power:Number = NaN;
+            var xS_Lef_E:Boolean = false;
+            var yS_Up_E:Boolean = false;
+            var shootpos:Point = _selfGameLiving.body.localToGlobal(new Point(30,-20));
+            shootpos = _map.globalToLocal(shootpos);
+            _shootAngle = _self.calcBombAngle();
+            _arf = _map.airResistance;
+            _gf = _map.gravity * _mass * _gravityFactor;
+            _ga = _gf / _mass;
+            _wa = _mapWind / _mass;
+            var _loc9_:int = 0;
+            var _loc8_:* = _allLivings;
+            for each(var liv in _allLivings)
+            {
+                liv.route = null;
+                if (liv.LivingID != _self.LivingID)
+                {
+                    enemyPos = liv.pos;
+                    if (_self.isLiving && _self.isAttacking)
+                    {
+                        liv.route = null;
+                        xS_Lef_E = true;
+                        yS_Up_E = true;
+                        if (shootpos.x > enemyPos.x)
+                        {
+                            xS_Lef_E = false;
+                        }
+                        if (shootpos.y > shootpos.y)
+                        {
+                            yS_Up_E = false;
+                        }
+                        if (judgeMaxPower(shootpos, shootpos, _shootAngle, xS_Lef_E, yS_Up_E))
+                        {
+                            power = getPower(0, 2000, shootpos, enemyPos, _shootAngle, xS_Lef_E, yS_Up_E);
+                        }
+                        else
+                        {
+                            power = 2100;
+                        }
+                        _stateFlag = 0;
+                        if (power > 2000)
+                        {
+                            if (liv.state)
+                            {
+                                _stateFlag = 1;
+                            }
+                            else
+                            {
+                                _stateFlag = 2;
+                            }
+                            liv.state = false;
+                        }
+                        else
+                        {
+                            if (liv.state)
+                            {
+                                _stateFlag = 3;
+                            }
+                            else
+                            {
+                                _stateFlag = 4;
+                            }
+                            liv.state = true;
+                        }
+                        _gameLiving = _map.getPhysical(liv.LivingID) as GameLiving;
+                        if (_stateFlag == 1 || _stateFlag == 2)
+                        {
+                            liv.route = null;
+                        }
+                        else
+                        {
+                            liv.route = getRouteData(power, _shootAngle, shootpos, enemyPos);
+                            liv.route1 = getRouteData(power * 0.9, _shootAngle - 5, shootpos, enemyPos);
+                            liv.route2 = getRouteData(power * 1.1, _shootAngle + 5, shootpos, enemyPos);
+                        }
+                        liv.fightPower = Number((power * 100 / 2000).toFixed(1));
+                    }
+                }
+            }
+            if (currentLivID == -1 || !_allLivings[currentLivID].route)
+            {
+                currentLivID = calculateRecent();
             }
             else
             {
-                if(_loc10_.x0 < _map.bound.x)
-                {
-                    break;
-                }
-                if(_loc10_.x0 > _map.bound.width || _loc8_.x0 > _map.bound.height)
-                {
-                    return false;
-                }
+                currentLivID = currentLivID;
             }
-            if(ifHit(_loc10_.x0,_loc8_.x0,param2))
+        }
+
+        protected function judgeMaxPower(shootPos:Point, enemyPos:Point, shootAngle:Number, xS_Lef_E:Boolean, yS_Up_E:Boolean):Boolean
+        {
+            var Ex:* = null;
+            var Ey:* = null;
+            var vx:int = 0;
+            var vy:int = 0;
+            vx = 2000 * Math.cos(shootAngle / 180 * 3.14159265358979);
+            Ex = new EulerVector(shootPos.x, vx, _wa);
+            vy = 2000 * Math.sin(shootAngle / 180 * 3.14159265358979);
+            Ey = new EulerVector(shootPos.y, vy, _ga);
+            var timeTemp:Boolean = false;
+            while (true)
             {
-                return true;
-            }
-            _loc10_.ComputeOneEulerStep(_mass,_arf,_mapWind,_dt);
-            _loc8_.ComputeOneEulerStep(_mass,_arf,_gf,_dt);
-            if(param4 && param5)
-            {
-                if(_loc8_.x0 > param2.y)
+                if (xS_Lef_E)
                 {
-                    if(_loc10_.x0 < param2.x)
+                    if (Ex.x0 > _map.bound.width)
+                    {
+                        return true;
+                    }
+                    if (Ex.x0 < _map.bound.x || Ey.x0 > _map.bound.height)
                     {
                         return false;
                     }
+                }
+                else
+                {
+                    if (Ex.x0 < _map.bound.x)
+                    {
+                        break;
+                    }
+                    if (Ex.x0 > _map.bound.width || Ey.x0 > _map.bound.height)
+                    {
+                        return false;
+                    }
+                }
+                if (ifHit(Ex.x0, Ey.x0, enemyPos))
+                {
                     return true;
                 }
-            }
-            else if(param4 && !param5)
-            {
-                if(!_loc9_)
+                Ex.ComputeOneEulerStep(_mass, _arf, _mapWind, _dt);
+                Ey.ComputeOneEulerStep(_mass, _arf, _gf, _dt);
+                if (xS_Lef_E && yS_Up_E)
                 {
-                    if(_loc10_.x0 > param2.x)
+                    if (Ey.x0 > enemyPos.y)
                     {
-                        return false;
-                    }
-                    if(_loc8_.x0 < param2.y)
-                    {
-                        _loc9_ = true;
-                    }
-                }
-                else if(_loc9_)
-                {
-                    if(_loc8_.x0 > param2.y)
-                    {
-                        if(_loc10_.x0 < param2.x)
+                        if (Ex.x0 < enemyPos.x)
                         {
                             return false;
                         }
                         return true;
                     }
                 }
-            }
-            else if(!param4 && !param5)
-            {
-                if(!_loc9_)
+                else if (xS_Lef_E && !yS_Up_E)
                 {
-                    if(_loc10_.x0 < param2.x)
+                    if (!timeTemp)
                     {
-                        return false;
+                        if (Ex.x0 > enemyPos.x)
+                        {
+                            return false;
+                        }
+                        if (Ey.x0 < enemyPos.y)
+                        {
+                            timeTemp = true;
+                        }
                     }
-                    if(_loc8_.x0 < param2.y)
+                    else if (timeTemp)
                     {
-                        _loc9_ = true;
+                        if (Ey.x0 > enemyPos.y)
+                        {
+                            if (Ex.x0 < enemyPos.x)
+                            {
+                                return false;
+                            }
+                            return true;
+                        }
                     }
                 }
-                else if(_loc9_)
+                else if (!xS_Lef_E && !yS_Up_E)
                 {
-                    if(_loc8_.x0 > param2.y)
+                    if (!timeTemp)
                     {
-                        if(_loc10_.x0 < param2.x)
+                        if (Ex.x0 < enemyPos.x)
+                        {
+                            return false;
+                        }
+                        if (Ey.x0 < enemyPos.y)
+                        {
+                            timeTemp = true;
+                        }
+                    }
+                    else if (timeTemp)
+                    {
+                        if (Ey.x0 > enemyPos.y)
+                        {
+                            if (Ex.x0 < enemyPos.x)
+                            {
+                                return true;
+                            }
+                            return false;
+                        }
+                    }
+                }
+                else if (!xS_Lef_E && yS_Up_E)
+                {
+                    if (Ey.x0 > enemyPos.y)
+                    {
+                        if (Ex.x0 < enemyPos.x)
                         {
                             return true;
                         }
@@ -1731,783 +2026,514 @@ public class GameViewBase extends BaseStateView
                     }
                 }
             }
-            else if(!param4 && param5)
-            {
-                if(_loc8_.x0 > param2.y)
-                {
-                    if(_loc10_.x0 < param2.x)
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-            }
+            return true;
         }
-        return true;
-    }
 
-    protected function getPower(param1:Number, param2:Number, param3:Point, param4:Point, param5:Number, param6:Boolean, param7:Boolean) : Number
-    {
-        var _loc9_:* = null;
-        var _loc8_:* = null;
-        var _loc11_:int = 0;
-        var _loc10_:int = 0;
-        var _loc12_:int = (param1 + param2) / 2;
-        if(_loc12_ <= param1 || _loc12_ >= param2)
+        protected function getPower(min:Number, max:Number, shootPos:Point, enemyPos:Point, shootAngle:Number, xS_Lef_E:Boolean, yS_Up_E:Boolean):Number
         {
-            return _loc12_;
-        }
-        _loc11_ = _loc12_ * Math.cos(param5 / 180 * 3.14159265358979);
-        _loc9_ = new EulerVector(param3.x,_loc11_,_wa);
-        _loc10_ = _loc12_ * Math.sin(param5 / 180 * 3.14159265358979);
-        _loc8_ = new EulerVector(param3.y,_loc10_,_ga);
-        var _loc13_:Boolean = false;
-        while(true)
-        {
-            if(param6)
+            var Ex:* = null;
+            var Ey:* = null;
+            var vx:int = 0;
+            var vy:int = 0;
+            var power:int = (min + max) / 2;
+            if (power <= min || power >= max)
             {
-                if(_loc9_.x0 > _map.bound.width)
-                {
-                    _loc12_ = getPower(param1,_loc12_,param3,param4,param5,param6,param7);
-                    break;
-                }
-                if(_loc8_.x0 > _map.bound.height)
-                {
-                    _loc12_ = getPower(_loc12_,param2,param3,param4,param5,param6,param7);
-                    break;
-                }
-                if(_loc9_.x0 < _map.bound.x)
-                {
-                    _loc12_ = 2100;
-                    return 2100;
-                }
+                return power;
             }
-            else
+            vx = power * Math.cos(shootAngle / 180 * 3.14159265358979);
+            Ex = new EulerVector(shootPos.x, vx, _wa);
+            vy = power * Math.sin(shootAngle / 180 * 3.14159265358979);
+            Ey = new EulerVector(shootPos.y, vy, _ga);
+            var timeTemp:Boolean = false;
+            while (true)
             {
-                if(_loc9_.x0 < _map.bound.x)
+                if (xS_Lef_E)
                 {
-                    _loc12_ = getPower(param1,_loc12_,param3,param4,param5,param6,param7);
-                    break;
-                }
-                if(_loc8_.x0 > _map.bound.height)
-                {
-                    _loc12_ = getPower(_loc12_,param2,param3,param4,param5,param6,param7);
-                    break;
-                }
-                if(_loc9_.x0 > _map.bound.width)
-                {
-                    _loc12_ = 2100;
-                    return 2100;
-                }
-            }
-            if(ifHit(_loc9_.x0,_loc8_.x0,param4))
-            {
-                return _loc12_;
-            }
-            _loc9_.ComputeOneEulerStep(_mass,_arf,_mapWind,_dt);
-            _loc8_.ComputeOneEulerStep(_mass,_arf,_gf,_dt);
-            if(param6 && param7)
-            {
-                if(_loc8_.x0 > param4.y)
-                {
-                    if(_loc9_.x0 < param4.x)
+                    if (Ex.x0 > _map.bound.width)
                     {
-                        _loc12_ = getPower(_loc12_,param2,param3,param4,param5,param6,param7);
-                    }
-                    else
-                    {
-                        _loc12_ = getPower(param1,_loc12_,param3,param4,param5,param6,param7);
-                    }
-                    break;
-                }
-            }
-            else if(param6 && !param7)
-            {
-                if(!_loc13_)
-                {
-                    if(_loc9_.x0 > param4.x)
-                    {
-                        _loc12_ = getPower(_loc12_,param2,param3,param4,param5,param6,param7);
+                        power = getPower(min, power, shootPos, enemyPos, shootAngle, xS_Lef_E, yS_Up_E);
                         break;
                     }
-                    if(_loc8_.x0 < param4.y)
+                    if (Ey.x0 > _map.bound.height)
                     {
-                        _loc13_ = true;
+                        power = getPower(power, max, shootPos, enemyPos, shootAngle, xS_Lef_E, yS_Up_E);
+                        break;
+                    }
+                    if (Ex.x0 < _map.bound.x)
+                    {
+                        power = 2100;
+                        return 2100;
                     }
                 }
-                else if(_loc13_)
+                else
                 {
-                    if(_loc8_.x0 > param4.y)
+                    if (Ex.x0 < _map.bound.x)
                     {
-                        if(_loc9_.x0 < param4.x)
+                        power = getPower(min, power, shootPos, enemyPos, shootAngle, xS_Lef_E, yS_Up_E);
+                        break;
+                    }
+                    if (Ey.x0 > _map.bound.height)
+                    {
+                        power = getPower(power, max, shootPos, enemyPos, shootAngle, xS_Lef_E, yS_Up_E);
+                        break;
+                    }
+                    if (Ex.x0 > _map.bound.width)
+                    {
+                        power = 2100;
+                        return 2100;
+                    }
+                }
+                if (ifHit(Ex.x0, Ey.x0, enemyPos))
+                {
+                    return power;
+                }
+                Ex.ComputeOneEulerStep(_mass, _arf, _mapWind, _dt);
+                Ey.ComputeOneEulerStep(_mass, _arf, _gf, _dt);
+                if (xS_Lef_E && yS_Up_E)
+                {
+                    if (Ey.x0 > enemyPos.y)
+                    {
+                        if (Ex.x0 < enemyPos.x)
                         {
-                            _loc12_ = getPower(_loc12_,param2,param3,param4,param5,param6,param7);
+                            power = getPower(power, max, shootPos, enemyPos, shootAngle, xS_Lef_E, yS_Up_E);
                         }
                         else
                         {
-                            _loc12_ = getPower(param1,_loc12_,param3,param4,param5,param6,param7);
+                            power = getPower(min, power, shootPos, enemyPos, shootAngle, xS_Lef_E, yS_Up_E);
                         }
                         break;
                     }
                 }
-            }
-            else if(!param6 && !param7)
-            {
-                if(!_loc13_)
+                else if (xS_Lef_E && !yS_Up_E)
                 {
-                    if(_loc9_.x0 < param4.x)
+                    if (!timeTemp)
                     {
-                        _loc12_ = getPower(_loc12_,param2,param3,param4,param5,param6,param7);
-                        break;
+                        if (Ex.x0 > enemyPos.x)
+                        {
+                            power = getPower(power, max, shootPos, enemyPos, shootAngle, xS_Lef_E, yS_Up_E);
+                            break;
+                        }
+                        if (Ey.x0 < enemyPos.y)
+                        {
+                            timeTemp = true;
+                        }
                     }
-                    if(_loc8_.x0 < param4.y)
+                    else if (timeTemp)
                     {
-                        _loc13_ = true;
+                        if (Ey.x0 > enemyPos.y)
+                        {
+                            if (Ex.x0 < enemyPos.x)
+                            {
+                                power = getPower(power, max, shootPos, enemyPos, shootAngle, xS_Lef_E, yS_Up_E);
+                            }
+                            else
+                            {
+                                power = getPower(min, power, shootPos, enemyPos, shootAngle, xS_Lef_E, yS_Up_E);
+                            }
+                            break;
+                        }
                     }
                 }
-                else if(_loc13_)
+                else if (!xS_Lef_E && !yS_Up_E)
                 {
-                    if(_loc8_.x0 > param4.y)
+                    if (!timeTemp)
                     {
-                        if(_loc9_.x0 > param4.x)
+                        if (Ex.x0 < enemyPos.x)
                         {
-                            _loc12_ = getPower(_loc12_,param2,param3,param4,param5,param6,param7);
+                            power = getPower(power, max, shootPos, enemyPos, shootAngle, xS_Lef_E, yS_Up_E);
+                            break;
+                        }
+                        if (Ey.x0 < enemyPos.y)
+                        {
+                            timeTemp = true;
+                        }
+                    }
+                    else if (timeTemp)
+                    {
+                        if (Ey.x0 > enemyPos.y)
+                        {
+                            if (Ex.x0 > enemyPos.x)
+                            {
+                                power = getPower(power, max, shootPos, enemyPos, shootAngle, xS_Lef_E, yS_Up_E);
+                            }
+                            else
+                            {
+                                power = getPower(min, power, shootPos, enemyPos, shootAngle, xS_Lef_E, yS_Up_E);
+                            }
+                            break;
+                        }
+                    }
+                }
+                else if (!xS_Lef_E && yS_Up_E)
+                {
+                    if (Ey.x0 > enemyPos.y)
+                    {
+                        if (Ex.x0 > enemyPos.x)
+                        {
+                            power = getPower(power, max, shootPos, enemyPos, shootAngle, xS_Lef_E, yS_Up_E);
                         }
                         else
                         {
-                            _loc12_ = getPower(param1,_loc12_,param3,param4,param5,param6,param7);
+                            power = getPower(min, power, shootPos, enemyPos, shootAngle, xS_Lef_E, yS_Up_E);
                         }
                         break;
                     }
                 }
             }
-            else if(!param6 && param7)
+            return power;
+        }
+
+        protected function ifHit(bulletX:Number, bulletY:Number, enemyPos:Point):Boolean
+        {
+            if (bulletX > enemyPos.x - 15 && bulletX < enemyPos.x + 20 && bulletY > enemyPos.y - 20 && bulletY < enemyPos.y + 30)
             {
-                if(_loc8_.x0 > param4.y)
-                {
-                    if(_loc9_.x0 > param4.x)
-                    {
-                        _loc12_ = getPower(_loc12_,param2,param3,param4,param5,param6,param7);
-                    }
-                    else
-                    {
-                        _loc12_ = getPower(param1,_loc12_,param3,param4,param5,param6,param7);
-                    }
-                    break;
-                }
+                return true;
             }
+            return false;
         }
-        return _loc12_;
-    }
 
-    protected function ifHit(param1:Number, param2:Number, param3:Point) : Boolean
-    {
-        if(param1 > param3.x - 15 && param1 < param3.x + 20 && param2 > param3.y - 20 && param2 < param3.y + 30)
+        private function isOutOfMap(ex:EulerVector, ey:EulerVector):Boolean
         {
-            return true;
-        }
-        return false;
-    }
-
-    private function isOutOfMap(param1:EulerVector, param2:EulerVector) : Boolean
-    {
-        if(param1.x0 < _map.bound.x || param1.x0 > _map.bound.width || param2.x0 > _map.bound.height)
-        {
-            return true;
-        }
-        return false;
-    }
-
-
-    private function getRouteData(param1:Number, param2:Number, param3:Point, param4:Point) : Vector.<Point>
-    {
-        var _loc9_:* = null;
-        var _loc7_:* = null;
-        var _loc6_:int = 0;
-        var _loc5_:int = 0;
-        if(param1 > 2000)
-        {
-            return null;
-        }
-        _loc6_ = param1 * Math.cos(param2 / 180 * 3.14159265358979);
-        _loc9_ = new EulerVector(param3.x,_loc6_,_wa);
-        _loc5_ = param1 * Math.sin(param2 / 180 * 3.14159265358979);
-        _loc7_ = new EulerVector(param3.y,_loc5_,_ga);
-        var _loc8_:Vector.<Point> = new Vector.<Point>();
-        _loc8_.push(new Point(param3.x,param3.y));
-        while(!isOutOfMap(_loc9_,_loc7_))
-        {
-            if(ifHit(_loc9_.x0,_loc7_.x0,param4))
+            if (ex.x0 < _map.bound.x || ex.x0 > _map.bound.width || ey.x0 > _map.bound.height)
             {
-                return _loc8_;
+                return true;
             }
-            _loc9_.ComputeOneEulerStep(_mass,_arf,_mapWind,_dt);
-            _loc7_.ComputeOneEulerStep(_mass,_arf,_gf,_dt);
-            _loc8_.push(new Point(_loc9_.x0,_loc7_.x0));
+            return false;
         }
-        return _loc8_;
-    }
 
-    public function drawDashed(param1:Graphics, param2:Point, param3:Point, param4:Number, param5:Number) : void
-    {
-        var _loc9_:Number = NaN;
-        var _loc11_:Number = NaN;
-        if(!param1 || !param2 || !param3 || param4 <= 0 || param5 <= 0)
+        // modified
+        private function drawRouteLine(id:int):void
         {
-            return;
-        }
-        var _loc8_:Number = param2.x;
-        var _loc10_:Number = param2.y;
-        var _loc12_:Number = Math.atan2(param3.y - _loc10_,param3.x - _loc8_);
-        var _loc7_:Number = Point.distance(param2,param3);
-        trace("big map :" + _loc7_);
-        var _loc6_:* = 0;
-        while(_loc6_ <= _loc7_)
-        {
-            if(_collideRect.contains(_loc11_,_loc9_))
+            var i:int = 0;
+            _drawRoute.graphics.clear();
+            var _loc8_:int = 0;
+            var _loc7_:* = _allLivings;
+            for each(var liv in _allLivings)
+            {
+                liv.currentSelectId = id;
+            }
+            if (id < 0)
             {
                 return;
             }
-            _loc11_ = _loc8_ + Math.cos(_loc12_) * _loc6_;
-            _loc9_ = _loc10_ + Math.sin(_loc12_) * _loc6_;
-            param1.moveTo(_loc11_,_loc9_);
-            _loc6_ = Number(_loc6_ + param4);
-            if(_loc6_ > _loc7_)
+            var living:Living = _allLivings[id];
+            if (!living)
             {
-                _loc6_ = _loc7_;
+                return;
             }
-            _loc11_ = _loc8_ + Math.cos(_loc12_) * _loc6_;
-            _loc9_ = _loc10_ + Math.sin(_loc12_) * _loc6_;
-            param1.lineTo(_loc11_,_loc9_);
-            _loc6_ = Number(_loc6_ + param5);
-        }
-    }
-
-    private function drawArrow(param1:Graphics, param2:Point, param3:Point, param4:Number, param5:int) : void
-    {
-        var _loc6_:Number = NaN;
-        var _loc7_:Number = NaN;
-        if(!param2 || !param3 || !param4 || param5 <= 0)
-        {
-            return;
-        }
-        var _loc8_:Number = Math.atan2(param3.y - param2.y,param3.x - param2.x);
-        param4 = param4 * 3.14159265358979 / 180;
-        param1.moveTo(param3.x,param3.y);
-        _loc7_ = param3.x + Math.cos(_loc8_ + param4) * param5;
-        _loc6_ = param3.y + Math.sin(_loc8_ + param4) * param5;
-        param1.lineTo(_loc7_,_loc6_);
-        param1.moveTo(param3.x,param3.y);
-        _loc7_ = param3.x + Math.cos(_loc8_ - param4) * param5;
-        _loc6_ = param3.y + Math.sin(_loc8_ - param4) * param5;
-        param1.lineTo(_loc7_,_loc6_);
-    }
-
-    protected function __playerChange(param1:CrazyTankSocketEvent) : void
-    {
-        _drawRoute.graphics.clear();
-        _useAble = false;
-        currentLivID = -1;
-        var _loc4_:int = 0;
-        var _loc3_:* = _allLivings;
-        for each(var _loc2_ in _allLivings)
-        {
-            _loc2_.state = false;
-        }
-    }
-
-    private function __playerExit(param1:Event) : void
-    {
-        if(_useAble)
-        {
-            currentLivID = calculateRecent();
-        }
-    }
-
-    protected function __wishofdd(param1:CrazyTankSocketEvent) : void
-    {
-        var _loc6_:Number = NaN;
-        var _loc2_:int = 0;
-        var _loc4_:Number = NaN;
-        var _loc5_:Number = NaN;
-        var _loc3_:Boolean = param1.pkg.readBoolean();
-        if(_loc3_)
-        {
-            _loc6_ = param1.pkg.readInt();
-            _loc2_ = param1.pkg.readInt();
-            _loc4_ = param1.pkg.readInt() / 100;
-            _mapWind = _loc6_ * _loc4_ / 10 * _windFactor;
-            _useAble = true;
-            showShoot();
-        }
-        else
-        {
-            _loc5_ = param1.pkg.readInt();
-            _useAble = false;
-        }
-    }
-
-    private function __thumbnailControlHandle(param1:GameEvent) : void
-    {
-        currentLivID = param1.data as int;
-    }
-
-    private function getDistance(param1:Point, param2:Point) : int
-    {
-        return (param2.x - param1.x) * (param2.x - param1.x) + (param2.y - param1.y) * (param2.y - param1.y);
-    }
-
-    public function get barrier() : DungeonInfoView
-    {
-        return _barrier;
-    }
-
-    public function get messageBtn() : BaseButton
-    {
-        return _messageBtn;
-    }
-
-//========================================================================================================================
-
-    private var _isLockedForce:Boolean = false;
-    private var _currentLivIndex:int = 0;
-    private var _isAutoPass:Boolean = false;
-    private var _isShowThreeKill : Boolean = false;
-    public var _matchGameAutoView : MatchGameAutoView = null;
-    private var _tempSprite:Sprite;
-
-    protected function set mapWind(param1:Number) : void
-    {
-        _mapWind = param1;
-        //if(_useAble)
-        //{
-        showShoot();
-        //}
-    }
-
-    private function wishInit() : void
-    {
-        _self = GameControl.Instance.Current.selfGamePlayer;
-        _selfGameLiving = _map.getPhysical(_self.LivingID) as GamePlayer;
-        _allLivings = GameControl.Instance.Current.livings;
-        _drawRoute = new Sprite();
-        _tempSprite = new Sprite();
-        _map.addChild(_drawRoute);
-        _map.addChild(_tempSprite);
-        currentLivID = -1;
-        _gameInfo.livings.addEventListener("add",addPlayerHander);
-        _self.addEventListener("gunangleChanged",__changeAngle);
-        _self.addEventListener("posChanged",__changeAngle);
-        _self.addEventListener("dirChanged",__changeAngle);
-        _self.addEventListener("forceChanged", __forceChanged);
-        _self.addEventListener("attackingChanged", __beginSelfTurn);
-        SocketManager.Instance.addEventListener("wishofdd",__wishofdd);
-        SocketManager.Instance.addEventListener("playerChange",__playerChange);
-        RoomManager.Instance.addEventListener("PlayerRoomExit",__playerExit);
-        KeyboardManager.getInstance().addEventListener("keyDown",__KeyDown);
-        SocketManager.Instance.addEventListener("RescueKingBless",__useRescueKingBless);
-    }
-
-    private function drawRouteLine(param1:int) : void
-    {
-        _drawRoute.graphics.clear();
-        var _loc8_:int = 0;
-        var _loc7_:* = _allLivings;
-        for each(var _loc5_ in _allLivings)
-        {
-            _loc5_.currentSelectId = param1;
-        }
-        if(param1 < 0)
-        {
-            return;
-        }
-        var _loc4_:Living = _allLivings[param1];
-        if(!_loc4_)
-        {
-            return;
-        }
-        var route:Vector.<Point> = _loc4_.route;
-        var route1:Vector.<Point> = _loc4_.route1;
-        var route2:Vector.<Point> = _loc4_.route2;
-        if(!route || route.length == 0)
-        {
-            return;
-        }
-        _collideRect.x = _loc4_.pos.x - 50;
-        _collideRect.y = _loc4_.pos.y - 50;
-        _drawRoute.graphics.lineStyle(2,16711680,0.5);
-        var length:int = route.length - 1;
-        var i:int = 0;
-        while(i < length)
-        {
-            drawDashed(_drawRoute.graphics,route[i],route[i + 1],8,5);
-            i++;
-        }
-
-        if (_isShowThreeKill)
-        {
-            if (route1 && route1.length > 0)
+            var data:Vector.<Point> = living.route;
+            var data1:Vector.<Point> = living.route1;
+            var data2:Vector.<Point> = living.route2;
+            if (!data || data.length == 0)
             {
-                _drawRoute.graphics.lineStyle(2,65280,0.5);
-                var length:int = route1.length - 1;
-                var i:int = 0;
-                while(i < length)
+                return;
+            }
+            _collideRect.x = living.pos.x - 50;
+            _collideRect.y = living.pos.y - 50;
+            _drawRoute.graphics.lineStyle(2, 16711680, 0.5);
+            var length:int = data.length;
+            for (i = 0; i < length - 1;)
+            {
+                drawDashed(_drawRoute.graphics, data[i], data[i + 1], 8, 5);
+                i++;
+            }
+
+            if (_isShowThreeKill)
+            {
+                if (data1 && data1.length > 0)
                 {
-                    drawDashed(_drawRoute.graphics,route1[i],route1[i + 1],8,5);
-                    i++;
+                    _drawRoute.graphics.lineStyle(2, 65280, 0.5);
+                    var length:int = data1.length;
+                    var i:int = 0;
+                    while (i < length)
+                    {
+                        drawDashed(_drawRoute.graphics, data1[i], data1[i + 1], 8, 5);
+                        i++;
+                    }
                 }
-            }
-            if (route2 && route2.length > 0)
-            {
-                _drawRoute.graphics.lineStyle(2,255,0.5);
-                var length:int = route2.length - 1;
-                var i:int = 0;
-                while(i < length)
+                if (data2 && data2.length > 0)
                 {
-                    drawDashed(_drawRoute.graphics,route2[i],route2[i + 1],8,5);
-                    i++;
+                    _drawRoute.graphics.lineStyle(2, 255, 0.5);
+                    var length:int = data2.length;
+                    var i:int = 0;
+                    while (i < length)
+                    {
+                        drawDashed(_drawRoute.graphics, data2[i], data2[i + 1], 8, 5);
+                        i++;
+                    }
                 }
+
+
             }
-
-
         }
-    }
 
-    protected function __beginSelfTurn(event:LivingEvent) : void
-    {
-        ChatManager.Instance.sysChatYellow("_map.wind:" + _map.wind.toString());
-        if (_self.isAttacking && _isAutoPass)
+        public function drawRouteLine2(route:Vector.<Point>,route1:Vector.<Point>,route2:Vector.<Point>) : void
         {
-            ChatManager.Instance.sysChatYellow("skip");
-            _self.skip();
-        }
-        else
-        {
-            showShoot();
-        }
-    }
-
-    protected function __forceChanged(event:Event):void
-    {
-        try
-        {
-            _shootAngle = _self.calcBombAngle();
-            _arf = _map.airResistance;
-            _gf = _map.gravity * _mass * _gravityFactor;
-            _ga = _gf / _mass;
-            _wa = _mapWind / _mass;
-            var shootPos:Point = _selfGameLiving.body.localToGlobal(new Point(30,-20));
-            shootPos = _map.globalToLocal(shootPos);
-            var power:Number = _self.force;
-            var enemyPos:Point = new Point(0,0);
-            var route:Vector.<Point> = getRouteData(power, _shootAngle,shootPos,enemyPos);
-            var route1:Vector.<Point> = getRouteData(power * 0.9, _shootAngle - 5,shootPos,enemyPos);
-            var route2:Vector.<Point> = getRouteData(power * 1.1, _shootAngle + 5,shootPos,enemyPos);
-            var length:int = route.length;
-            var i:int = 0;
             _drawRoute.graphics.clear();
-
+            var length:int = 0;
+            var i:int = 0;
             if (route && route.length > 0)
             {
-                _drawRoute.graphics.lineStyle(2,16711680,0.5);
-                length = route.length - 1;
-                i = 0;
+                _drawRoute.graphics.lineStyle(1,16711680,1);
+                var length:int = route.length - 1;
+                var i:int = 0;
                 while(i < length)
                 {
                     drawDashed(_drawRoute.graphics,route[i],route[i + 1],8,5);
                     i++;
                 }
             }
-
-            if (_isShowThreeKill) {
-                if (route1 && route1.length > 0) {
-                    _drawRoute.graphics.lineStyle(2, 65280, 0.5);
-                    length = route1.length - 1;
-                    i = 0;
-                    while (i < length) {
-                        drawDashed(_drawRoute.graphics, route1[i], route1[i + 1], 8, 5);
+            if (_isShowThreeKill)
+            {
+                if (route1 && route1.length > 0)
+                {
+                    _drawRoute.graphics.lineStyle(1,65280,1);
+                    var length:int = route1.length - 1;
+                    var i:int = 0;
+                    while(i < length)
+                    {
+                        drawDashed(_drawRoute.graphics,route1[i],route1[i + 1],8,5);
                         i++;
                     }
                 }
-                if (route2 && route2.length > 0) {
-                    _drawRoute.graphics.lineStyle(2, 255, 0.5);
-                    length = route2.length - 1;
-                    i = 0;
-                    while (i < length) {
-                        drawDashed(_drawRoute.graphics, route2[i], route2[i + 1], 8, 5);
+                if (route2 && route2.length > 0)
+                {
+                    _drawRoute.graphics.lineStyle(1,255,1);
+                    var length:int = route2.length - 1;
+                    var i:int = 0;
+                    while(i < length)
+                    {
+                        drawDashed(_drawRoute.graphics,route2[i],route2[i + 1],8,5);
                         i++;
                     }
                 }
             }
+        }
 
-            _map.smallMap.drawRouteLine2(route, route1, route2);
-            _isLockedForce = true;
-        }
-        catch (e:Error)
+        private function getRouteData(power:Number, shootAngle:Number, shootPos:Point, enemyPos:Point):Vector.<Point>
         {
-            ChatManager.Instance.sysChatYellow("Error: " + e.message + " at: " + e.getStackTrace());
+            var Ex:* = null;
+            var Ey:* = null;
+            var vx:int = 0;
+            var vy:int = 0;
+            if (power > 2000)
+            {
+                return null;
+            }
+            vx = power * Math.cos(shootAngle / 180 * 3.14159265358979);
+            Ex = new EulerVector(shootPos.x, vx, _wa);
+            vy = power * Math.sin(shootAngle / 180 * 3.14159265358979);
+            Ey = new EulerVector(shootPos.y, vy, _ga);
+            var ary:Vector.<Point> = new Vector.<Point>();
+            ary.push(new Point(shootPos.x, shootPos.y));
+            while (!isOutOfMap(Ex, Ey))
+            {
+                if (ifHit(Ex.x0, Ey.x0, enemyPos))
+                {
+                    return ary;
+                }
+                Ex.ComputeOneEulerStep(_mass, _arf, _mapWind, _dt);
+                Ey.ComputeOneEulerStep(_mass, _arf, _gf, _dt);
+                ary.push(new Point(Ex.x0, Ey.x0));
+            }
+            return ary;
         }
-    }
 
-    private function calculateRecent() : int
-    {
-        var _loc3_:* = undefined;
-        var _loc5_:int = 0;
-        var _loc4_:int = 0;
-        var _loc2_:* = 2147483647;
-        var _loc1_:int = -1;
-        var _loc8_:int = _allLivings.length;
-        var _loc7_:* = _allLivings;
-        var _loc6_:Living = null;
-        var list:Array = _allLivings.list;
-        var i:int = 0;
-        _isLockedForce = false;
-        try
+        public function drawDashed(graphics:Graphics, beginPoint:Point, endPoint:Point, width:Number, grap:Number):void
         {
-            for (i = _currentLivIndex; i < list.length; ++i)
+            var y:Number = NaN;
+            var x:Number = NaN;
+            if (!graphics || !beginPoint || !endPoint || width <= 0 || grap <= 0)
             {
-                _loc6_ = list[i];
-                if(_loc6_.route && _loc6_.blood > 0)
-                {
-                    _loc3_ = _loc6_.route;
-                    _loc5_ = _loc3_.length;
-                    if(_loc5_ >= 2)
-                    {
-                        if (i > _currentLivIndex)
-                        {
-                            _currentLivIndex = i;
-                            ChatManager.Instance.sysChatYellow("currentLivIndex: " + _currentLivIndex.toString());
-                            return _loc6_.LivingID;
-                        }
-                    }
-                }
+                return;
             }
-            for (i = 0; i < list.length; ++i)
+            var Ox:Number = beginPoint.x;
+            var Oy:Number = beginPoint.y;
+            var radian:Number = Math.atan2(endPoint.y - Oy, endPoint.x - Ox);
+            var totalLen:Number = Point.distance(beginPoint, endPoint);
+            trace("big map :" + totalLen);
+            var currLen:* = 0;
+            while (currLen <= totalLen)
             {
-                _loc6_ = list[i];
-                if(_loc6_.route && _loc6_.blood > 0)
+                if (_collideRect.contains(x, y))
                 {
-                    _loc3_ = _loc6_.route;
-                    _loc5_ = _loc3_.length;
-                    if(_loc5_ >= 2)
-                    {
-                        _currentLivIndex = i;
-                        ChatManager.Instance.sysChatYellow("currentLivIndex: " + _currentLivIndex.toString());
-                        return _loc6_.LivingID;
-                    }
+                    return;
                 }
+                x = Ox + Math.cos(radian) * currLen;
+                y = Oy + Math.sin(radian) * currLen;
+                graphics.moveTo(x, y);
+                currLen = Number(currLen + width);
+                if (currLen > totalLen)
+                {
+                    currLen = totalLen;
+                }
+                x = Ox + Math.cos(radian) * currLen;
+                y = Oy + Math.sin(radian) * currLen;
+                graphics.lineTo(x, y);
+                currLen = Number(currLen + grap);
             }
         }
-        catch (e:Error)
-        {
-            ChatManager.Instance.sysChatYellow(e.message + " at " + e.getStackTrace());
-        }
-        return -1;
-    }
 
-    protected function __changeAngle(param1:LivingEvent) : void
-    {
-        _isLockedForce = false;
-        _mapWind = GameControl.Instance.Current.wind * _windFactor;
-        showShoot();
-    }
+        private function drawArrow(graphics:Graphics, start:Point, end:Point, angle:Number, length:int):void
+        {
+            var y:Number = NaN;
+            var x:Number = NaN;
+            if (!start || !end || !angle || length <= 0)
+            {
+                return;
+            }
+            var radian:Number = Math.atan2(end.y - start.y, end.x - start.x);
+            angle = angle * 3.14159265358979 / 180;
+            graphics.moveTo(end.x, end.y);
+            x = end.x + Math.cos(radian + angle) * length;
+            y = end.y + Math.sin(radian + angle) * length;
+            graphics.lineTo(x, y);
+            graphics.moveTo(end.x, end.y);
+            x = end.x + Math.cos(radian - angle) * length;
+            y = end.y + Math.sin(radian - angle) * length;
+            graphics.lineTo(x, y);
+        }
 
-    protected function __KeyDown(param1:KeyboardEvent) : void
-    {
-        var _loc4_:int = 0;
-        var _loc2_:Array = [];
-        if(param1.keyCode == KeyStroke.VK_V.getCode())
+        protected function __playerChange(event:CrazyTankSocketEvent):void
         {
-            var _loc6_:int = 0;
-            var _loc5_:* = _allLivings;
-            for each(var _loc3_:Living in _allLivings)
+            _drawRoute.graphics.clear();
+            _useAble = false;
+            currentLivID = -1;
+            var _loc4_:int = 0;
+            var _loc3_:* = _allLivings;
+            for each(var liv in _allLivings)
             {
-                if(!(_loc3_.isHidden || _loc3_.team == GameControl.Instance.Current.selfGamePlayer.team || !_loc3_.isLiving || _loc3_.LivingID == _self.LivingID))
-                {
-                    _loc2_.push(_loc3_);
-                }
-            }
-            _loc4_ = 0;
-            while(_loc4_ <= _loc2_.length - 1)
-            {
-                if((_loc2_[_loc4_] as Living).LivingID == currentLivID)
-                {
-                    if(_loc4_ >= _loc2_.length - 1)
-                    {
-                        _loc4_ = 0;
-                    }
-                    else
-                    {
-                        _loc4_++;
-                    }
-                    break;
-                }
-                _loc4_++;
-            }
-            if(_loc4_ <= _loc2_.length - 1)
-            {
-                currentLivID = _loc2_[_loc4_].LivingID;
+                liv.state = false;
             }
         }
-        if(param1.keyCode == KeyStroke.VK_TAB.getCode())
+
+        private function __playerExit(e:Event):void
         {
-            currentLivID = calculateRecent();
-            ChatManager.Instance.sysChatYellow("changed to: " + currentLivID.toString());
-        }
-        else if (param1.keyCode == KeyStroke.VK_N.getCode())
-        {
-            SoundManager.instance.play("008");
-            if (currentLivID != -1 && !_isLockedForce)
+            if (_useAble)
             {
-                var living:Living = _allLivings[currentLivID];
-                var power:Number = (living.fightPower * 2000) / 100;
-                _self.sendShootAction(power);
+                currentLivID = calculateRecent();
+            }
+        }
+
+        // modified
+        protected function __changeAngle(event:LivingEvent):void
+        {
+            _isLockedForce = false;
+            _mapWind = GameControl.Instance.Current.wind * _windFactor;
+            showShoot();
+        }
+
+        protected function __wishofdd(event:CrazyTankSocketEvent):void
+        {
+            var pwind:Number = NaN;
+            var weatherLevel:int = 0;
+            var weatherRate:Number = NaN;
+            var pwind2:Number = NaN;
+            var shoot:Boolean = event.pkg.readBoolean();
+            if (shoot)
+            {
+                pwind = event.pkg.readInt();
+                weatherLevel = event.pkg.readInt();
+                weatherRate = event.pkg.readInt() / 100;
+                _mapWind = pwind * weatherRate / 10 * _windFactor;
+                _useAble = true;
+                showShoot();
             }
             else
             {
-                _self.sendShootAction(_self.force);
+                pwind2 = event.pkg.readInt();
+                _useAble = false;
             }
         }
-        else if (param1.keyCode == KeyStroke.VK_O.getCode())
+
+        private function __thumbnailControlHandle(e:GameEvent):void
         {
-            SoundManager.instance.play("008");
-            _isAutoPass = !_isAutoPass;
-            ChatManager.Instance.sysChatYellow("_isAutoPass: " + _isAutoPass.toString());
+            currentLivID = e.data as int;
+        }
+
+        // modified
+        private function calculateRecent():int
+        {
+            _isLockedForce = false;
+            var livRoute:Vector.<Point> = undefined;
+            var length:int = 0;
+            var list:Array = _allLivings.list;
+            var target:Living = null;
+            var targetIndex:int = 0;
+            var index:int = 1;
+            while (index < list.length) {
+                targetIndex = (_currentLivIndex + index) % list.length;
+                target = list[targetIndex];
+                if (target.route && target.blood > 0)
+                {
+                    livRoute = target.route;
+                    length = livRoute.length;
+                    if (length >= 2)
+                    {
+                        _currentLivIndex = targetIndex;
+                        return target.LivingID;
+                    }
+                }
+                index++;
+            }
+            return -1;
+        }
+
+        private function getDistance(start:Point, end:Point):int
+        {
+            return (end.x - start.x) * (end.x - start.x) + (end.y - start.y) * (end.y - start.y);
+        }
+
+        public function get barrier():DungeonInfoView
+        {
+            return _barrier;
+        }
+
+        public function get messageBtn():BaseButton
+        {
+            return _messageBtn;
+        }
+
+        // modified
+        protected function __beginSelfTurn(event:LivingEvent) : void
+        {
+            ChatManager.Instance.sysChatYellow("_map.wind:" + _map.wind.toString());
             if (_self.isAttacking && _isAutoPass)
             {
                 ChatManager.Instance.sysChatYellow("skip");
                 _self.skip();
             }
-        }
-        else if (param1.keyCode == KeyStroke.VK_K.getCode())
-        {
-            SoundManager.instance.play("008");
-            _matchGameAutoView.setAutoState(AutoGameManager.Instance.toggleAutoMatchGame());
-        }
-        else if (param1.keyCode == KeyStroke.VK_L.getCode())
-        {
-            SoundManager.instance.play("008");
-            _isShowThreeKill = !_isShowThreeKill;
-            _map.smallMap.toggleShowThreeKill(_isShowThreeKill);
-            ChatManager.Instance.sysChatYellow("_isShowThreeKill: " + _isShowThreeKill.toString());
-            __forceChanged(null);
-        }
-    }
-
-    private function wishRemoveEvent() : void
-    {
-        if(_self != null)
-        {
-            _self.removeEventListener("gunangleChanged",__changeAngle);
-            _self.removeEventListener("posChanged",__changeAngle);
-            _self.removeEventListener("dirChanged",__changeAngle);
-            _self.removeEventListener("forceChanged", __forceChanged);
-            _self.removeEventListener("attackingChanged", __beginSelfTurn);
-        }
-        if(_gameInfo != null)
-        {
-            _gameInfo.livings.removeEventListener("add",addPlayerHander);
-        }
-        SocketManager.Instance.removeEventListener("wishofdd",__wishofdd);
-        SocketManager.Instance.removeEventListener("playerChange",__playerChange);
-        RoomManager.Instance.removeEventListener("PlayerRoomExit",__playerExit);
-        KeyboardManager.getInstance().removeEventListener("keyDown",__KeyDown);
-        SocketManager.Instance.removeEventListener("RescueKingBless",__useRescueKingBless);
-    }
-
-    protected function showShoot() : void
-    {
-        var _loc7_:* = null;
-        var _loc1_:* = null;
-        var _loc2_:Number = NaN;
-        var _loc4_:Boolean = false;
-        var _loc5_:Boolean = false;
-        var _loc3_:Point = _selfGameLiving.body.localToGlobal(new Point(30,-20));
-        _loc3_ = _map.globalToLocal(_loc3_);
-        _shootAngle = _self.calcBombAngle();
-        _arf = _map.airResistance;
-        _gf = _map.gravity * _mass * _gravityFactor;
-        _ga = _gf / _mass;
-        _wa = _mapWind / _mass;
-        var _loc9_:int = 0;
-        var _loc8_:* = _allLivings;
-        for each(var _loc6_ in _allLivings)
-        {
-            _loc6_.route = null;
-            if(_loc6_.LivingID != _self.LivingID)
+            else
             {
-                _loc7_ = _loc6_.pos;
-                if(_self.isLiving && _self.isAttacking)
-                {
-                    _loc6_.route = null;
-                    _loc4_ = true;
-                    _loc5_ = true;
-                    if(_loc3_.x > _loc7_.x)
-                    {
-                        _loc4_ = false;
-                    }
-                    if(_loc3_.y > _loc7_.y)
-                    {
-                        _loc5_ = false;
-                    }
-                    if(judgeMaxPower(_loc3_,_loc7_,_shootAngle,_loc4_,_loc5_))
-                    {
-                        _loc2_ = getPower(0,2000,_loc3_,_loc7_,_shootAngle,_loc4_,_loc5_);
-                    }
-                    else
-                    {
-                        _loc2_ = 2100;
-                    }
-                    _stateFlag = 0;
-                    if(_loc2_ > 2000)
-                    {
-                        if(_loc6_.state)
-                        {
-                            _stateFlag = 1;
-                        }
-                        else
-                        {
-                            _stateFlag = 2;
-                        }
-                        _loc6_.state = false;
-                    }
-                    else
-                    {
-                        if(_loc6_.state)
-                        {
-                            _stateFlag = 3;
-                        }
-                        else
-                        {
-                            _stateFlag = 4;
-                        }
-                        _loc6_.state = true;
-                    }
-                    _gameLiving = _map.getPhysical(_loc6_.LivingID) as GameLiving;
-                    if(_stateFlag == 1 || _stateFlag == 2)
-                    {
-                        _loc6_.route = null;
-                    }
-                    else
-                    {
-                        _loc6_.route = getRouteData(_loc2_,_shootAngle,_loc3_,_loc7_);
-                        _loc6_.route1 = getRouteData(_loc2_ * 0.9,_shootAngle - 5,_loc3_,_loc7_);
-                        _loc6_.route2 = getRouteData(_loc2_ * 1.1,_shootAngle + 5,_loc3_,_loc7_);
-                    }
-                    _loc6_.fightPower = Number((_loc2_ * 100 / 2000).toFixed(1));
-                }
+                showShoot();
             }
         }
-        if(currentLivID == -1 || !_allLivings[currentLivID].route)
+
+        // modified
+        protected function __forceChanged(event:Event):void
         {
-            currentLivID = calculateRecent();
-        }
-        else
-        {
-            currentLivID = currentLivID;
+            try
+            {
+                _shootAngle = _self.calcBombAngle();
+                _arf = _map.airResistance;
+                _gf = _map.gravity * _mass * _gravityFactor;
+                _ga = _gf / _mass;
+                _wa = _mapWind / _mass;
+                var shootPos:Point = _selfGameLiving.body.localToGlobal(new Point(30,-20));
+                shootPos = _map.globalToLocal(shootPos);
+                var power:Number = _self.force;
+                var enemyPos:Point = new Point(0,0);
+                var route:Vector.<Point> = getRouteData(power, _shootAngle,shootPos,enemyPos);
+                var route1:Vector.<Point> = getRouteData(power * 0.9, _shootAngle - 5,shootPos,enemyPos);
+                var route2:Vector.<Point> = getRouteData(power * 1.1, _shootAngle + 5,shootPos,enemyPos);
+                drawRouteLine2(route, route1, route2);
+                _map.smallMap.drawRouteLine2(route, route1, route2);
+                _isLockedForce = true;
+            }
+            catch (e:Error)
+            {
+                ChatManager.Instance.sysChatYellow("Error: " + e.message + " at: " + e.getStackTrace());
+            }
         }
     }
-
-//========================================================================================================================
-}
 }

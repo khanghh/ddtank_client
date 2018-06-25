@@ -19,17 +19,12 @@ package ddt.manager
     import ddt.manager.ddtcmd.SettingsHandler;
     import ddt.manager.ddtcmd.WasteRecycleStartTurnHandler;
 
-    import game.view.GameViewBase;
-    import game.view.heroAuto.HeroAutoView;
     import game.view.map.MapView;
-    import game.view.matchGameAuto.MatchGameAutoView;
 
     import gameCommon.GameControl;
 
     import gameCommon.model.GameInfo;
     import gameCommon.model.LocalPlayer;
-
-    import phy.maps.Map;
 
     import road7th.comm.PackageOut;
 
@@ -155,7 +150,7 @@ package ddt.manager
                     }
                     else
                     {
-                        //ChatManager.Instance.sysChatYellow("Error: command not found !");
+                        ChatManager.Instance.sysChatYellow("Error: command not found !");
                     }
                 }
 

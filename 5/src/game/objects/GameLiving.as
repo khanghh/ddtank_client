@@ -1831,7 +1831,7 @@ package game.objects
             {
                 return;
             }
-            visible = value;
+            super.visible = value;
             if(_onSmallMap == false)
             {
                 return;
@@ -1852,11 +1852,11 @@ package game.objects
         {
             if(value)
             {
-                visible = false;
+                super.visible = false;
             }
             else
             {
-                visible = true;
+                super.visible = true;
             }
             _hiddenByServer = value;
         }
